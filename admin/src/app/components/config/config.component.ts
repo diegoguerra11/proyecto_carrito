@@ -49,17 +49,13 @@ export class ConfigComponent implements OnInit {
   agregar_cat(){
     if (this.titulo_cat && this.icono_cat) {
       console.log(uuidv4());
-      
-
-        this.config.categorias.push({
-          titulo: this.titulo_cat,
-          icono: this.icono_cat,
-          _id: uuidv4()
-        });
-
-        this.titulo_cat = '';
-        this.icono_cat = '';
-
+      this.config.categorias.push({
+        titulo: this.titulo_cat,
+        icono: this.icono_cat,
+        _id: uuidv4()
+      });
+      this.titulo_cat = '';
+      this.icono_cat = '';
     } else {
       iziToast.show({
         title:'ERROR',
@@ -76,8 +72,6 @@ export class ConfigComponent implements OnInit {
     if (confForm.valid) {
       let data={
         titulo: confForm.value.titulo,
-        serie: confForm.value.serie,
-        correlativo: confForm.value.correlativo,
         categorias: this.config.categorias,
         logo: this.file
       }
