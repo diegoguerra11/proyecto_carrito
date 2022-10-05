@@ -15,11 +15,13 @@ io.on('connection', function(socket){
     socket.on('delete-carrito',function(data){
         io.emit('new-carrito',data);
         console.log(data);
+        console.log("socket");
     });
 
     socket.on('add-carrito-add',function(data){
         io.emit('new-carrito-add',data);
         console.log(data);
+        console.log("socket-add");
     });
 });
 
@@ -43,7 +45,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/tienda',{useUnifiedTopology: true, u
     }
 });
 app.use(cors({origin: '*'}));
-app.use(bodyparser.urlencoded({extended: true}));
+app.use(bodyparser.urlencoded({limit: '50mb', extended: true}));
 app.use(bodyparser.json({limit: '50mb',extended: true}));
 
 app.use((req,res,next)=>{

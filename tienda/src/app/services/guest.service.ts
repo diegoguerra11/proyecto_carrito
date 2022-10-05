@@ -31,5 +31,16 @@ export class GuestService {
     let headers = new HttpHeaders().set('Content-Type','application/json');
     return this._http.get(this.url+'obtener_variedades_productos_cliente/'+id,{headers:headers});
   }
+  agregar_carrito_cliente(data:any,token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.post(this.url+'agregar_carrito_cliente',data,{headers:headers});
+  }
+  obtener_reviews_producto_publico(id:any):Observable<any>{
+    let headers = new HttpHeaders().set('Content-Type','application/json');
+    return this._http.get(this.url+'obtener_reviews_producto_publico/'+id,{headers:headers});
+  }
+  get_categorias():Observable<any>{
+    return this._http.get('./assets/categorias.json');
+  }
 
 }

@@ -13,14 +13,14 @@ declare var $:any;
   styleUrls: ['./nav.component.css']
 })
 export class NavComponent implements OnInit {
-
+  public currency = 'PEN';
   public token;
   public id;
   public user : any = undefined;
   public user_lc : any = undefined;
   public config_global : any = {};
   public op_cart = false;
-
+  public carrito_logout :Array<any> = [];
   public carrito_arr : Array<any> = [];
   public url;
   public subtotal = 0;
@@ -41,7 +41,17 @@ export class NavComponent implements OnInit {
           
         }
       )
-    
+      if(this.user_lc == undefined){
+        let ls_cart = localStorage.getItem('cart');
+        
+        if(ls_cart != null){
+          this.carrito_logout = JSON.parse(ls_cart);
+          console.log(this.carrito_logout);
+          this.calcular_carrito();
+        }else{
+          this.carrito_logout = [];
+        }
+      } 
 
    if (this.token) {
     this._clienteService.obtener_cliente_guest(this.id,this.token).subscribe(
@@ -78,11 +88,50 @@ export class NavComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.socket.on('new-carrito', this.obtener_carrito.bind(this));
 
-    this.socket.on('new-carrito-add', this.obtener_carrito.bind(this));
+
+    if(this.token == null){
+      this.socket.on('new-carrito-add',(data)=>{
+        if(this.user_lc == undefined){
+          let ls_cart = localStorage.getItem('cart');
+          if(ls_cart != null){
+            this.carrito_logout = JSON.parse(ls_cart);
+            console.log(this.carrito_logout);
+            this.calcular_carrito();
+          }else{
+            this.carrito_logout = [];
+          }
+          
+        }else{
+          this.obtener_carrito();
+        }
+        
+      });
+    }
+    else{this.socket.on('new-carrito', this.obtener_carrito.bind(this));
+
+    this.socket.on('new-carrito-add', this.obtener_carrito.bind(this));}
+
+   
   }
-
+  openMenu(){
+    var clase = $('#modalMenu').attr('class');
+    console.log(clase);
+    if(clase == 'ps-panel--sidebar'){
+      $('#modalMenu').addClass('active');
+    }else if(clase == 'ps-panel--sidebar active'){
+      $('#modalMenu').removeClass('active');
+    }
+  }
+  openCart(){
+    var clase = $('#modalCarrito').attr('class');
+    console.log(clase);
+    if(clase == 'ps-panel--sidebar'){
+      $('#modalCarrito').addClass('active');
+    }else if(clase == 'ps-panel--sidebar active'){
+      $('#modalCarrito').removeClass('active');
+    }
+  }
   logout(){
     window.location.reload();
     localStorage.clear();
@@ -100,9 +149,32 @@ export class NavComponent implements OnInit {
   }
 
   calcular_carrito(){
-    this.carrito_arr.forEach(element=>{
-      this.subtotal = this.subtotal + parseInt(element.producto.precio);
-    });
+    this.subtotal = 0;
+    if(this.user_lc != undefined){
+      if(this.currency == 'PEN'){
+        this.carrito_arr.forEach(element => {
+            let sub_precio = parseInt(element.producto.precio) * element.cantidad;
+            this.subtotal = this.subtotal + sub_precio;
+        });
+      }else{
+        this.carrito_arr.forEach(element => {
+          let sub_precio = parseInt(element.producto.precio_dolar) * element.cantidad;
+          this.subtotal = this.subtotal + sub_precio;
+      });
+      }
+    }else if(this.user_lc == undefined){
+      if(this.currency == 'PEN'){
+        this.carrito_logout.forEach(element => {
+          let sub_precio = parseInt(element.producto.precio) * element.cantidad;
+            this.subtotal = this.subtotal + sub_precio;
+        });
+      }else{
+        this.carrito_logout.forEach(element => {
+          let sub_precio = parseInt(element.producto.precio_dolar) * element.cantidad;
+            this.subtotal = this.subtotal + sub_precio;
+        });
+      }
+    }
   }
 
   eliminar_item(id:any){
@@ -121,6 +193,22 @@ export class NavComponent implements OnInit {
         
       }
     );
+  }
+  eliminar_item_guest(item:any){
+    this.carrito_logout.splice(item._id,1);
+    console.log("miau");
+    localStorage.removeItem('cart');
+    if(this.carrito_logout.length >= 1){
+      
+      localStorage.setItem('cart',JSON.stringify(this.carrito_logout));
+    }
+    if(this.currency == 'PEN'){
+      let monto = item.producto.precio*item.cantidad;
+      this.subtotal = this.subtotal -monto;
+    } else if(this.currency != 'PEN'){
+      let monto = item.producto.precio_dolar*item.cantidad;
+      this.subtotal = this.subtotal -monto;
+    }
   }
 
 }

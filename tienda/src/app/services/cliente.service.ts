@@ -94,5 +94,6 @@ export class ClienteService {
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.delete(this.url+'eliminar_carrito_cliente/'+id,{headers:headers});
   }
+  
 
 }
