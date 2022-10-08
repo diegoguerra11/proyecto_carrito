@@ -4,6 +4,7 @@ import { GLOBAL } from 'src/app/services/GLOBAL';
 import { GuestService } from '../../../services/guest.service';
 import { ClienteService } from '../../../services/cliente.service';
 import { io } from "socket.io-client";
+import { MessageBox } from 'src/app/Utils/MessageBox';
 
 declare var tns:any;
 declare var lightGallery:any;
@@ -19,7 +20,7 @@ export class ShowProductoComponent implements OnInit {
   public token:any;
   public slug:any;
   public producto:any = {};
-  public url:any;
+  public url:string;
   public productos_rec : Array<any> = [];
 
   public user_lc : any = undefined;
@@ -95,7 +96,20 @@ export class ShowProductoComponent implements OnInit {
       var e = document.querySelectorAll(".cs-gallery");
       if (e.length){
         for (var t = 0; t < e.length; t++){
-          lightGallery(e[t], { selector: ".cs-gallery-item", download: !1, videojs: !0, youtubePlayerParams: { modestbranding: 1, showinfo: 0, rel: 0 }, vimeoPlayerParams: { byline: 0, portrait: 0 } });
+          lightGallery(e[t], { 
+            selector: ".cs-gallery-item", 
+            download: !1, 
+            videojs: !0, 
+            youtubePlayerParams: { 
+              modestbranding: 1, 
+              showinfo: 0, 
+              rel: 0 
+            }, 
+            vimeoPlayerParams: { 
+              byline: 0, 
+              portrait: 0 
+            }
+          });
         }
       }
 
@@ -129,7 +143,7 @@ export class ShowProductoComponent implements OnInit {
           }
         }
       });
-    },500) 
+    },500); 
 
   }
 
@@ -140,6 +154,7 @@ export class ShowProductoComponent implements OnInit {
       }
     );
   }
+
   select_variedad(){
     console.log(this.select_variedad_lbl);
     let arr_variedad = this.select_variedad_lbl.split('_');
@@ -148,7 +163,6 @@ export class ShowProductoComponent implements OnInit {
     this.obj_variedad_select.stock =this.producto.stock;
 
     console.log(this.obj_variedad_select);
-
   }
 
   SumCant(){
@@ -162,198 +176,92 @@ export class ShowProductoComponent implements OnInit {
   }
 
 
-agregar_producto(){
-  if(this.obj_variedad_select.variedad){
-    if(this.carrito_data.cantidad >= 1){
+  agregar_producto(){
+    if(this.obj_variedad_select.variedad) {MessageBox.messageError('Seleccione una talla de producto'); return;}
+    if(this.carrito_data.cantidad < 1) {MessageBox.messageError('Ingrese una cantidad válida por favor.'); return;}
+    if(!(this.carrito_data.cantidad <= this.obj_variedad_select.stock)) {MessageBox.messageError('La cantidad máxima del producto es.' + this.obj_variedad_select.stock); return;}
 
-      if(this.carrito_data.cantidad <= this.obj_variedad_select.stock){
-        let data = {
-          producto: this.producto._id,
-          cliente: localStorage.getItem('_id'),
-          cantidad: this.carrito_data.cantidad,
-          variedad: this.obj_variedad_select.id,
-        }
-        this.btn_cart =true;
-        
-        this._guestService.agregar_carrito_cliente(data,this.token).subscribe(
-          response=>{
-           
-            if(response.data == undefined){
-              
-              this.btn_cart =false;
-
-              iziToast.show({
-                  title: 'ERROR',
-                  titleColor: '#FF0000',
-                  color: '#FFF',
-                  class: 'text-danger',
-                  position: 'topRight',
-                  message: "Producto Agregado Anteriormente"
-              });
-
-              
-             
-            }else{
-
-              iziToast.show({
-                  title: 'SUCCESS',
-                  titleColor: '#1DC74C',
-                  color: '#FFF',
-                  class: 'text-success',
-                  position: 'topRight',
-                  message: 'Se agregó el producto al carrito.'
-              });
-              this.socket.emit('add-carrito-add',{data:true});
-              this.btn_cart =false;
-            }
-          }
-        );
-      }else{
-        iziToast.show({
-            title: 'ERROR',
-            titleColor: '#FF0000',
-            color: '#FFF',
-            class: 'text-danger',
-            position: 'topRight',
-            message: 'La cantidad máxima del producto es.' + this.obj_variedad_select.stock
-        });
-      }
-    }else{
-      iziToast.show({
-          title: 'ERROR',
-          titleColor: '#FF0000',
-          color: '#FFF',
-          class: 'text-danger',
-          position: 'topRight',
-          message: 'Ingrese una cantidad válida por favor.'
-      });
+    let data = {
+      producto: this.producto._id,
+      cliente: localStorage.getItem('_id'),
+      cantidad: this.carrito_data.cantidad,
+      variedad: this.obj_variedad_select.id,
     }
- }else{
-  iziToast.show({
-      title: 'ERROR',
-      titleColor: '#FF0000',
-      color: '#FFF',
-      class: 'text-danger',
-      position: 'topRight',
-      message: 'Seleccione una talla de producto'
-  });
-}
-}
-agregar_producto_guest(){
-    console.log(this.obj_variedad_select);
-    if(this.obj_variedad_select.variedad){
-     
-
-      if(this.carrito_data.cantidad >= 1){
-        if(this.carrito_data.cantidad <= this.obj_variedad_select.stock){
-          
-          let data = {
-            producto: this.producto,
-            variedad: this.obj_variedad_select,
-            cantidad: this.carrito_data.cantidad,
-          }
-          let ls_carrito_guest = localStorage.getItem('cart');
-          
-          if(ls_carrito_guest == null){
-            let arr_carrito = [];
-            arr_carrito.push(data);
-            localStorage.setItem('cart',JSON.stringify(arr_carrito));
-            iziToast.show({
-              title: 'SUCCESS',
-              titleColor: '#1DC74C',
-              color: '#FFF',
-              class: 'text-success',
-              position: 'topRight',
-              message: 'Se agregó el producto a tu carrito.'
-          });
-  
-          this.obj_variedad_select= {
-            id: '',
-            stock: 0,
-            variedad: ''
-          }
-          this.carrito_data.cantidad = 0;
-          this.select_variedad_lbl = '';
-          this.socket.emit('add-carrito-add',{data:true});
-          }else{
-            let productoEnCarrito = false;
-            let arrayTemporalCarrito = JSON.parse(ls_carrito_guest);
-            for (let index = 0; index < arrayTemporalCarrito.length; index++) {
-              const element = arrayTemporalCarrito[index];
-              if(data.producto["_id"] == element.producto["_id"]){
-                productoEnCarrito = true;
-              }
-
-            }
-            if (productoEnCarrito != true){
-              let arr_carrito = JSON.parse(ls_carrito_guest);
-              localStorage.removeItem('cart');
-              arr_carrito.push(data);
-              console.log(arr_carrito[0].producto["_id"]);
-              localStorage.setItem('cart',JSON.stringify(arr_carrito));
-              console.log("else");
-              console.log(arr_carrito);
-              iziToast.show({
-                title: 'SUCCESS',
-                titleColor: '#1DC74C',
-                color: '#FFF',
-                class: 'text-success',
-                position: 'topRight',
-                message: 'Se agregó el producto a tu carrito.'
-            });
+    this.btn_cart =true;
     
-            this.obj_variedad_select= {
-              id: '',
-              stock: 0,
-              variedad: ''
-            }
-            this.carrito_data.cantidad = 0;
-            this.select_variedad_lbl = '';
-            this.socket.emit('add-carrito-add',{data:true});
-            }
-            else{
-              iziToast.show({
-                title: 'ERROR',
-                titleColor: '#FF0000',
-                color: '#FFF',
-                class: 'text-danger',
-                position: 'topRight',
-                message: 'Producto Ingresado previamente en el carrito'
-            });
-            }
-            
-          }
-  
-          
-        }else{
-          iziToast.show({
-              title: 'ERROR',
-              titleColor: '#FF0000',
-              color: '#FFF',
-              class: 'text-danger',
-              position: 'topRight',
-              message: 'La cantidad máxima del producto es.' + this.obj_variedad_select.stock
-          });
+    this._guestService.agregar_carrito_cliente(data,this.token).subscribe(response=>{
+        if(response.data == undefined){
+          this.btn_cart =false;
+          MessageBox.messageError('Producto Agregado Anteriormente');
+          return;
         }
-      }else{
-        iziToast.show({
-            title: 'ERROR',
-            titleColor: '#FF0000',
-            color: '#FFF',
-            class: 'text-danger',
-            position: 'topRight',
-            message: 'Ingrese una cantidad valida.'
-        });
+
+        MessageBox.messageSuccess('Se agregó el producto al carrito.');
+
+        this.socket.emit('add-carrito-add',{data:true});
+        this.btn_cart =false;
       }
+    );
+  }
+
+  agregar_producto_guest(){
+    if(!this.obj_variedad_select.variedad){MessageBox.messageError('Seleccione una talla de producto.'); return;}
+    if(this.carrito_data.cantidad < 1) {MessageBox.messageError('Ingrese una cantidad valida.'); return;}
+    if(!(this.carrito_data.cantidad <= this.obj_variedad_select.stock)) {MessageBox.messageError('La cantidad máxima del producto es.' + this.obj_variedad_select.stock); return;}
+
+    let data = {
+      producto: this.producto,
+      variedad: this.obj_variedad_select,
+      cantidad: this.carrito_data.cantidad,
+    }
+    let ls_carrito_guest = localStorage.getItem('cart');
+    
+    if(ls_carrito_guest == null){
+      let arr_carrito = [];
+      arr_carrito.push(data);
+      localStorage.setItem('cart',JSON.stringify(arr_carrito));
+
+      MessageBox.messageSuccess('Se agregó el producto a tu carrito.');
+
+      this.obj_variedad_select = {
+        id: '',
+        stock: 0,
+        variedad: ''
+      }
+
+      this.carrito_data.cantidad = 0;
+      this.select_variedad_lbl = '';
+      this.socket.emit('add-carrito-add',{data:true});
+
     }else{
-      iziToast.show({
-          title: 'ERROR',
-          titleColor: '#FF0000',
-          color: '#FFF',
-          class: 'text-danger',
-          position: 'topRight',
-          message: 'Seleccione una variedad de producto.'
-      });
+      let productoEnCarrito = false;
+      let arrayTemporalCarrito = JSON.parse(ls_carrito_guest);
+      for (let index = 0; index < arrayTemporalCarrito.length; index++) {
+        const element = arrayTemporalCarrito[index];
+        productoEnCarrito = data.producto["_id"] == element.producto["_id"];
+      }
+
+      if(productoEnCarrito) {MessageBox.messageError('Producto Ingresado previamente en el carrito'); return;}
+
+      let arr_carrito = JSON.parse(ls_carrito_guest);
+      localStorage.removeItem('cart');
+      arr_carrito.push(data);
+      console.log(arr_carrito[0].producto["_id"]);
+      localStorage.setItem('cart',JSON.stringify(arr_carrito));
+      console.log("else");
+      console.log(arr_carrito);
+
+      MessageBox.messageSuccess('Se agregó el producto a tu carrito.');
+
+      this.obj_variedad_select= {
+        id: '',
+        stock: 0,
+        variedad: ''
+      }
+
+      this.carrito_data.cantidad = 0;
+      this.select_variedad_lbl = '';
+      this.socket.emit('add-carrito-add',{data:true});
     }
   }
 
