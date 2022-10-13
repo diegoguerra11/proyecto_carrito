@@ -1,4 +1,4 @@
-
+<!-- 
   <div class="sidebar-sticky" data-sidebar-sticky-options='{
     "topSpacing": 120,
     "minWidth": 991
@@ -41,4 +41,21 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item" [routerLink]="['/cuenta/perfil']" routerLinkActive="active">
+      <a [routerLink]="['/cuenta/perfil']">Mi perfil</a>
+    </li>
+    <li class="breadcrumb-item" [routerLink]="['/cuenta/direcciones']" routerLinkActive="active">
+      <a [routerLink]="['/cuenta/direcciones']">Dirección</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="#">Mis pedidos</a>
+    </li>
+    <li class="breadcrumb-item">
+      <a href="#">Mis reseñas</a>
+    </li>
+  </ol>
+</nav>

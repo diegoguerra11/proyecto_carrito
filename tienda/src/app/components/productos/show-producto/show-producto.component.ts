@@ -177,9 +177,9 @@ export class ShowProductoComponent implements OnInit {
 
 
   agregar_producto(){
-    if(this.obj_variedad_select.variedad) {MessageBox.messageError('Seleccione una talla de producto'); return;}
+    if(!this.obj_variedad_select.variedad) {MessageBox.messageError('Seleccione una talla de producto'); return;}
     if(this.carrito_data.cantidad < 1) {MessageBox.messageError('Ingrese una cantidad válida por favor.'); return;}
-    if(!(this.carrito_data.cantidad <= this.obj_variedad_select.stock)) {MessageBox.messageError('La cantidad máxima del producto es.' + this.obj_variedad_select.stock); return;}
+    if(this.carrito_data.cantidad >= this.obj_variedad_select.stock) {MessageBox.messageError('La cantidad máxima del producto es.' + this.obj_variedad_select.stock); return;}
 
     let data = {
       producto: this.producto._id,

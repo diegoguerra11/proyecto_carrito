@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ClienteService } from 'src/app/services/cliente.service';
+import { MessageBox } from '../../../../../../admin/src/app/utils/MessageBox';
+import { ValidatonsCliente } from '../../../validations/validationsCliente';
 
 declare var iziToast:any;
 declare var $:any;
@@ -35,32 +37,13 @@ export class PerfilComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  actualizar(actualizarForm:any){
-    if (actualizarForm.valid) {
-      this.cliente.password = $('#input_password').val();
-      this._clienteService.actualizar_perfil_cliente_guest(this.id,this.cliente,this.token).subscribe(
-        response=>{
-          iziToast.show({
-              title: 'SUCCESS',
-              titleColor: '#1DC74C',
-              color: '#FFF',
-              class: 'text-success',
-              position: 'topRight',
-              message: 'Se actualizo su perfil correctamente.'
-          });
-        }
-      );
-      
-    } else {
-      iziToast.show({
-        title: 'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'Los datos del formulario no son validos'
-    });
-    }
-  }
+  actualizar(actualizarForm:any){ 
+    if(!ValidatonsCliente.actualizarCliente(actualizarForm.form.value)){return;}
 
+    this.cliente.password = $('#input_password').val();
+    
+    this._clienteService.actualizar_perfil_cliente_guest(this.id,this.cliente,this.token).subscribe(
+      response=>{return MessageBox.messageSuccess('Se actualizo su perfil correctamente.');}
+    );
+  }
 }

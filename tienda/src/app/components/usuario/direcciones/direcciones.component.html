@@ -1,0 +1,36 @@
+<app-nav></app-nav>
+
+<main  class="cs-page-wrapper">
+    <!-- Breadcrumb -->
+    <nav class="bg-secondary mb-3" aria-label="breadcrumb">
+        <div class="container">
+          <ol class="breadcrumb breadcrumb-alt mb-0">
+            <li class="breadcrumb-item">
+              <a [routerLink]="['/']" ><i class="cxi-home"></i></a>
+            </li>
+            
+            <li class="breadcrumb-item active" aria-current="page">Mis direcciones</li>
+          </ol>
+        </div>
+    </nav>
+
+<!-- Page container -->
+<section class="container pt-3 pt-lg-4 pb-5 pb-lg-6">
+  
+  <div class="col align-item-center mb-4 pb-1 pb-sm-3">
+    <div class="row justify-content-center">
+      <h1 class="h1">Mi Cuenta</h1>
+    </div>
+    <div class="row justify-content-center">
+      <app-siderbar></app-siderbar>    <!-- Account menu-->
+    </div>
+  </div>
+
+  <div class="col ml-auto">
+    <div class="row pb-2 pb-lg-0 justify-content-center align-item-center">
+      <!-- Content -->
+      </div>
+    </div>
+  </section>
+
+</main>
