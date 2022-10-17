@@ -13,6 +13,8 @@ const registro_cliente = async function(req,res){
         if(!data.password){return res.status(200).send({message: 'El campo contraseña es obligatorio', data: undefined});}
 
         var existe_correo = await Cliente.findOne({email: data.email});
+        
+        console.log(data.email);
         if(existe_correo){return res.status(200).send({message: 'El correo ya existe en la base de datos', data: undefined});}
         /*Termina validaciones*/
 
@@ -26,7 +28,7 @@ const registro_cliente = async function(req,res){
         res.status(500).send({message: 'Error inesperado en el servidor'});
     }
 }
-
+ 
 const login_cliente = async function(req,res){
     try {
         var data = req.body;
@@ -139,7 +141,8 @@ const actualizar_cliente_admin = async function(req,res){
                 email: data.email,
                 telefono:data.telefono,
                 f_nacimiento: data.f_nacimiento,
-                dni : data.dni,
+                numeroDocumento: data.numeroDocumento,
+                tipoDocumento: data.tipoDocumento,
                 genero: data.genero
             })
             res.status(200).send({data:reg});
@@ -200,7 +203,8 @@ const actualizar_perfil_cliente_guest = async function(req,res){
                     apellidos: data.apellidos,
                     telefono: data.telefono,
                     f_nacimiento: data.f_nacimiento,
-                    dni: data.dni,
+                    numeroDocumento: data.numeroDocumento,
+                    tipoDocumento: data.tipoDocumento,
                     genero: data.genero,
                     pais: data.pais,
                     password: hash,
@@ -215,7 +219,8 @@ const actualizar_perfil_cliente_guest = async function(req,res){
                 apellidos: data.apellidos,
                 telefono: data.telefono,
                 f_nacimiento: data.f_nacimiento,
-                dni: data.dni,
+                numeroDocumento: data.numeroDocumento,
+                tipoDocumento: data.tipoDocumento,
                 genero: data.genero,
                 pais: data.pais,
             });

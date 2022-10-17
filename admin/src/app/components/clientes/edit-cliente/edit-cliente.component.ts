@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ClienteService } from '../../../services/cliente.service';
 import { AdminService } from '../../../services/admin.service';
+import { ValidatonsCliente } from 'src/app/validations/validationsCliente';
+import { MessageBox } from 'src/app/utils/MessageBox';
 
 declare var iziToast;
 
@@ -53,18 +55,13 @@ export class EditClienteComponent implements OnInit {
 
   actualizar(updateForm){
     if (updateForm.valid) {
+      if(!ValidatonsCliente.verificarCliente(updateForm.form.value)){return;}
       this.load_btn = true;
       this._clienteService.actualizar_cliente_admin(this.id,this.cliente,this.token).subscribe(
         response => {
-          console.log(response);          
-          iziToast.show({
-            title:'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Se actualizo correctamente el nuevo cliente'
-          });
+          console.log(response);   
+          MessageBox.messageSuccess("Cliente Actualizado correctamente");       
+         
 
           this.load_btn = false;
 
@@ -75,14 +72,8 @@ export class EditClienteComponent implements OnInit {
         }
       );
     } else {
-      iziToast.show({
-        title:'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'Los datos del formulario no son validos'
-      });
+      MessageBox.messageError("Debe completar todos los campos");
+      
 }
   }
 

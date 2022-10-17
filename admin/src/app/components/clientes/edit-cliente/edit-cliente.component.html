@@ -48,10 +48,21 @@
                                 <label for="validationCustom01" class="form-label">Fecha nacimiento</label>
                                 <input class="form-control" type="date" required name="f_nacimiento" [(ngModel)]="cliente.f_nacimiento">
                             </div>
-                            <div class="col-md-4 form-group">
-                                <label for="validationCustom01" class="form-label">DNI</label>
-                                <input class="form-control" type="number" placeholder="DNI"  required name="dni" [(ngModel)]="cliente.dni">
-                            </div>
+                            <div class="col-md-4">
+                                <label for="validationCustom01" class="form-label">Tipo de Documento</label>
+                                <select  name="tipoDocumento" required [(ngModel)]="cliente.tipoDocumento"   class="form-control custom-select" >
+                                  <option value="" selected disabled>Seleccionar</option>
+                                  <option value="dni">DNI</option>
+                                  <option value="carnetExtranjeria">
+                                    Carnet de Extranjería
+                                  </option>
+                                  <option value="pasaporte">Pasaporte</option>
+                                </select>
+                              </div>
+                              <div class="col-md-4">
+                                <label for="validationCustom01" class="form-label">Número de Documento</label>
+                                <input  type="text" required class="form-control form-control-lg"  name="numeroDocumento"  [(ngModel)]="cliente.numeroDocumento" placeholder="Número de Documento"   />
+                              </div>
     
                             <div class="col-md-4">
                                 <label for="validationCustom01" class="form-label">Genero</label>

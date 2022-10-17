@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ClienteService } from '../../../services/cliente.service';
 import { AdminService } from '../../../services/admin.service';
 import { Router } from '@angular/router';
-declare var iziToast;
+import { ValidatonsCliente } from 'src/app/validations/validationsCliente';
+import { MessageBox } from 'src/app/utils/MessageBox';
+
 
 @Component({
   selector: 'app-create-cliente',
@@ -30,20 +32,14 @@ export class CreateClienteComponent implements OnInit {
 
   registro(registroForm){
     if(registroForm.valid){
+      if(!ValidatonsCliente.verificarCliente(registroForm.form.value)){return;}
       console.log(this.cliente);
       this.load_btn = true;
       this._clienteService.registro_cliente_admin(this.cliente,this.token).subscribe(
         response =>{
           console.log(response);
-          iziToast.show({
-            title:'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Se registro correctamente el nuevo cliente'
-          });
-
+          MessageBox.messageSuccess("Cliente registrado satisfactoriamente");
+      
           this.cliente ={
             genero: '',
             nombres: '',
@@ -64,14 +60,8 @@ export class CreateClienteComponent implements OnInit {
       );
 
     }else{
-      iziToast.show({
-        title:'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'Los datos del formulario no son validos'
-      });
+      MessageBox.messageError("Debe completar todos los campos");
+      
     }
   }
 

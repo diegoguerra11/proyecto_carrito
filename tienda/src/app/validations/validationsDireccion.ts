@@ -6,7 +6,7 @@ export class ValidationsDireccion {
         
         
         if(!form.numeroDocumento.match(numerico)) {
-            MessageBox.messageError('El campo DNI debe ser numérico');
+            MessageBox.messageError('El campo Número de Documento debe ser numérico');
             return false;
         }
 
