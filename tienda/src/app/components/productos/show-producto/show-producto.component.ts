@@ -147,9 +147,18 @@ export class ShowProductoComponent implements OnInit {
 
 
   agregar_producto(){
+    let numerico = /^[0-9]+$/;
+    
+    
     if(!this.obj_variedad_select.variedad) {MessageBox.messageError('Seleccione una talla de producto'); return;}
-    if(this.carrito_data.cantidad < 1) {MessageBox.messageError('Ingrese una cantidad válida por favor.'); return;}
-    if(this.carrito_data.cantidad >= this.obj_variedad_select.stock) {MessageBox.messageError('La cantidad máxima del producto es.' + this.obj_variedad_select.stock); return;}
+
+    if(this.carrito_data.cantidad.match(numerico)) {
+      MessageBox.messageError('El campo Cantidad debe ser numérico');
+      return;
+    }
+    if(this.carrito_data.cantidad < 1) {MessageBox.messageError('Ingrese una cantidad válida'); return;}
+
+    if(this.carrito_data.cantidad >= this.obj_variedad_select.stock) {MessageBox.messageError('La cantidad máxima del producto es ' + this.obj_variedad_select.stock); return;}
 
     let data = {
       producto: this.producto._id,

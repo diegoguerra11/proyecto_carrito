@@ -96,6 +96,7 @@ export class CarritoComponent implements OnInit {
       }
     }
     this.subtotal_const = this.subtotal;
+    this.total_pagar = this.subtotal_const;
   }
 
   eliminar_item_guest(item:any){
@@ -123,6 +124,7 @@ export class CarritoComponent implements OnInit {
       this.subtotal = this.subtotal -monto;
     }
     this.subtotal_const = this.subtotal;
+    this.total_pagar = this.subtotal_const;
   }
 
   eliminar_item(id:any){
