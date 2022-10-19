@@ -56,7 +56,8 @@
 
             <!-- Ordering form -->
             <form class="row">
-              <div class="col-sm-8 order-sm-1 order-2">
+
+              <div class="col-sm-8 order-sm-3 order-3 mt-3">
                 <div class="form-group">
                   <label for="size">{{producto.titulo_variedad}}</label>
                   <select class="form-control custom-select" id="size" name="variedad" [(ngModel)]="select_variedad_lbl" (change)="select_variedad()">
@@ -66,26 +67,23 @@
                 </div>
               </div>
             
-              <div class="col-sm-4 order-sm-2 order-1 text-sm-right">
-                
-              </div>
-              <div class="col-lg-2 col-4 order-lg-3 order-3">
+              <div class="col-sm-2 col-4 order-sm-4 order-4 mt-3">
                 <div class="form-group">
-                  <input type="text" class="form-control form-control-lg"  placeholder="Cantidad" name="cantidad"  [(ngModel)]="carrito_data.cantidad"/>
+                  <label for="cantidad">Cantidad</label>
+                  <input type="text" class="form-control"  placeholder="Cantidad" name="cantidad"  [(ngModel)]="carrito_data.cantidad"/>
                 </div>
               </div>
 
+              <div class="col-lg-6 order-lg-1 order-1">
                 <ng-container *ngIf="user_lc != undefined">
-                  <div class="col-lg-6 order-lg-4 order-4">
-                    <button *ngIf="!btn_cart" class="btn btn-block btn-primary" (click)="agregar_producto()">
-                      <i class="cxi-cart mr-2"></i>
-                      Añadir al Carrito
-                    </button>
-                    <button *ngIf="btn_cart" type="button" class="btn btn-primary" disabled>
-                      <span class="spinner-grow spinner-grow-sm mr-2" role="status" aria-hidden="true"></span>
-                      Agregando...
-                    </button>
-                  </div>
+                  <button *ngIf="!btn_cart" class="btn btn-block btn-primary" (click)="agregar_producto()">
+                    <i class="cxi-cart mr-2"></i>
+                    Añadir al Carrito
+                  </button>
+                  <button *ngIf="btn_cart" type="button" class="btn btn-primary" disabled>
+                    <span class="spinner-grow spinner-grow-sm mr-2" role="status" aria-hidden="true"></span>
+                    Agregando...
+                  </button>
                 </ng-container>
                 <ng-container *ngIf="user_lc == undefined">
                   <button *ngIf="!btn_cart" class="btn btn-block btn-primary" (click)="agregar_producto_guest()">
@@ -93,34 +91,10 @@
                     Añadir al Carrito
                   </button>
                 </ng-container>
-  
-
-              <div class="col-9 order-sm-1 order-2 mt-2">
-                <div class="form-group">
-                  <label for="size">{{producto.titulo_variedad}}</label>
-                  <select class="form-control custom-select" id="size" name="variedad" [(ngModel)]="select_variedad_lbl" (change)="select_variedad()">
-                    <option value="" selected disabled >Seleccionar</option>
-                    <option value="{{item.titulo}}" *ngFor="let item of producto.variedades">{{item.titulo}}</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="col-3 order-lg-3 order-3 mt-2">
-                <div class="form-group">
-                  <label for="cantidad">Cantidad</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="cantidad"
-                    name="cantidad"
-                    [(ngModel)]="carrito_data.cantidad"
-                    placeholder="cantidad"
-                    required
-                  />
-                </div>
               </div>
               
-              <div class="col-lg-4 col-8 order-lg-5 order-2">
+              
+              <div class="col-lg-4 col-8 order-lg-2 order-2">
                 <button class="btn btn-block btn-outline-primary px-lg-4">
                   <i class="cxi-heart mr-2"></i>
                   A deseos

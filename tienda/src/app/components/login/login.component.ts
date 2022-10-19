@@ -29,25 +29,27 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {}
 
   login(loginForm:any) {
-    if(!loginForm.valid) {MessageBox.messageError('Los datos del formulario no son validos'); return;}
+    console.log(localStorage['cart']);
+    // if(!loginForm.valid) {MessageBox.messageError('Los datos del formulario no son validos'); return;}
 
-    let data = {
-      email: this.user.email,
-      password: this.user.password
-    }
+    // let data = {
+    //   email: this.user.email,
+    //   password: this.user.password
+    // }
     
-    this._clienteService.login_cliente(data).subscribe(
-      response=>{ 
-        if(response.data == undefined){MessageBox.messageError(response.message); return;}
+    // this._clienteService.login_cliente(data).subscribe(
+    //   response=>{ 
+    //     if(response.data == undefined){MessageBox.messageError(response.message); return;}
 
-        this.usuario = response.data;
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('_id', response.data._id);
+    //     this.usuario = response.data;
+    //     localStorage.setItem('token', response.token);
+    //     localStorage.setItem('_id', response.data._id);
+        
 
-        this._router.navigate(['/']);
-      },
-      error=>{console.log(error);}
-    );
+    //     this._router.navigate(['/']);
+    //   },
+    //   error=>{console.log(error);}
+    // );
   }
 
   registrar(loginForm:any) {
