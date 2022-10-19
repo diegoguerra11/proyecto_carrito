@@ -1,2 +1,3 @@
 # TP_Carrito
-Carrito Invitado
+Proyecto del curso de **Taller de proyecto** del ciclo **2022-2**
+
