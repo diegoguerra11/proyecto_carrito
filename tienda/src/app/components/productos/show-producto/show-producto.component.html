@@ -25,98 +25,40 @@
         <div class="row">
           <div class="col-md-6 mb-md-0 mb-4">
 
-           <!-- Product gallery -->
-        <div class="cs-carousel cs-gallery cs-product-gallery mx-auto" style="max-width: 570px;">
-            <div class="cs-carousel-inner" data-carousel-options=''>
-  
-              <!-- Product gallery item -->
-              <a class="cs-gallery-item" *ngFor="let item of producto.galeria; let indice = index" href="{{url +'obtener_portada/'+item.imagen}}" data-sub-html='<h6 class="text-light">Gallery image caption #1</h6>'>
-                <img class="rounded" [src]="url +'obtener_portada/'+item.imagen" alt="Carousel image">
-                <span class="cs-gallery-caption">Imagen #{{indice+1}}</span>
-              </a>
-  
+            <!-- Product gallery -->
+            <div class="cs-carousel cs-gallery cs-product-gallery mx-auto" style="max-width: 570px;">
+              <div class="cs-carousel-inner" data-carousel-options=''>
+    
+                <!-- Product gallery item -->
+                <a class="cs-gallery-item" *ngFor="let item of producto.galeria; let indice = index" href="{{url +'obtener_portada/'+item.imagen}}" data-sub-html='<h6 class="text-light">Gallery image caption #1</h6>'>
+                  <img class="rounded" [src]="url +'obtener_portada/'+item.imagen" alt="Carousel image">
+                  <span class="cs-gallery-caption">Imagen #{{indice+1}}</span>
+                </a>
+              </div>
+    
+              <!-- Product gallery thumbnails -->
+              <div class="cs-thumbnails" id="cs-thumbnails">
+                <button type="button" *ngFor="let item of producto.galeria; let indice = index" [attr.data-nav]="indice">
+                  <img [src]="url +'obtener_portada/'+item.imagen" alt="Thumbnail">
+                </button>
+              </div>
               
             </div>
-  
-            <!-- Product gallery thumbnails -->
-            <div class="cs-thumbnails" id="cs-thumbnails">
-              <button type="button" *ngFor="let item of producto.galeria; let indice = index" [attr.data-nav]="indice">
-                <img [src]="url +'obtener_portada/'+item.imagen" alt="Thumbnail">
-              </button>
-             
-            </div>
           </div>
-        </div>
-        <div class="col-md-6 pl-xl-5">
-          <div class="d-sm-flex align-items-center justify-content-between mb-4">
-  
 
+          <div class="col-md-6 pl-xl-5">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
               <!-- Price -->
               <div class="d-flex align-items-center mb-sm-0 mb-4">
                 <span class="h3 d-inline-block mb-0 text-danger">S/.{{producto.precio}}</span>
-              </div>
-
-              <!-- Rating -->
-              <div class="text-sm-right">
-                
               </div>
             </div>
 
             <!-- Ordering form -->
             <form class="row">
-              <!-- <div class="col-12">
-                <div class="form-group">
-                  <label for="pink">Color</label>
-                  <div class="d-flex align-items-middle">
-                    <div class="custom-control cs-custom-color-option cs-custom-color-option-sm custom-control-inline mr-2 mb-2">
-                      <input class="custom-control-input" type="radio" name="color" id="pink" value="Pink" data-label="colorOptionText" checked>
-                      <label class="cs-custom-option-label" for="pink">
-                        <span class="cs-color-swatch" style="background-color: #e0aea2;"></span>
-                      </label>
-                    </div>
-                    <div class="custom-control cs-custom-color-option cs-custom-color-option-sm custom-control-inline mr-2 mb-2">
-                      <input class="custom-control-input" type="radio" name="color" id="blue" value="Blue" data-label="colorOptionText">
-                      <label class="cs-custom-option-label" for="blue">
-                        <span class="cs-color-swatch" style="background-color: #c0dded;"></span>
-                      </label>
-                    </div>
-                    <div class="custom-control cs-custom-color-option cs-custom-color-option-sm custom-control-inline mr-2 mb-2">
-                      <input class="custom-control-input" type="radio" name="color" id="yellow" value="Yellow" data-label="colorOptionText">
-                      <label class="cs-custom-option-label" for="yellow">
-                        <span class="cs-color-swatch" style="background-color: #fede41;"></span>
-                      </label>
-                    </div>
-                    <span class="d-inline-block pl-2 text-muted" id="colorOptionText">Pink</span>
-                  </div>
-                </div>
-              </div> -->
-              <div class="col-sm-8 order-sm-1 order-2">
-                <div class="form-group">
-                  <label for="size">{{producto.titulo_variedad}}</label>
-                  <select class="form-control custom-select" id="size" name="variedad" [(ngModel)]="select_variedad_lbl" (change)="select_variedad()">
-                    <option value="" selected disabled >Seleccionar</option>
-                    <option value="{{item.titulo}}" *ngFor="let item of producto.variedades">{{item.titulo}}</option>
-                  </select>
-                </div>
-              </div>
-            
-              <div class="col-sm-4 order-sm-2 order-1 text-sm-right">
-                
-              </div>
-              <div class="col-lg-2 col-4 order-lg-3 order-3">
-                <div class="form-group">
-                  <select class="form-control custom-select" id="select-input" name="cantidad" [(ngModel)]="carrito_data.cantidad">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                  </select>
-                </div>
-              </div>
 
-              <ng-container *ngIf="user_lc != undefined">
-                <div class="col-lg-6 order-lg-4 order-4">
+              <div class="col">
+                <ng-container *ngIf="user_lc != undefined">
                   <button *ngIf="!btn_cart" class="btn btn-block btn-primary" (click)="agregar_producto()">
                     <i class="cxi-cart mr-2"></i>
                     Añadir al Carrito
@@ -125,15 +67,40 @@
                     <span class="spinner-grow spinner-grow-sm mr-2" role="status" aria-hidden="true"></span>
                     Agregando...
                   </button>
-                </div>
-              </ng-container>
-              <ng-container *ngIf="user_lc == undefined">
-                <button *ngIf="!btn_cart" class="btn btn-block btn-primary" (click)="agregar_producto_guest()">
-                  <i class="cxi-cart mr-2"></i>
-                  Añadir al Carrito
-                </button>
-              </ng-container>
+                </ng-container>
+                <ng-container *ngIf="user_lc == undefined">
+                  <button *ngIf="!btn_cart" class="btn btn-block btn-primary" (click)="agregar_producto_guest()">
+                    <i class="cxi-cart mr-2"></i>
+                    Añadir al Carrito
+                  </button>
+                </ng-container>
+  
+              </div>
 
+              <div class="col-9 order-sm-1 order-2 mt-2">
+                <div class="form-group">
+                  <label for="size">{{producto.titulo_variedad}}</label>
+                  <select class="form-control custom-select" id="size" name="variedad" [(ngModel)]="select_variedad_lbl" (change)="select_variedad()">
+                    <option value="" selected disabled >Seleccionar</option>
+                    <option value="{{item.titulo}}" *ngFor="let item of producto.variedades">{{item.titulo}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-3 order-lg-3 order-3 mt-2">
+                <div class="form-group">
+                  <label for="cantidad">Cantidad</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="cantidad"
+                    name="cantidad"
+                    [(ngModel)]="carrito_data.cantidad"
+                    placeholder="cantidad"
+                    required
+                  />
+                </div>
+              </div>
               
               <div class="col-lg-4 col-8 order-lg-5 order-2">
                 <button class="btn btn-block btn-outline-primary px-lg-4">
@@ -146,7 +113,6 @@
             <!-- Terms -->
             <!-- Accordion made of cards -->
             <div class="accordion-alt mb-4" id="productTerms">
-
               <!-- Card -->
               <div class="card border-bottom">
                 <div class="card-header" id="delivery-card">
@@ -157,9 +123,7 @@
                   </h6>
                 </div>
               </div>
-              
               <!-- Card -->
-              
             </div>
 
             <!-- Share -->
@@ -385,6 +349,4 @@
           </div>
         </div>
       </div>
-
-
 </main>
