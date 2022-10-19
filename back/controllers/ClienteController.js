@@ -22,7 +22,7 @@ const registro_cliente = async function(req,res){
             if(!hash){throw ex;}
             data.password = hash;
             var reg = await Cliente.create(data);
-            res.status(200).send({message: reg});
+            res.status(200).send({data: reg});
         });
     } catch(ex) {
         res.status(500).send({message: 'Error inesperado en el servidor'});

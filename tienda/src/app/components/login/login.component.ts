@@ -53,42 +53,39 @@ export class LoginComponent implements OnInit {
   registrar(loginForm:any) {
     if(!loginForm.valid) {MessageBox.messageError('Debe completar todos los campos'); return;}
     if(!ValidatonsCliente.registrarCliente(loginForm.form.value)){return;}
-
+    
       this._clienteService.registro_cliente(this.cliente).subscribe(
         response =>{
-          if(response.data != undefined){
-            MessageBox.messageSuccess("Cliente registrado satisfactoriamente");
-        
-            let data = {
-              email: this.cliente.email,
-              password: this.cliente.password
-            }
-            
-            this._clienteService.login_cliente(data).subscribe(
-              response=>{ 
-                if(response.data == undefined){MessageBox.messageError(response.message); return;}
-        
-                this.usuario = response.data;
-                localStorage.setItem('token', response.token);
-                localStorage.setItem('_id', response.data._id);
-                this._router.navigate(['/cuenta/perfil']);
-              },
-              error=>{console.log(error);}
-            );
+          if(response.data == undefined) {MessageBox.messageError("Cuenta existente"); return;}
 
-            this.cliente ={
-              genero: '',
-              nombres: '',
-              apellidos: '',
-              f_nacimiento: '',
-              telefono: '',
-              dni: '',
-              email: ''
-            }
+          let data = {
+            email: this.cliente.email,
+            password: this.cliente.password
           }
-          else{
-            MessageBox.messageError("Cuenta existente");
+          
+          this._clienteService.login_cliente(data).subscribe(
+            response=>{ 
+              if(response.data == undefined){MessageBox.messageError(response.message); return;}
+      
+              this.usuario = response.data;
+              localStorage.setItem('token', response.token);
+              localStorage.setItem('_id', response.data._id);
+              this._router.navigate(['/cuenta/perfil']);
+            },
+            error=>{console.log(error);}
+          );
+
+          this.cliente ={
+            genero: '',
+            nombres: '',
+            apellidos: '',
+            f_nacimiento: '',
+            telefono: '',
+            dni: '',
+            email: ''
           }
+
+          MessageBox.messageSuccess("Cliente registrado satisfactoriamente");
         },
         error=>{
           console.log(error);
