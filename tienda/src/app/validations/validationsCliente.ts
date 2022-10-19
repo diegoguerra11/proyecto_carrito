@@ -1,4 +1,3 @@
-import { formatCurrency } from '@angular/common';
 import { MessageBox } from '../Utils/MessageBox';
 
 export class ValidatonsCliente {

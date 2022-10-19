@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
       password: this.user.password
     }
     
-    let productos = JSON.parse(localStorage['cart']);
+    let productos = localStorage['cart'] ? JSON.parse(localStorage['cart']) : undefined;
 
     this._clienteService.login_cliente(data).subscribe(
       response=>{ 
@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
             localStorage.getItem('token')
           );
         }
-
+        console.log(productos);
         this._router.navigate(['/']);
       },
       error=>{console.log(error);}

@@ -5,6 +5,8 @@ import { GuestService } from '../../../services/guest.service';
 import { ClienteService } from '../../../services/cliente.service';
 import { io } from "socket.io-client";
 import { MessageBox } from 'src/app/Utils/MessageBox';
+import { isNumber } from '@ng-bootstrap/ng-bootstrap/util/util';
+import { ValidationsProducto } from '../../../validations/validationsProducto';
 
 declare var tns:any;
 declare var lightGallery:any;
@@ -15,8 +17,7 @@ declare var lightGallery:any;
   styleUrls: ['./show-producto.component.css']
 })
 export class ShowProductoComponent implements OnInit {
-  
-  public numerico = /^[0-9]+$/;
+
   public token:any;
   public slug:any;
   public producto:any = {};
@@ -146,16 +147,9 @@ export class ShowProductoComponent implements OnInit {
     }
   }
 
-
   agregar_producto(){
-    if(!this.obj_variedad_select.variedad){return MessageBox.messageError('Seleccione una talla de producto');}
-
-    if(!this.carrito_data.cantidad.toString().match(this.numerico)){return MessageBox.messageError('El campo Cantidad debe ser numérico positivo');}
-   
-    if(this.carrito_data.cantidad < 1){return MessageBox.messageError('Ingrese una cantidad válida');}
-
-    if(this.carrito_data.cantidad >= this.obj_variedad_select.stock){return MessageBox.messageError('La cantidad máxima del producto es ' + this.obj_variedad_select.stock);}
-
+    if(!ValidationsProducto.agregarAcarrito(this.carrito_data, this.obj_variedad_select)) {return;};
+    
     let data = {
       producto: this.producto._id,
       cliente: localStorage.getItem('_id'),
@@ -180,10 +174,7 @@ export class ShowProductoComponent implements OnInit {
   }
 
   agregar_producto_guest(){
-    if(!this.obj_variedad_select.variedad){return MessageBox.messageError('Seleccione una talla de producto.');}
-    if(!this.carrito_data.cantidad.toString().match(this.numerico)) {return MessageBox.messageError('El campo Cantidad debe ser numérico positivo');}
-    if(this.carrito_data.cantidad < 1) {return MessageBox.messageError('Ingrese una cantidad valida.');}
-    if(!(this.carrito_data.cantidad <= this.obj_variedad_select.stock)) {return MessageBox.messageError('La cantidad máxima del producto es.' + this.obj_variedad_select.stock);}
+    if(!ValidationsProducto.agregarAcarrito(this.carrito_data, this.obj_variedad_select)) {return;};
 
     let data = {
       producto: this.producto,
