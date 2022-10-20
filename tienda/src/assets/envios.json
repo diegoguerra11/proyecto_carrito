@@ -1,13 +1,8 @@
 [
     {
-        "titulo": "Envio express",
-        "tiempo": "1 a 2 semanas",
-        "precio": 25
-    },
-    {
-        "titulo": "Envio estandar",
-        "tiempo": "2 a 3 semanas",
-        "precio": 18
+        "titulo": "Envio por Olva",
+        "tiempo": "1 a 3 días",
+        "precio": 20
     },
     {
         "titulo": "Recojo en Tienda",

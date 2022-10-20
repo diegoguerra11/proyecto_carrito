@@ -2,8 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { GLOBAL } from 'src/app/services/GLOBAL';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { io } from "socket.io-client";
+import { GuestService } from 'src/app/services/guest.service';
+import { Router } from '@angular/router';
 
 declare var iziToast:any;
+declare var Cleave:any;
+declare var StickySidebar:any;
+
 
 @Component({
   selector: 'app-carrito',
@@ -11,6 +16,8 @@ declare var iziToast:any;
   styleUrls: ['./carrito.component.css']
 })
 export class CarritoComponent implements OnInit {
+  
+
 
   public idcliente;
   public token;
@@ -25,15 +32,33 @@ export class CarritoComponent implements OnInit {
   public socket = io('http://localhost:4201');
   public currency = 'PEN';
   public subtotal_const = 0;
+  public carrito_load = true;
+
+  public precio_envio = "0";
+  public direccion_principal : any = {};
+  public envios : Array<any>=[];
+  public venta : any = {};
+  public dventa : Array<any> = [];
+  public card_data : any = {};
+  public descuento_activo : any = undefined;
+  public btn_load = false;
 
   constructor(
     private _clienteService: ClienteService,
+    private _guestService:GuestService,
+    private _router:Router
   ) { 
 
     this.idcliente = localStorage.getItem('_id');
+    this.venta.cliente = this.idcliente;
     this.token = localStorage.getItem('token');
     this.url =GLOBAL.url;
+    this._guestService.get_Envios().subscribe(
+      response=>{
+        this.envios = response;
 
+      }
+    );
     if(this.token){
       let obj_lc :any= localStorage.getItem('user_data');
       this.user_lc = JSON.parse(obj_lc);
@@ -51,11 +76,67 @@ export class CarritoComponent implements OnInit {
       }
       
     }
-    
+
   }
 
   ngOnInit(): void {
-   
+
+    this._guestService.obtener_descuento_activo().subscribe(
+      response=>{
+        if(response.data != undefined){
+          this.descuento_activo = response.data[0];
+        }else{
+          this.descuento_activo = undefined;
+        }
+
+      }
+    );
+
+    this.init_Data();
+    
+    setTimeout(()=>{
+      new Cleave('#cc-number', {
+          creditCard: true,
+            onCreditCardTypeChanged: function (type:any) {
+                // update UI ...
+            }
+      });
+
+      new Cleave('#cc-exp-date', {
+          date: true,
+          datePattern: ['m', 'Y']
+      });
+
+      new StickySidebar('.sidebar-sticky', {topSpacing: 20});
+    });
+
+
+
+    this.get_direccion_principal();
+
+    
+  }
+
+  init_Data(){
+    this._clienteService.obtener_carrito_cliente(this.idcliente,this.token).subscribe(
+      response=>{
+        this.carrito_arr = response.data;
+
+        this.carrito_arr.forEach(element => {
+            this.dventa.push({
+              producto: element.producto._id,
+              subtotal: element.producto.precio,
+              variedad: element.variedad,
+              cantidad: element.cantidad,
+              cliente: localStorage.getItem('_id')
+            });
+        });
+        this.carrito_load = false;
+
+        this.calcular_carrito();
+        this.cacular_total('Envio Gratis');
+      }
+    );
   }
 
   obtener_carrito(){
@@ -63,6 +144,79 @@ export class CarritoComponent implements OnInit {
       response=>{
         this.carrito_arr = response.data;
         this.calcular_carrito();
+        
+      }
+    );
+  }
+  get_token_culqi(){
+
+    let month;
+    let year;
+
+    let exp_arr = this.card_data.exp.toString().split('/');
+
+    let data = {
+      "card_number": this.card_data.ncard.toString().replace(/ /g, ""),   
+      "cvv": this.card_data.cvc,      
+      "expiration_month": exp_arr[0],      
+      "expiration_year":  exp_arr[1].toString().substr(0,4),      
+      "email": this.user.email,         
+    }
+    this.btn_load = true;
+
+    this._clienteService.get_token_culqi(data).subscribe(
+      response=>{
+       
+        let charge = {
+          "amount": this.subtotal+'00',
+          "currency_code": "USD",
+          "email": this.user.email,
+          "source_id": response.id,
+        }
+        this._clienteService.get_charge_culqi(charge).subscribe(
+          response=>{
+            this.venta.transaccion = response.id;
+
+            this.venta.detalles = this.dventa;
+            this._clienteService.registro_compra_cliente(this.venta,this.token).subscribe(
+              response=>{
+                this.btn_load = false;
+                this._clienteService.enviar_correo_compra_cliente(response.venta._id,this.token).subscribe(
+                  response=>{
+                    this._router.navigate(['/']);
+                  }
+                );
+
+                
+              }
+            );
+            
+         
+          }
+        );
+        
+      }
+    );
+    
+  }
+
+  get_direccion_principal(){
+   
+    this._clienteService.obtener_direccion_principal_cliente(localStorage.getItem('_id'),this.token).subscribe(
+      
+      response=>{
+        console.log(response.data);
+        if(response.data == undefined){
+          console.log(response.data);
+          console.log("indefinido");
+          this.direccion_principal = undefined;
+          
+        }else{
+          console.log(response.data);
+          this.direccion_principal = response.data;
+          this.venta.direccion = this.direccion_principal._id;
+        }
+        
         
       }
     );
@@ -99,6 +253,15 @@ export class CarritoComponent implements OnInit {
     this.total_pagar = this.subtotal_const;
   }
 
+  cacular_total(envio_titulo:any){
+    this.total_pagar = parseInt(this.subtotal.toString()) + parseInt(this.precio_envio);
+    this.venta.subtotal = this.total_pagar;
+    this.venta.envio_precio = parseInt(this.precio_envio);
+    this.venta.envio_titulo = envio_titulo;
+
+    console.log(this.venta);
+    
+  }
   eliminar_item_guest(item:any){
     this.total_pagar  = 0;
     this.carrito_logout.splice(item._id,1);
@@ -152,5 +315,5 @@ export class CarritoComponent implements OnInit {
       }
     );
   }
-
+  
 }
