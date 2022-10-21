@@ -25,6 +25,10 @@ import { ConfigComponent } from './components/config/config.component';
 import { VariedadProductoComponent } from './components/productos/variedad-producto/variedad-producto.component';
 import { GaleriaProductoComponent } from './components/productos/galeria-producto/galeria-producto.component';
 
+import { CreateVentasComponent } from './components/ventas/create-ventas/create-ventas.component';
+import { IndexVentasComponent } from './components/ventas/index-ventas/index-ventas.component';
+import { ShowVentasComponent } from './components/ventas/show-ventas/show-ventas.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,7 +47,10 @@ import { GaleriaProductoComponent } from './components/productos/galeria-product
     UpdateCuponComponent,
     ConfigComponent,
     VariedadProductoComponent,
-    GaleriaProductoComponent
+    GaleriaProductoComponent,
+    CreateVentasComponent,
+    IndexVentasComponent,
+    ShowVentasComponent
   ],
   imports: [
     BrowserModule,

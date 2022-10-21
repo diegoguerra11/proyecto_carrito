@@ -92,4 +92,24 @@ export class AdminService {
       return this._http.get(this.url+'obtener_config_publico',{headers:headers});
 
     }
+
+    registro_compra_manual_cliente(data:any,token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.post(this.url+'registro_compra_manual_cliente',data,{headers:headers});
+    }
+
+    listar_variedades_productos_admin(token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.get(this.url+'listar_variedades_productos_admin',{headers:headers});
+    }
+
+    obtener_direccion_todos_cliente(id:any,token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.get(this.url+'obtener_direccion_todos_cliente/'+id,{headers:headers});
+    }
+    listar_clientes_tienda(token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.get(this.url + 'listar_clientes_tienda',{headers:headers});
+    }
+  
   }
