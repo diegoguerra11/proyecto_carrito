@@ -54,7 +54,6 @@ export class LoginComponent implements OnInit {
             localStorage.getItem('token')
           );
         }
-
         this._router.navigate(['/']);
       },
       error=>{console.log(error);}

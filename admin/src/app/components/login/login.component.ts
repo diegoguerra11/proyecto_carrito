@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
   login(loginForm){
     if(!loginForm.valid){MessageBox.messageError('Los datos del formulario no son validos'); return;}
 
-    console.log(this.user)
+    //console.log(this.user)
     
     let data={
       email: this.user.email,
@@ -53,9 +53,9 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('token',response.token);
         localStorage.setItem('_id',response.data._id);
 
-        this._router.navigate(['/']);
+        this._router.navigate(['/inicio']);
 
-        console.log(response);
+        //console.log(response);
       },
       error=>{
         console.log(error);

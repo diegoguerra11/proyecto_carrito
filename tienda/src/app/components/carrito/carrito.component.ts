@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter  } from '@angular/core';
 import { GLOBAL } from 'src/app/services/GLOBAL';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { io } from "socket.io-client";
@@ -9,7 +9,6 @@ declare var iziToast:any;
 declare var Cleave:any;
 declare var StickySidebar:any;
 
-
 @Component({
   selector: 'app-carrito',
   templateUrl: './carrito.component.html',
@@ -17,8 +16,6 @@ declare var StickySidebar:any;
 })
 export class CarritoComponent implements OnInit {
   
-
-
   public idcliente;
   public token;
   public user : any = undefined;
@@ -43,40 +40,44 @@ export class CarritoComponent implements OnInit {
   public descuento_activo : any = undefined;
   public btn_load = false;
 
+  // @Output()
+  // cantidad = new EventEmitter<number>();
+
   constructor(
     private _clienteService: ClienteService,
     private _guestService:GuestService,
     private _router:Router
   ) { 
+    this.token = localStorage.getItem('token');
+    
+    if(!this.token){_router.navigate(['/login']);}
 
     this.idcliente = localStorage.getItem('_id');
+
     this.venta.cliente = this.idcliente;
-    this.token = localStorage.getItem('token');
     this.url =GLOBAL.url;
     this._guestService.get_Envios().subscribe(
       response=>{
         this.envios = response;
-
       }
     );
+
     if(this.token){
-      let obj_lc :any= localStorage.getItem('user_data');
+      let obj_lc :any = localStorage.getItem('user_data');
       this.user_lc = JSON.parse(obj_lc);
       this.obtener_carrito();
     }
 
     if(this.user_lc == undefined){
       let ls_cart = localStorage.getItem('cart');
-      console.log(ls_cart);
+
       if(ls_cart != null){
         this.carrito_logout = JSON.parse(ls_cart);
         this.calcular_carrito();
       }else{
         this.carrito_logout = [];
       }
-      
-    }
-
+    } 
   }
 
   ngOnInit(): void {
@@ -92,29 +93,25 @@ export class CarritoComponent implements OnInit {
       }
     );
 
-    this.init_Data();
-    
     setTimeout(()=>{
       new Cleave('#cc-number', {
           creditCard: true,
-            onCreditCardTypeChanged: function (type:any) {
-                // update UI ...
-            }
+          onCreditCardTypeChanged: function (type:any) {
+            // update UI ...
+          }
       });
-
+    
       new Cleave('#cc-exp-date', {
-          date: true,
-          datePattern: ['m', 'Y']
+        date: true,
+        datePattern: ['m', 'Y']
       });
-
+    
       new StickySidebar('.sidebar-sticky', {topSpacing: 20});
     });
 
-
-
-    this.get_direccion_principal();
-
+    this.init_Data();
     
+    this.get_direccion_principal();   
   }
 
   init_Data(){
@@ -148,6 +145,11 @@ export class CarritoComponent implements OnInit {
       }
     );
   }
+
+  // onCantidad() {
+  //   this.obtener_carrito();   
+  // }
+
   get_token_culqi(){
 
     let month;

@@ -32,6 +32,12 @@ const obtener_carrito_cliente = async function(req,res){
     res.status(200).send({data:carrito_cliente});
 }
 
+const actualizar_carrito_cliente = async function(req, res) {
+    if(!req.user){res.status(500).send({message: 'NoAccess'}); return;}
+
+    let id = req.param['']
+}
+
 const eliminar_carrito_cliente = async function(req,res){
     if(!req.user){res.status(500).send({message: 'NoAccess'}); return;}
     
