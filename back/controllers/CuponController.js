@@ -2,7 +2,7 @@ var Cupon = require('../models/cupon');
 
 const registro_cupon_admin = async function (req,res){
             if (req.user) {
-                if (req.user.role == 'admin') {
+                if (req.user.role == 'Admin') {
 
                     let data = req.body;
 
