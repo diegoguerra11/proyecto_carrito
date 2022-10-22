@@ -26,415 +26,149 @@
               <li class="breadcrumb-item active" aria-current="page">Checkout</li>
             </ol>
           </div>
-        </nav>
+      </nav>
 
-        <!-- Page content -->
-        <section class="container pt-3 pt-md-4 pb-3 pb-sm-4 pb-lg-5 mb-4">
-          <div class="row">
+      <!-- Page content -->
+      <section class="container pt-3 pt-md-4 pb-3 pb-sm-4 pb-lg-5 mb-4">
+        <div class="row">
 
-            <!-- Checkout content -->
-            <div class="col-lg-8 pr-lg-6">
-              <div class="d-flex align-items-center justify-content-between pb-2 mb-4">
-                <h1 class="mb-0">Checkout</h1>
-                <a [routerLink]="['/productos']" routerLinkActive="router-link-active" ><strong>Regresar a la tienda</strong></a>
+          <!-- Checkout content -->
+          <div class="col-lg-8 pr-lg-6">
+            <div class="d-flex align-items-center justify-content-between pb-2 mb-4">
+              <h1 class="mb-0">Checkout</h1>
+              <a [routerLink]="['/productos']" routerLinkActive="router-link-active" ><strong>Regresar a la tienda</strong></a>
+            </div>
+
+            <hr class="border-top-0 border-bottom pt-2 mb-4">
+
+            <!-- Order review -->
+            <h2 class="h4 mb-4">1. Detalles de orden</h2>
+            <div class="bg-secondary rounded mb-5">
+              <!-- Item -->
+              <div class="media px-2 px-sm-4 py-4 border-bottom" *ngFor="let item of carrito_arr">
+                <a [routerLink]="['/productos', item.producto.slug]" style="min-width: 80px;">
+                  <img [src]="url +'obtener_portada/'+item.producto.portada" width="80" alt="Product thumb">
+                </a>
+                <div class="media-body w-100 pl-3">
+                  <div class="d-sm-flex">
+                    <div class="pr-sm-3 w-100" style="max-width: 16rem;">
+                      <h3 class="font-size-sm mb-3">
+                        <a [routerLink]="['/productos', item.producto.slug]"   class="nav-link font-weight-bold">{{item.producto.titulo}}</a>
+                      </h3>
+                      <ul class="list-unstyled font-size-xs mt-n2 mb-2">
+                        <li class="mb-0"><span class="text-muted">{{item.producto.titulo_variedad}}: </span>{{item.variedad}}</li>
+                      </ul>
+                    </div>
+                    <div class="d-flex pr-sm-3">
+                      <input type="number" class="form-control form-control-sm bg-light mr-3" readonly style="width: 4.5rem;" value="{{item.cantidad}}">
+                    <div class="text-nowrap pt-2">
+                      <!-- <strong class="text-danger">$15.00</strong> -->
+                      <span style="font-size: 1.2rem !important;" class="font-size-xs text-muted">S/.{{item.producto.precio}}</span>
+                    </div>
+                    </div>
+                    <div class="d-flex align-items-center flex-sm-column text-sm-center ml-sm-auto pt-3 pt-sm-0">
+                      <button class="btn btn-outline-primary btn-sm mr-2 mr-sm-0"(click)="eliminar_item(item._id)">Eliminar</button>
+                      
+                    </div>
+                  </div>
+                </div>
               </div>
+              <div class="px-3 px-sm-4 py-4 text-right">
+                <span class="text-muted">Subtotal:<strong class="text-dark font-size-lg ml-2">S/.{{subtotal}}</strong></span>
+              </div>
+            </div>
 
-              <hr class="border-top-0 border-bottom pt-2 mb-4">
-
-              <!-- Order review -->
-              <h2 class="h4 mb-4">1. Detalles de orden</h2>
-              <div class="bg-secondary rounded mb-5">
-                <!-- Item -->
-                <div class="media px-2 px-sm-4 py-4 border-bottom" *ngFor="let item of carrito_arr">
-                  <a [routerLink]="['/productos', item.producto.slug]" style="min-width: 80px;">
-                    <img [src]="url +'obtener_portada/'+item.producto.portada" width="80" alt="Product thumb">
-                  </a>
-                  <div class="media-body w-100 pl-3">
-                    <div class="d-sm-flex">
-                      <div class="pr-sm-3 w-100" style="max-width: 16rem;">
-                        <h3 class="font-size-sm mb-3">
-                          <a [routerLink]="['/productos', item.producto.slug]"   class="nav-link font-weight-bold">{{item.producto.titulo}}</a>
-                        </h3>
-                        <ul class="list-unstyled font-size-xs mt-n2 mb-2">
-                          <li class="mb-0"><span class="text-muted">{{item.producto.titulo_variedad}}: </span>{{item.variedad}}</li>
-                        </ul>
-                      </div>
-                      <div class="d-flex pr-sm-3">
-                        <input type="number" class="form-control form-control-sm bg-light mr-3" style="width: 4.5rem;" value="{{item.cantidad}}">
-                      <div class="text-nowrap pt-2">
-                        <!-- <strong class="text-danger">$15.00</strong> -->
-                        <span style="font-size: 1.2rem !important;" class="font-size-xs text-muted">S/.{{item.producto.precio}}</span>
-                      </div>
-                      </div>
-                      <div class="d-flex align-items-center flex-sm-column text-sm-center ml-sm-auto pt-3 pt-sm-0">
-                        <button class="btn btn-outline-primary btn-sm mr-2 mr-sm-0"(click)="eliminar_item(item._id)">Eliminar</button>
+            <!-- Adresses -->
+            <h2 class="h4 mb-4">2. Dirección de envio</h2>
+            <div class="row pb-3">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-body">
+                      <div class="row " *ngIf="direccion_principal == undefined">
+                        <div class="col-12 text-center">
+                          <h3 style="color: #565656;    margin-bottom: 0px;">No tiene una dirección principal</h3>
+                          <img src="assets/img/1652734.png" style="width: 80px;">
+                        </div>
                         
                       </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="px-3 px-sm-4 py-4 text-right">
-                  <span class="text-muted">Subtotal:<strong class="text-dark font-size-lg ml-2">S/.{{subtotal}}</strong></span>
-                </div>
-              </div>
-
-              <!-- Adresses -->
-              <h2 class="h4 mb-4">2. Dirección de envio</h2>
-              <div class="row pb-3">
-                <div class="col-12">
-                  <div class="card">
-                    <div class="card-body">
-                        <div class="row " *ngIf="direccion_principal == undefined">
-                          <div class="col-12 text-center">
-                            <h3 style="color: #565656;    margin-bottom: 0px;">No tiene una dirección principal</h3>
-                            <img src="assets/img/1652734.png" style="width: 80px;">
-                          </div>
-                          
-                        </div>
-                        <div class="row"  *ngIf="direccion_principal != undefined">
-                          <div class="col-lg-12">
-                            <dl>
-                              <dt>Destinatario</dt>
-                              <dd>{{direccion_principal.destinatario}}</dd>
-                              <dt>Dirección</dt>
-                              <dd>{{direccion_principal.direccion}}</dd>
-                              <dd>{{direccion_principal.pais}} -
-                                <span *ngIf="direccion_principal.region">{{direccion_principal.region}}</span> -
-                                <span *ngIf="direccion_principal.provincia">{{direccion_principal.provincia}}</span> -
-                                <span *ngIf="direccion_principal.distrito">{{direccion_principal.distrito}}</span>
-                              </dd>
-                              <dt>ZIP - Telefono</dt>
-                              <dd>{{direccion_principal.zip}} - {{direccion_principal.telefono}}</dd>
-                            </dl>
-                          </div>
-                        </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-  
-              <hr class="mb-4 pb-2">
-
-              <!-- Shipping -->
-              <h2 class="h4 mb-4">3. Metodos de envio</h2>
-              <div class="custom-control custom-radio mb-3" *ngFor="let item of envios">
-                <input (change)="cacular_total(item.titulo)" type="radio" class="custom-control-input" id="courier" name="shipping" name="precio_envio" [(ngModel)]="precio_envio" value="{{item.precio}}">
-                <label for="courier" class="custom-control-label d-flex align-items-center">
-                  <span>
-                    <strong class="d-block">{{item.titulo}}</strong>
-                    <span class="text-muted font-size-sm">{{item.tiempo}}</span>
-                  </span>
-                  <span class="ml-auto">S/.{{item.precio}}</span>
-                </label>
-              </div>
-            
-
-              <hr class="border-top-0 border-bottom pt-4 mb-4">
-
-              <!-- Payment -->
-              <h2 class="h4 pt-2 mb-4">4. Metodos de pago</h2>
-              <div class="row pb-4">
-                <div class="col-lg-7">
-                  <div class="accordion-alt" id="payment-methods">
-
-                    <!-- Card: Credit card -->
-                    <div class="card mb-3 px-4 py-3 border rounded box-shadow-sm">
-                      <div class="card-header py-2">
-                        <div class="accordion-heading custom-control custom-radio" data-toggle="collapse" data-target="#cc-card">
-                          <input type="radio" class="custom-control-input" id="cc" name="payment" checked>
-                          <label for="cc" class="custom-control-label d-flex align-items-center">
-                            <strong class="d-block mr-3">Tarjeta de crédito</strong>
-                            <img src="assets/img/cards.png" width="108" alt="Credit cards">
-                          </label>
+                      <div class="row"  *ngIf="direccion_principal != undefined">
+                        <div class="col-lg-12">
+                          <dl>
+                            <dt>Destinatario</dt>
+                            <dd>{{direccion_principal.destinatario}}</dd>
+                            <dt>Dirección</dt>
+                            <dd>{{direccion_principal.direccion}}</dd>
+                            <dd>{{direccion_principal.pais}} -
+                              <span *ngIf="direccion_principal.region">{{direccion_principal.region}}</span> -
+                              <span *ngIf="direccion_principal.provincia">{{direccion_principal.provincia}}</span> -
+                              <span *ngIf="direccion_principal.distrito">{{direccion_principal.distrito}}</span>
+                            </dd>
+                            <dt>ZIP - Telefono</dt>
+                            <dd>{{direccion_principal.zip}} - {{direccion_principal.telefono}}</dd>
+                          </dl>
                         </div>
                       </div>
-                      <div class="collapse show" id="cc-card" data-parent="#payment-methods">
-                        <div class="card-body pt-3 pb-0">
-                          <div class="form-group mb-3">
-                            <label for="cc-number">Número de tarjeta</label>
-                            <input name="ncard" [(ngModel)]="card_data.ncard" type="text" id="cc-number" class="form-control form-control-lg" data-format="card" placeholder="0000 0000 0000 0000">
-                          </div>
-                          <div class="d-flex">
-                            <div class="form-group mb-3 mr-3">
-                              <label for="cc-exp-date">Expiración</label>
-                              <input name="exp" [(ngModel)]="card_data.exp" type="text" id="cc-exp-date" class="form-control form-control-lg" data-format="date" placeholder="mm/yyyy">
-                            </div>
-                            <div class="form-group mb-3">
-                              <label for="cc-cvc">CVC</label>
-                              <input name="cvc" [(ngModel)]="card_data.cvc" type="text" id="cc-cvc" class="form-control form-control-lg" data-format="cvc" placeholder="000">
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-
-                    <!-- Card: Cash -->
-          <div class="card mb-3 px-4 py-3 border rounded box-shadow-sm">
-            <div class="card-header py-2">
-              <div class="accordion-heading custom-control custom-radio" data-toggle="collapse" data-target="#cash-card">
-                <input type="radio" class="custom-control-input" id="cash" name="payment">
-                <label for="cash" class="custom-control-label">
-                  <strong class="d-block mr-3">Yape o Plin</strong>
-                </label>
-              </div>
-            </div>
-            <div class="collapse" id="cash-card" data-parent="#payment-methods">
-              <div class="card-body pt-3 pb-0">
-                <p class="mb-2 text-muted">966351229</p>
-              </div>
-            </div>
-          </div>
-
-            <!-- Card: transferencia -->
-            <div class="card mb-3 px-4 py-3 border rounded box-shadow-sm">
-              <div class="card-header py-2">
-                <div class="accordion-heading custom-control custom-radio" data-toggle="collapse" data-target="#transferencia-card">
-                  <input type="radio" class="custom-control-input" id="transferencia" name="payment">
-                  <label for="transferencia" class="custom-control-label">
-                    <strong class="d-block mr-3">Transferencia Bancaria</strong>
-                  </label>
-                </div>
-              </div>
-              <div class="collapse" id="transferencia-card" data-parent="#payment-methods">
-                <div class="card-body pt-3 pb-0">
-                  <p class="mb-2 text-muted">A mi cuentita</p>
-                </div>
-              </div>
-            </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <hr class="mb-4 pb-2">
+            <hr class="mb-4 pb-2">
 
-              <!-- Additional info -->
-              <h2 class="h4 mb-4">5. Información adicional (opcional)</h2>
-              <div class="form-group">
-                <label for="ch-notes">Mensaje</label>
-                <textarea id="ch-notes" class="form-control form-control-lg" rows="5" placeholder="Mensaje" name="nota" [(ngModel)]="venta.nota"></textarea>
-              </div>
+            <!-- Shipping -->
+            <h2 class="h4 mb-4">3. Metodos de envio</h2>
+            <div class="custom-control custom-radio mb-3" *ngFor="let item of envios">
+              <input (change)="cacular_total(item.titulo)" type="radio" class="custom-control-input" id="courier" name="shipping" name="precio_envio" [(ngModel)]="precio_envio" value="{{item.precio}}">
+              <label for="courier" class="custom-control-label d-flex align-items-center">
+                <span>
+                  <strong class="d-block">{{item.titulo}}</strong>
+                  <span class="text-muted font-size-sm">{{item.tiempo}}</span>
+                </span>
+                <span class="ml-auto">S/.{{item.precio}}</span>
+              </label>
             </div>
           
-            
-            <!-- Order totals (sticky sidebar) -->
-            <!-- For more sticky sidebar options visit https://abouolia.github.io/sticky-sidebar/#options -->
-            <aside class="col-lg-4">
-              <div class="sidebar-sticky" data-sidebar-sticky-options='{
-                "topSpacing": 120,
-                "minWidth": 991
-              }'>
-                <div class="sidebar-sticky-inner">
-                  <div class="form-group">
-                    <label for="promo-code">Ingresar Cupón de Descuento</label>
-                    <div class="input-group input-group-lg">
-                      <input type="text" id="promo-code" class="form-control" placeholder="Cupón de Descuento">
-                      <div class="input-group-append">
-                        <button type="button" class="btn btn-primary">&nbsp;&nbsp;Aplicar&nbsp;&nbsp;</button>
+
+            <hr class="border-top-0 border-bottom pt-4 mb-4">
+
+            <!-- Payment -->
+            <h2 class="h4 pt-2 mb-4">4. Metodos de pago</h2>
+            <div class="row pb-4">
+              <div class="col-lg-7">
+                <div class="accordion-alt" id="payment-methods">
+                  <!-- Card: Credit card -->
+                  <div class="card mb-3 px-4 py-3 border rounded box-shadow-sm">
+                    <div class="card-header py-2">
+                      <div class="accordion-heading custom-control custom-radio" data-toggle="collapse" data-target="#cc-card">
+                        <input type="radio" class="custom-control-input" id="cc" name="payment">
+                        <label for="cc" class="custom-control-label d-flex align-items-center">
+                          <strong class="d-block mr-3">Tarjeta de crédito</strong>
+                          <img src="assets/img/cards.png" width="108" alt="Credit cards">
+                        </label>
                       </div>
                     </div>
-                  </div>
-                  <div class="bg-secondary rounded mb-4">
-                    <div class="border-bottom p-4">
-                      <h2 class="h4 mb-0">Total de la Orden</h2>
-                    </div>
-                    <ul class="list-unstyled border-bottom mb-0 p-4">
-                      <li class="d-flex justify-content-between mb-2">
-                        <span class="font-weight-bold">Subtotal:</span>
-                        <span class="font-weight-bold">S/.{{subtotal}}</span>
-                      </li>
-                      <li class="d-flex justify-content-between mb-2">
-                        <span>Envio:</span>
-                        <span>&mdash;</span>
-                      </li>
-                      <li class="d-flex justify-content-between mb-2">
-                        <span>Descuento:</span>
-                        <span>&mdash;</span>
-                      </li>
-                    </ul>
-                    <div class="d-flex justify-content-between p-4">
-                      <span class="h5 mb-0">Order total:</span>
-                      <span class="h5 mb-0">S/.{{total_pagar}}</span>
-                    </div>
-                  </div>
-                  <button type="button" class="btn btn-primary btn-lg btn-block">Completar Orden</button>
-                </div>
-              </div>
-            </aside>
-          </div>
-        </section>
-
-  </main>
-  </ng-container>
-  </div>
-
-  <div *ngIf="user_lc == undefined">
-    <ng-container *ngIf="carrito_logout.length ==0">
-      <div class="col-12 text-center">
-        <div class="cart__content">
-          <div class="ps-form__header">
-              <img src="assets/img/carrito-de-compras.png" style="width: 220px !important; " alt="">
-          </div>
-          <h3 class="text-muted mb-5">¡Tu carrito esta vacio!</h3>
-          <a [routerLink]="['/productos']" routerLinkActive="router-link-active"  style="text-decoration: underline;
-          font-weight: 700;font-size: 2rem;">Volver a la tienda</a>
-        </div>
-      </div>
-    </ng-container>
-    
-    <ng-container *ngIf="carrito_logout.length >=1">
-      <main class="cs-page-wrapper">
-        <!-- Breadcrumb -->
-        <nav class="bg-secondary mb-3" aria-label="breadcrumb">
-            <div class="container">
-              <ol class="breadcrumb breadcrumb-alt mb-0">
-                <li class="breadcrumb-item">
-                  <a href="index.html"><i class="cxi-home"></i></a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
-              </ol>
-            </div>
-          </nav>
-    
-          <!-- Page content -->
-          <section class="container pt-3 pt-md-4 pb-3 pb-sm-4 pb-lg-5 mb-4">
-            <div class="row">
-    
-              <!-- Checkout content -->
-              <div class="col-lg-8 pr-lg-6">
-                <div class="d-flex align-items-center justify-content-between pb-2 mb-4">
-                  <h1 class="mb-0">Checkout</h1>
-                  <a [routerLink]="['/productos']" routerLinkActive="router-link-active" ><strong>Regresar a la tienda</strong></a>
-                </div>
-    
-                <hr class="border-top-0 border-bottom pt-2 mb-4">
-    
-                <!-- Order review -->
-                <h2 class="h4 mb-4">1. Detalles de orden</h2>
-                <div class="bg-secondary rounded mb-5">
-                  <!-- Item -->
-                  <div class="media px-2 px-sm-4 py-4 border-bottom" *ngFor="let item of carrito_logout">
-                    <a [routerLink]="['/productos', item.producto.slug]" style="min-width: 80px;">
-                      <img [src]="url +'obtener_portada/'+item.producto.portada" width="80" alt="Product thumb">
-                    </a>
-                    <div class="media-body w-100 pl-3">
-                      <div class="d-sm-flex">
-                        <div class="pr-sm-3 w-100" style="max-width: 16rem;">
-                          <h3 class="font-size-sm mb-3">
-                            <a [routerLink]="['/productos', item.producto.slug]"   class="nav-link font-weight-bold">{{item.producto.titulo}}</a>
-                          </h3>
-                          <ul class="list-unstyled font-size-xs mt-n2 mb-2">
-                            <li class="mb-0"><span class="text-muted">{{item.producto.titulo_variedad}}: </span>{{item.variedad}}</li>
-                          </ul>
+                    <div class="collapse show" id="cc-card" data-parent="#payment-methods">
+                      <div class="card-body pt-3 pb-0">
+                        <div class="form-group mb-3">
+                          <label for="cc-number">Número de tarjeta</label>
+                          <input name="ncard" [(ngModel)]="card_data.ncard" type="text" id="cc-number" class="form-control form-control-lg" data-format="card" placeholder="0000 0000 0000 0000">
                         </div>
-                        <div class="d-flex pr-sm-3">
-                          <input type="number" class="form-control form-control-sm bg-light mr-3" style="width: 4.5rem;" value="{{item.cantidad}}">
-                          <div class="text-nowrap pt-2">
-                            <span style="font-size: 1.2rem !important;" class="font-size-xs text-muted">S/.{{item.producto.precio}}</span>
+                        <div class="d-flex">
+                          <div class="form-group mb-3 mr-3">
+                            <label for="cc-exp-date">Expiración</label>
+                            <input name="exp" [(ngModel)]="card_data.exp" type="text" id="cc-exp-date" class="form-control form-control-lg" data-format="date" placeholder="mm/yyyy">
+                          </div>
+                          <div class="form-group mb-3">
+                            <label for="cc-cvc">CVC</label>
+                            <input name="cvc" [(ngModel)]="card_data.cvc" type="text" id="cc-cvc" class="form-control form-control-lg" data-format="cvc" placeholder="000">
                           </div>
                         </div>
-                        <div class="d-flex align-items-center flex-sm-column text-sm-center ml-sm-auto pt-3 pt-sm-0">
-                          <button class="btn btn-outline-primary btn-sm mr-2 mr-sm-0"(click)="eliminar_item_guest(item)">Eliminar</button>      
-                        </div>
                       </div>
                     </div>
                   </div>
-                  <div class="px-3 px-sm-4 py-4 text-right">
-                    <span class="text-muted">Subtotal:<strong class="text-dark font-size-lg ml-2">S/.{{subtotal}}</strong></span>
-                  </div>
-                </div>
-    <!-- Adresses -->
-    <h2 class="h4 mb-4">2. Dirección de envio</h2>
-    <div class="row pb-3">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-body">
-              <div class="row " *ngIf="direccion_principal == undefined">
-                <div class="col-12 text-center">
-                  <h3 style="color: #565656;    margin-bottom: 0px;">No tiene una dirección principal</h3>
-                  <img src="assets/img/1652734.png" style="width: 80px;">
-                </div>
-                
-              </div>
-              <div class="row"  *ngIf="direccion_principal != undefined">
-                <div class="col-lg-12">
-                  <dl>
-                    <dt>Destinatario</dt>
-                    <dd>{{direccion_principal.destinatario}}</dd>
-                    <dt>Dirección</dt>
-                    <dd>{{direccion_principal.direccion}}</dd>
-                    <dd>{{direccion_principal.pais}} -
-                      <span *ngIf="direccion_principal.region">{{direccion_principal.region}}</span> -
-                      <span *ngIf="direccion_principal.provincia">{{direccion_principal.provincia}}</span> -
-                      <span *ngIf="direccion_principal.distrito">{{direccion_principal.distrito}}</span>
-                    </dd>
-                    <dt>ZIP - Telefono</dt>
-                    <dd>{{direccion_principal.zip}} - {{direccion_principal.telefono}}</dd>
-                  </dl>
-                </div>
-              </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <hr class="mb-4 pb-2">
-
-    <!-- Shipping -->
-    <h2 class="h4 mb-4">3. Metodos de envio</h2>
-    <div class="custom-control custom-radio mb-3" *ngFor="let item of envios">
-      <input (change)="cacular_total(item.titulo)" type="radio" class="custom-control-input" id="courier" name="shipping" name="precio_envio" [(ngModel)]="precio_envio" value="{{item.precio}}">
-      <label for="courier" class="custom-control-label d-flex align-items-center">
-        <span>
-          <strong class="d-block">{{item.titulo}}</strong>
-          <span class="text-muted font-size-sm">{{item.tiempo}}</span>
-        </span>
-        <span class="ml-auto">S/.{{item.precio}}</span>
-      </label>
-    </div>
-    
-
-    <hr class="border-top-0 border-bottom pt-4 mb-4">
-
-    <!-- Payment -->
-    <h2 class="h4 pt-2 mb-4">4. Metodos de pago</h2>
-    <div class="row pb-4">
-      <div class="col-lg-7">
-        <div class="accordion-alt" id="payment-methods">
-
-          <!-- Card: Credit card -->
-          <div class="card mb-3 px-4 py-3 border rounded box-shadow-sm">
-            <div class="card-header py-2">
-              <div class="accordion-heading custom-control custom-radio" data-toggle="collapse" data-target="#cc-card">
-                <input type="radio" class="custom-control-input" id="cc" name="payment" checked>
-                <label for="cc" class="custom-control-label d-flex align-items-center">
-                  <strong class="d-block mr-3">Tarjeta de crédito</strong>
-                  <img src="assets/img/cards.png" width="108" alt="Credit cards">
-                </label>
-              </div>
-            </div>
-            <div class="collapse show" id="cc-card" data-parent="#payment-methods">
-              <div class="card-body pt-3 pb-0">
-                <div class="form-group mb-3">
-                  <label for="cc-number">Número de tarjeta</label>
-                  <input name="ncard" [(ngModel)]="card_data.ncard" type="text" id="cc-number" class="form-control form-control-lg" data-format="card" placeholder="0000 0000 0000 0000">
-                </div>
-                <div class="d-flex">
-                  <div class="form-group mb-3 mr-3">
-                    <label for="cc-exp-date">Expiración</label>
-                    <input name="exp" [(ngModel)]="card_data.exp" type="text" id="cc-exp-date" class="form-control form-control-lg" data-format="date" placeholder="mm/yyyy">
-                  </div>
-                  <div class="form-group mb-3">
-                    <label for="cc-cvc">CVC</label>
-                    <input name="cvc" [(ngModel)]="card_data.cvc" type="text" id="cc-cvc" class="form-control form-control-lg" data-format="cvc" placeholder="000">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
 
-          <!-- Card: Cash -->
+                  <!-- Card: Cash -->
           <div class="card mb-3 px-4 py-3 border rounded box-shadow-sm">
             <div class="card-header py-2">
               <div class="accordion-heading custom-control custom-radio" data-toggle="collapse" data-target="#cash-card">
@@ -451,83 +185,85 @@
             </div>
           </div>
 
-            <!-- Card: transferencia -->
-            <div class="card mb-3 px-4 py-3 border rounded box-shadow-sm">
-              <div class="card-header py-2">
-                <div class="accordion-heading custom-control custom-radio" data-toggle="collapse" data-target="#transferencia-card">
-                  <input type="radio" class="custom-control-input" id="transferencia" name="payment">
-                  <label for="transferencia" class="custom-control-label">
-                    <strong class="d-block mr-3">Transferencia Bancaria</strong>
-                  </label>
-                </div>
+          <!-- Card: transferencia -->
+          <div class="card mb-3 px-4 py-3 border rounded box-shadow-sm">
+            <div class="card-header py-2">
+              <div class="accordion-heading custom-control custom-radio" data-toggle="collapse" data-target="#transferencia-card">
+                <input type="radio" class="custom-control-input" id="transferencia" name="payment">
+                <label for="transferencia" class="custom-control-label">
+                  <strong class="d-block mr-3">Transferencia Bancaria</strong>
+                </label>
               </div>
-              <div class="collapse" id="transferencia-card" data-parent="#payment-methods">
-                <div class="card-body pt-3 pb-0">
-                  <p class="mb-2 text-muted">A mi cuentita</p>
+            </div>
+            <div class="collapse" id="transferencia-card" data-parent="#payment-methods">
+              <div class="card-body pt-3 pb-0">
+                <p class="mb-2 text-muted">A mi cuentita</p>
+              </div>
+            </div>
+          </div>
                 </div>
               </div>
             </div>
-            
-        </div>
-      </div>
-    </div>
 
-    <hr class="mb-4 pb-2">
+            <hr class="mb-4 pb-2">
 
-      <!-- Additional info -->
-      <h2 class="h4 mb-4">5. Información adicional (opcional)</h2>
-      <div class="form-group">
-        <label for="ch-notes">Mensaje</label>
-        <textarea id="ch-notes" class="form-control form-control-lg" rows="5" placeholder="Mensaje" name="nota" [(ngModel)]="venta.nota"></textarea>
-      </div>
+            <!-- Additional info -->
+            <h2 class="h4 mb-4">5. Información adicional (opcional)</h2>
+            <div class="form-group">
+              <label for="ch-notes">Mensaje</label>
+              <textarea id="ch-notes" class="form-control form-control-lg" rows="5" placeholder="Mensaje" name="nota" [(ngModel)]="venta.nota"></textarea>
             </div>
-              <!-- Order totals (sticky sidebar) -->
-              <!-- For more sticky sidebar options visit https://abouolia.github.io/sticky-sidebar/#options -->
-              <aside class="col-lg-4">
-                <div class="sidebar-sticky" data-sidebar-sticky-options='{
-                  "topSpacing": 120,
-                  "minWidth": 991
-                }'>
-                  <div class="sidebar-sticky-inner">
-                    <div class="form-group">
-                      <label for="promo-code">Cupón de Descuento</label>
-                      <div class="input-group input-group-lg">
-                        <input type="text" id="promo-code" class="form-control" placeholder="Ingresa un cupón de descuento...">
-                        <div class="input-group-append">
-                          <button type="button" class="btn btn-primary">&nbsp;&nbsp;Ingresar&nbsp;&nbsp;</button>
-                        </div>
-                      </div>
+          </div>
+        
+          
+          <!-- Order totals (sticky sidebar) -->
+          <!-- For more sticky sidebar options visit https://abouolia.github.io/sticky-sidebar/#options -->
+          <aside class="col-lg-4">
+            <div class="sidebar-sticky" data-sidebar-sticky-options='{
+              "topSpacing": 120,
+              "minWidth": 991
+            }'>
+              <div class="sidebar-sticky-inner">
+                <div class="form-group">
+                  <label for="promo-code">Ingresar Cupón de Descuento</label>
+                  <div class="input-group input-group-lg">
+                    <input type="text" id="promo-code" class="form-control" placeholder="Cupón de Descuento">
+                    <div class="input-group-append">
+                      <button type="button" class="btn btn-primary">&nbsp;&nbsp;Aplicar&nbsp;&nbsp;</button>
                     </div>
-                    <div class="bg-secondary rounded mb-4">
-                      <div class="border-bottom p-4">
-                        <h2 class="h4 mb-0">Monto</h2>
-                      </div>
-                      <ul class="list-unstyled border-bottom mb-0 p-4">
-                        <li class="d-flex justify-content-between mb-2">
-                          <span class="font-weight-bold">Subtotal:</span>
-                          <span class="font-weight-bold">S/.{{subtotal}}</span>
-                        </li>
-                        <li class="d-flex justify-content-between mb-2">
-                          <span>Envio:</span>
-                          <span>&mdash;</span>
-                        </li>
-                        <li class="d-flex justify-content-between mb-2">
-                          <span>Descuento:</span>
-                          <span>&mdash;</span>
-                        </li>
-                      </ul>
-                      <div class="d-flex justify-content-between p-4">
-                        <span class="h5 mb-0">Total:</span>
-                        <span class="h5 mb-0">S/.{{total_pagar}}</span>
-                      </div>
-                    </div>
-                    <button type="button" class="btn btn-primary btn-lg btn-block">Completar Orden</button>
                   </div>
                 </div>
-              </aside>
+                <div class="bg-secondary rounded mb-4">
+                  <div class="border-bottom p-4">
+                    <h2 class="h4 mb-0">Total de la Orden</h2>
+                  </div>
+                  <ul class="list-unstyled border-bottom mb-0 p-4">
+                    <li class="d-flex justify-content-between mb-2">
+                      <span class="font-weight-bold">Subtotal:</span>
+                      <span class="font-weight-bold">S/.{{subtotal}}</span>
+                    </li>
+                    <li class="d-flex justify-content-between mb-2">
+                      <span>Envio:</span>
+                      <span>&mdash;</span>
+                    </li>
+                    <li class="d-flex justify-content-between mb-2">
+                      <span>Descuento:</span>
+                      <span>&mdash;</span>
+                    </li>
+                  </ul>
+                  <div class="d-flex justify-content-between p-4">
+                    <span class="h5 mb-0">Order total:</span>
+                    <span class="h5 mb-0">S/.{{total_pagar}}</span>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-primary btn-lg btn-block">Completar Orden</button>
+              </div>
             </div>
-          </section>
-    
+          </aside>
+          
+        </div>
+      </section>
+
     </main>
   </ng-container>
 </div>

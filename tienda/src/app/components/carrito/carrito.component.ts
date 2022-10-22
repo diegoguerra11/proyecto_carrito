@@ -5,6 +5,8 @@ import { io } from "socket.io-client";
 import { GuestService } from 'src/app/services/guest.service';
 import { Router } from '@angular/router';
 
+// const mercadopago = require("mercadopago");
+
 declare var iziToast:any;
 declare var Cleave:any;
 declare var StickySidebar:any;
@@ -84,12 +86,7 @@ export class CarritoComponent implements OnInit {
 
     this._guestService.obtener_descuento_activo().subscribe(
       response=>{
-        if(response.data != undefined){
-          this.descuento_activo = response.data[0];
-        }else{
-          this.descuento_activo = undefined;
-        }
-
+        this.descuento_activo = response.data != undefined ? response.data[0] : undefined;
       }
     );
 
