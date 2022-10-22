@@ -112,4 +112,10 @@ export class AdminService {
       return this._http.get(this.url + 'listar_clientes_tienda',{headers:headers});
     }
   
+
+    //venta
+    obtener_ventas_admin(token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.get(this.url+'obtener_ventas_admin',{headers:headers});
+    }
   }

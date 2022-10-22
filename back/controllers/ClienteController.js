@@ -315,6 +315,14 @@ const obtener_direccion_principal_cliente  = async function(req,res){
         res.status(500).send({message: 'NoAccess'});
     }
 }
+const listar_clientes_tienda = async function(req,res){
+    if(req.user){
+        var clientes = await Cliente.find();
+        res.status(200).send({data:clientes});
+    }else{
+        res.status(500).send({message: 'NoAccess'});
+    } 
+}
 module.exports = {
     registro_cliente,
     login_cliente,
@@ -329,5 +337,6 @@ module.exports = {
     obtener_direccion_todos_cliente,
     cambiar_direccion_principal_cliente,
     obtener_direccion_principal_cliente,
-    eliminar_direccion_cliente
+    eliminar_direccion_cliente,
+    listar_clientes_tienda
 }

@@ -1,6 +1,9 @@
 'use strict'
 
 var Admin = require('../models/admin');
+var Venta = require('../models/Venta');
+var Variedad = require('../models/Variedad');
+//var Dventa = require('../models/Dventa');
 var bcrypt = require('bcrypt-nodejs');
 var jwt = require('../helpers/jwt');
 
@@ -61,9 +64,42 @@ const login_admin = async function(req,res){
     }
 
  } 
+ const obtener_ventas_admin  = async function(req,res){
+    if(req.user){
+        let ventas = [];
+            let desde = req.params['desde'];
+            let hasta = req.params['hasta'];
 
+            ventas = await Venta.find().populate('cliente').populate('direccion').sort({createdAt:-1});
+            res.status(200).send({data:ventas});
 
+            
+    }else{
+        res.status(500).send({message: 'NoAccess'});
+    }
+}
+const listar_variedades_admin = async function(req,res){
+    if(req.user){
+        var id = req.params['id'];
+        let data = await Variedad.find({producto:id});
+        res.status(200).send({data:data});
+        
+    }else{
+        res.status(500).send({message: 'NoAccess'});
+    }
+}
+const listar_variedades_productos_admin = async function(req,res){
+    if(req.user){
+        var productos = await Variedad.find().populate('producto');
+        res.status(200).send({data:productos});
+    }else{
+        res.status(500).send({message: 'NoAccess'});
+    } 
+}
 module.exports ={
     registro_admin,
-    login_admin
+    login_admin,
+    obtener_ventas_admin,
+    listar_variedades_admin,
+    listar_variedades_productos_admin
 }
