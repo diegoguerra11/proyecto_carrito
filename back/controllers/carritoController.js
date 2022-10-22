@@ -32,10 +32,18 @@ const obtener_carrito_cliente = async function(req,res){
     res.status(200).send({data:carrito_cliente});
 }
 
-const actualizar_carrito_cliente = async function(req, res) {
+const actualizar_cantidad_carrito_cliente = async function(req, res) {
     if(!req.user){res.status(500).send({message: 'NoAccess'}); return;}
 
-    let id = req.param['']
+    let id = req.param['id'];
+    let cantidad = req.param['cantidad'];
+
+    var filter = {_id: id};
+    var newvalues = { $set: { cantidad: cantidad} };
+
+    let carrito_cliente = await Carrito.updateOne(filter, newvalues);
+
+    res.status(200).send({data: carrito_cliente});
 }
 
 const eliminar_carrito_cliente = async function(req,res){
@@ -49,6 +57,7 @@ const eliminar_carrito_cliente = async function(req,res){
 
 module.exports = {
     agregar_carrito_cliente,
+    actualizar_cantidad_carrito_cliente,
     obtener_carrito_cliente,
     eliminar_carrito_cliente
 }
