@@ -104,4 +104,7 @@ export class ProductoService {
     return this._http.put(this.url+'eliminar_imagen_galeria_admin/'+id,data,{headers:headers});
 }
 
+
+
+
 }

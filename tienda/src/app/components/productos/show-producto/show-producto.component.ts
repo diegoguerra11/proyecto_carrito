@@ -55,14 +55,20 @@ export class ShowProductoComponent implements OnInit {
 
     this.token = localStorage.getItem('token');
     this.url = GLOBAL.url;
+    
+
+  }
+
+  ngOnInit(): void {
     this._route.params.subscribe(
       params=>{
         this.slug = params['slug'];
-        
+            
         this._guestService.obtener_productos_slug_publico(this.slug).subscribe(
           response=>{
+            
             this.producto = response.data;
-
+            this.init_variedades();
             this._guestService.listar_productos_recomendados_publico(this.producto.categoria).subscribe(
               response=>{
                 this.productos_rec = response.data;
@@ -74,11 +80,7 @@ export class ShowProductoComponent implements OnInit {
         
       }
     );
-
-  }
-
-  ngOnInit(): void {
-
+    
     setTimeout(()=>{
       tns({
         container: '.cs-carousel-inner',
@@ -120,21 +122,21 @@ export class ShowProductoComponent implements OnInit {
   }
 
   init_variedades(){
-    this._guestService.obtener_variedades_productos_cliente(this.producto._id).subscribe(
+    this._guestService.obtener_variedades_productos_cliente(this.producto["_id"]).subscribe(
       response=>{
         this.variedades = response.data;
+        console.log(this.variedades);
       }
     );
   }
 
   select_variedad(){
-    console.log(this.select_variedad_lbl);
     let arr_variedad = this.select_variedad_lbl.split('_');
     this.obj_variedad_select.id = arr_variedad[0];
-    this.obj_variedad_select.variedad = arr_variedad[0];
-    this.obj_variedad_select.stock =this.producto.stock;
+    this.obj_variedad_select.variedad = arr_variedad[1];
+    this.obj_variedad_select.stock = arr_variedad[2];
 
-    console.log(this.obj_variedad_select);
+    console.log(arr_variedad);
   }
 
   SumCant(){

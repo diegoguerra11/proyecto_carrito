@@ -28,11 +28,13 @@ export class GuestService {
   }
 
   comprobar_carrito_cliente(data:any,token:any):Observable<any>{
+    
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.post(this.url+'comprobar_carrito_cliente',data,{headers:headers});
   }
 
   obtener_variedades_productos_cliente(id:any):Observable<any>{
+    console.log(id);
     let headers = new HttpHeaders().set('Content-Type','application/json');
     return this._http.get(this.url+'obtener_variedades_productos_cliente/'+id,{headers:headers});
   }
@@ -75,5 +77,11 @@ export class GuestService {
 
   get_Envios():Observable<any>{
     return this._http.get('./assets/envios.json');
+  }
+
+  //Orden de Pedido
+  pedido_compra_cliente(data:any,token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.post(this.url+'pedido_compra_cliente',data,{headers:headers});
   }
 }

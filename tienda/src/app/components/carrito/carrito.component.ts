@@ -39,8 +39,14 @@ export class CarritoComponent implements OnInit {
   public dventa : Array<any> = [];
   public card_data : any = {};
   public descuento_activo : any = undefined;
+  public tipo_descuento = undefined;
+  public valor_descuento = 0;
   public btn_load = false;
   public metodo_pago = 'pasarela_pago';
+  public envio_gratis= false;
+  public descuento = 0;
+  public envio = 0;
+  public nota = '';
 
   constructor(
     private _clienteService: ClienteService,
@@ -134,8 +140,61 @@ export class CarritoComponent implements OnInit {
     this._clienteService.obtener_carrito_cliente(this.user_lc._id,this.token).subscribe(
       response=>{
         this.carrito_arr = response.data;
+        this.carrito_arr.forEach(element => { 
+          if(this.currency == 'PEN'){
+            this.dventa.push({
+              producto: element.producto._id,
+              subtotal: element.producto.precio,
+              variedad: element.variedad._id,
+              cantidad: element.cantidad,
+              cliente: localStorage.getItem('_id')
+            });
+          }  
+      });
         this.calcular_carrito();
         
+      }
+    );
+  }
+  generar_pedido(tipo:any){
+    this.venta.transaccion = 'Venta pedido';
+    if(this.currency != 'PEN'){
+      this.venta.currency = 'USD';
+    }else{
+      this.venta.currency = 'PEN';
+    }
+    this.venta.subtotal = this.subtotal;
+    this.venta.total_pagar = this.total_pagar;
+    this.venta.envio_precio = this.envio;
+    this.venta.detalles = this.dventa;
+    this.venta.metodo_pago = this.metodo_pago;
+    this.venta.nota = this.nota;
+    this.venta.direccion = this.direccion_principal._id;
+    this.venta.tipo_descuento = this.tipo_descuento;
+    this.venta.valor_descuento = this.valor_descuento;
+    let idcliente = localStorage.getItem('_id');
+    this.venta.cliente = idcliente;
+    console.log(this.venta);
+    
+    this.btn_load = true;
+    this._guestService.pedido_compra_cliente(this.venta,this.token).subscribe(
+      response=>{
+        console.log(response);
+        
+        if(response.venta != undefined){
+          this.btn_load = false;
+          this._router.navigate(['/cuenta/pedidos',response.venta._id]);
+        }else{
+          iziToast.show({
+              title: 'ERROR',
+              titleColor: '#FF0000',
+              color: '#FFF',
+              class: 'text-danger',
+              position: 'topRight',
+              message: response.message
+          });
+          this.btn_load = false;
+        }
       }
     );
   }
@@ -144,8 +203,10 @@ export class CarritoComponent implements OnInit {
     switch(this.metodo_pago){
       case 'pasarela_pago':
         this.get_token_mercado_pago();
+        
         break;
       case 'yape_plin':
+        
         console.log('yape');
         break;
       case 'transferencia':
@@ -202,7 +263,7 @@ export class CarritoComponent implements OnInit {
           this._guestService.createToken(data).subscribe(
             response=>{
               console.log(response);
-              window.location.href = response.sandbox_init_point;
+              window.open(response.sandbox_init_point, '_blank');
               
             }
           );

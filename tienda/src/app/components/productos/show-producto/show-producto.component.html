@@ -62,7 +62,10 @@
                   <label for="size">{{producto.titulo_variedad}}</label>
                   <select class="form-control custom-select" id="size" name="variedad" [(ngModel)]="select_variedad_lbl" (change)="select_variedad()">
                     <option value="" selected disabled >Seleccionar</option>
-                    <option value="{{item.titulo}}" *ngFor="let item of producto.variedades">{{item.titulo}}</option>
+                    <ng-container *ngFor="let item of variedades">
+                      <option value="{{item._id}}_{{item.valor}}_{{item.stock}}" *ngIf="item.stock>= 1">{{item.valor}}</option>
+                      <option value="" *ngIf="item.stock == 0" disabled>{{item.valor}} (Sin stock)</option>
+                    </ng-container>
                   </select>
                 </div>
               </div>

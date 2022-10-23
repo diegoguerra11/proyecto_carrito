@@ -3,7 +3,9 @@
 var Cliente = require('../models/cliente');
 var bcrypt = require('bcrypt-nodejs');
 var jwt = require('../helpers/jwt');
+var Variedad = require('../models/Variedad');
 var Direccion = require("../models/direccion");
+var Producto = require("../models/producto");
 
 const registro_cliente = async function(req,res){
     try {
@@ -323,6 +325,38 @@ const listar_clientes_tienda = async function(req,res){
         res.status(500).send({message: 'NoAccess'});
     } 
 }
+const obtener_variedades_productos_cliente = async function(req,res){
+    let id = req.params['id'];
+    if(id == "undefined"){
+        
+        return;
+    }
+    console.log(id + "miau");
+    let variedades = await Variedad.find({producto:id});
+    res.status(200).send({data:variedades});
+}
+const obtener_productos_slug_publico = async function(req,res){
+    var slug = req.params['slug'];
+    
+    try {
+        let producto = await Producto.findOne({slug:String(slug), estado:'Publicado'});
+        
+        if(producto == undefined){
+            res.status(200).send({data:undefined});
+        }else{
+            res.status(200).send({data:producto});
+        }
+    } catch (error) {
+        res.status(200).send({data:undefined});
+    }
+}
+
+
+const listar_productos_recomendados_publico = async function(req,res){
+    var categoria = req.params['categoria'];
+    let reg = await Producto.find({categoria: categoria,estado:'Publicado'}).sort({createdAt:-1}).limit(8);
+    res.status(200).send({data: reg});
+}
 module.exports = {
     registro_cliente,
     login_cliente,
@@ -338,5 +372,8 @@ module.exports = {
     cambiar_direccion_principal_cliente,
     obtener_direccion_principal_cliente,
     eliminar_direccion_cliente,
-    listar_clientes_tienda
+    listar_clientes_tienda,
+    obtener_variedades_productos_cliente,
+    obtener_productos_slug_publico,
+    listar_productos_recomendados_publico,
 }
