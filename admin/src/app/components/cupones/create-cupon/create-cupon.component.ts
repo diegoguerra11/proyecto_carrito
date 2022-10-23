@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { CuponService } from '../../../services/cupon.service';
 import { Router } from '@angular/router';
 import { MessageBox } from 'src/app/utils/MessageBox';
+import { ValidatonsCupon } from 'src/app/validations/validationsCupon';
 
 
 @Component({
@@ -22,7 +23,7 @@ export class CreateCuponComponent implements OnInit {
   constructor(
     private _cuponService : CuponService,
     private _router: Router
-  ) { 
+  ) {
     this.token = localStorage.getItem('token');
   }
 
@@ -30,12 +31,21 @@ export class CreateCuponComponent implements OnInit {
   }
 
   registro(registroForm){
-  if (registroForm.valid) {
+
+    if(!ValidatonsCupon.verificarCupon(registroForm.form.value)){return;}
+    console.log(this.cupon);
       this.load_btn = true;
       this._cuponService.registro_cupon_admin(this.cupon,this.token).subscribe(
         response=>{
         console.log(response);
         MessageBox.messageSuccess("Cupón registrado correctamente");
+        this.cupon ={
+          codigo: '',
+          tipo: '',
+          valor: '',
+          limite: '',
+        }
+
         this.load_btn = false;
 
         this._router.navigate(['/panel/cupones']);
@@ -45,18 +55,15 @@ export class CreateCuponComponent implements OnInit {
         console.log(error);
         }
       );
-        
-             
-    
-    
-        
-          
-      
-    
-  } else {
-      MessageBox.messageError('Los datos del formulario no son validos');
-      
-  }
+
+
+
+
+
+
+
+
+
   }
 
 }
