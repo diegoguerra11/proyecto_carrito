@@ -328,6 +328,8 @@ const listar_productos_recomendados_publico = async function(req,res){
     res.status(200).send({data: reg});
 }
 
+
+
 module.exports = {
     registro_producto_admin,
     listar_productos_admin,
@@ -343,6 +345,7 @@ module.exports = {
     eliminar_imagen_galeria_admin,
     listar_productos_publico,
     obtener_productos_slug_publico,
-    listar_productos_recomendados_publico
+    listar_productos_recomendados_publico,
+    
     
 }

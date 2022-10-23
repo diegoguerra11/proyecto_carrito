@@ -18,6 +18,8 @@ import { IndexProductoComponent } from './components/productos/index-producto/in
 import { ShowProductoComponent } from './components/productos/show-producto/show-producto.component';
 import { CarritoComponent } from './components/carrito/carrito.component';
 import { DireccionesComponent } from './components/usuario/direcciones/direcciones.component';
+import { IndexPedidosComponent } from './components/usuario/pedidos/index-pedidos/index-pedidos.component';
+import { PedidosDetallesComponent } from './components/usuario/pedidos/pedidos-detalles/pedidos-detalles.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { DireccionesComponent } from './components/usuario/direcciones/direccion
     ShowProductoComponent,
     CarritoComponent,
     DireccionesComponent,
+    IndexPedidosComponent,
+    PedidosDetallesComponent,
   ],
   imports: [
     BrowserModule,

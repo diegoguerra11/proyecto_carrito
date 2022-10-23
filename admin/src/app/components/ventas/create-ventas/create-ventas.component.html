@@ -3,7 +3,7 @@
 <div class="main-content">
     <div class="container-fluid">
         <div class="row justify-content-center">
-          <div class="col-12 col-lg-10 col-xl-8">
+          <div class="col-12 col-lg-25 col-xl-18">
 
             <!-- Header -->
             <!-- Header -->
@@ -231,7 +231,7 @@
                             <label for="validationCustom01" class="form-label"><b>Cantidad (*)</b></label>
                             <input type="number" class="form-control" placeholder="1" name="cantidad" [(ngModel)]="cantidad">
                         </div>
-                        <div class="col-lg-2">
+                        <div class="col-lg-5">
                             <label for="validationCustom01" class="form-label"><b>(*)</b></label>
                             <br>
                             <button class="btn btn-primary" (click)="addProducto()">Agregar</button>
@@ -244,7 +244,7 @@
                                 <table class="table table-striped">
                                   <thead>
                                     <tr>
-                                      <th>Producucto</th>
+                                      <th>Producto</th>
                                       <th>Talla</th>
                                       <th>Precio</th>
                                       <th>Cantidad</th>
@@ -293,7 +293,7 @@
                 </div>
                 <div class="card-footer">
   
-                    <a class="btn btn-warning btn-shadow mr-3" [routerLink]="['/ventas']" routerLinkActive="router-link-active" >Regresar</a>
+                    <a class="btn btn-warning btn-shadow mr-3" [routerLink]="['/panel/ventas']" routerLinkActive="router-link-active" >Regresar</a>
                     <button *ngIf="!load_btn" class="btn btn-primary btn-shadow" type="button" (click)="registrar_venta()">Crear</button>
                                     
                     <button disabled *ngIf="load_btn" type="button" class="btn btn-primary btn-shadow">

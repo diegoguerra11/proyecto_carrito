@@ -3,7 +3,9 @@
 var Cliente = require('../models/cliente');
 var bcrypt = require('bcrypt-nodejs');
 var jwt = require('../helpers/jwt');
+var Variedad = require('../models/Variedad');
 var Direccion = require("../models/direccion");
+var Producto = require("../models/producto");
 
 const registro_cliente = async function(req,res){
     try {
@@ -84,26 +86,19 @@ const listar_clientes_filtro_admin = async function (req,res){
 }
 
 const registro_cliente_admin = async function(req,res){
-    if(req.user){
-        if(req.user.role =='Admin'){
-            var data = req.body;
+    if(!req.user || req.user.role !='Admin'){return res.status(500).send({message: 'NoAccess'}); }
+    
+    var data = req.body;
 
-            bcrypt.hash('123456789',null,null, async function(err,hash){
-                if(hash){
-                    data.password = hash;
-                    let reg = await Cliente.create(data);
-                    res.status(200).send({data:reg});
-                }else{
-                    res.status(200).send({message:'Hubo un error en el servidor',data:undefined});
-                }
-            })
-
+    bcrypt.hash('123456789',null,null, async function(err,hash){
+        if(hash){
+            data.password = hash;
+            let reg = await Cliente.create(data);
+            res.status(200).send({data:reg});
         }else{
-            res.status(500).send({message: 'NoAccess'});
+            res.status(200).send({message:'Hubo un error en el servidor',data:undefined});
         }
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    }
+    });
 }
 
 
@@ -315,6 +310,46 @@ const obtener_direccion_principal_cliente  = async function(req,res){
         res.status(500).send({message: 'NoAccess'});
     }
 }
+const listar_clientes_tienda = async function(req,res){
+    if(req.user){
+        var clientes = await Cliente.find();
+        res.status(200).send({data:clientes});
+    }else{
+        res.status(500).send({message: 'NoAccess'});
+    } 
+}
+const obtener_variedades_productos_cliente = async function(req,res){
+    let id = req.params['id'];
+    if(id == "undefined"){
+        
+        return;
+    }
+    console.log(id + "miau");
+    let variedades = await Variedad.find({producto:id});
+    res.status(200).send({data:variedades});
+}
+const obtener_productos_slug_publico = async function(req,res){
+    var slug = req.params['slug'];
+    
+    try {
+        let producto = await Producto.findOne({slug:String(slug), estado:'Publicado'});
+        
+        if(producto == undefined){
+            res.status(200).send({data:undefined});
+        }else{
+            res.status(200).send({data:producto});
+        }
+    } catch (error) {
+        res.status(200).send({data:undefined});
+    }
+}
+
+
+const listar_productos_recomendados_publico = async function(req,res){
+    var categoria = req.params['categoria'];
+    let reg = await Producto.find({categoria: categoria,estado:'Publicado'}).sort({createdAt:-1}).limit(8);
+    res.status(200).send({data: reg});
+}
 module.exports = {
     registro_cliente,
     login_cliente,
@@ -329,5 +364,9 @@ module.exports = {
     obtener_direccion_todos_cliente,
     cambiar_direccion_principal_cliente,
     obtener_direccion_principal_cliente,
-    eliminar_direccion_cliente
+    eliminar_direccion_cliente,
+    listar_clientes_tienda,
+    obtener_variedades_productos_cliente,
+    obtener_productos_slug_publico,
+    listar_productos_recomendados_publico,
 }

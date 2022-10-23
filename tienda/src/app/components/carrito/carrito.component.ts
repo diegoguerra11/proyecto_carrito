@@ -4,9 +4,10 @@ import { ClienteService } from 'src/app/services/cliente.service';
 import { io } from "socket.io-client";
 import { GuestService } from 'src/app/services/guest.service';
 import { Router } from '@angular/router';
+import { MessageBox } from '../../../../../admin/src/app/utils/MessageBox';
 
 declare var iziToast:any;
-declare var Cleave:any;
+// declare var Cleave:any;
 declare var StickySidebar:any;
 
 @Component({
@@ -38,10 +39,14 @@ export class CarritoComponent implements OnInit {
   public dventa : Array<any> = [];
   public card_data : any = {};
   public descuento_activo : any = undefined;
+  public tipo_descuento = undefined;
+  public valor_descuento = 0;
   public btn_load = false;
-
-  // @Output()
-  // cantidad = new EventEmitter<number>();
+  public metodo_pago = 'pasarela_pago';
+  public envio_gratis= false;
+  public descuento = 0;
+  public envio = 0;
+  public nota = '';
 
   constructor(
     private _clienteService: ClienteService,
@@ -84,28 +89,11 @@ export class CarritoComponent implements OnInit {
 
     this._guestService.obtener_descuento_activo().subscribe(
       response=>{
-        if(response.data != undefined){
-          this.descuento_activo = response.data[0];
-        }else{
-          this.descuento_activo = undefined;
-        }
-
+        this.descuento_activo = response.data != undefined ? response.data[0] : undefined;
       }
     );
 
     setTimeout(()=>{
-      new Cleave('#cc-number', {
-          creditCard: true,
-          onCreditCardTypeChanged: function (type:any) {
-            // update UI ...
-          }
-      });
-    
-      new Cleave('#cc-exp-date', {
-        date: true,
-        datePattern: ['m', 'Y']
-      });
-    
       new StickySidebar('.sidebar-sticky', {topSpacing: 20});
     });
 
@@ -140,66 +128,131 @@ export class CarritoComponent implements OnInit {
     this._clienteService.obtener_carrito_cliente(this.user_lc._id,this.token).subscribe(
       response=>{
         this.carrito_arr = response.data;
+        this.carrito_arr.forEach(element => { 
+          if(this.currency == 'PEN'){
+            this.dventa.push({
+              producto: element.producto._id,
+              subtotal: element.producto.precio,
+              variedad: element.variedad._id,
+              cantidad: element.cantidad,
+              cliente: localStorage.getItem('_id')
+            });
+          }  
+      });
         this.calcular_carrito();
         
       }
     );
   }
 
-  // onCantidad() {
-  //   this.obtener_carrito();   
-  // }
-
-  get_token_culqi(){
-
-    let month;
-    let year;
-
-    let exp_arr = this.card_data.exp.toString().split('/');
-
-    let data = {
-      "card_number": this.card_data.ncard.toString().replace(/ /g, ""),   
-      "cvv": this.card_data.cvc,      
-      "expiration_month": exp_arr[0],      
-      "expiration_year":  exp_arr[1].toString().substr(0,4),      
-      "email": this.user.email,         
+  generar_pedido(){
+    this.venta.transaccion = 'Venta pedido';
+    if(this.currency != 'PEN'){
+      this.venta.currency = 'USD';
+    }else{
+      this.venta.currency = 'PEN';
     }
+    this.venta.subtotal = this.subtotal;
+    this.venta.total_pagar = this.total_pagar;
+    this.venta.envio_precio = this.envio;
+    this.venta.detalles = this.dventa;
+    this.venta.metodo_pago = this.metodo_pago;
+    this.venta.nota = this.nota;
+    this.venta.direccion = this.direccion_principal._id;
+    this.venta.tipo_descuento = this.tipo_descuento;
+    this.venta.valor_descuento = this.valor_descuento;
+    let idcliente = localStorage.getItem('_id');
+    this.venta.cliente = idcliente;
+    console.log(this.venta);
+    
     this.btn_load = true;
-
-    this._clienteService.get_token_culqi(data).subscribe(
+    this._guestService.pedido_compra_cliente(this.venta,this.token).subscribe(
       response=>{
-       
-        let charge = {
-          "amount": this.subtotal+'00',
-          "currency_code": "USD",
-          "email": this.user.email,
-          "source_id": response.id,
-        }
-        this._clienteService.get_charge_culqi(charge).subscribe(
-          response=>{
-            this.venta.transaccion = response.id;
-
-            this.venta.detalles = this.dventa;
-            this._clienteService.registro_compra_cliente(this.venta,this.token).subscribe(
-              response=>{
-                this.btn_load = false;
-                this._clienteService.enviar_correo_compra_cliente(response.venta._id,this.token).subscribe(
-                  response=>{
-                    this._router.navigate(['/']);
-                  }
-                );
-
-                
-              }
-            );
-            
-         
-          }
-        );
+        console.log(response);
         
+        if(response.venta == undefined){          
+          MessageBox.messageError(response.message);
+          this.btn_load = false;
+          return;
+        }
+
+        this.btn_load = false;
+        this._router.navigate(['/cuenta/pedidos',response.venta._id]);
       }
     );
-    
+  }
+
+  pagar() {
+    switch(this.metodo_pago){
+      case 'pasarela_pago':
+        this.get_token_mercado_pago();
+        break;
+      case 'yape_plin':
+        this.generar_pedido();
+        break;
+      case 'transferencia':
+        console.log('trasnferencia');
+        break;
+    }
+  }
+
+  get_token_mercado_pago(){
+    this._guestService.comprobar_carrito_cliente({detalles:this.dventa},this.token).subscribe(
+      (response: any)=>{
+        if(!response.venta){
+          this.btn_load = false;
+          return MessageBox.messageError(response.message);
+        }
+
+        let items = [];
+          
+        this.carrito_arr.forEach(element => {
+          items.push({
+            title: element.producto.titulo,
+            description: element.producto.descripcion,
+            quantity: element.cantidad,
+            currency_id: 'PEN',
+            unit_price: element.producto.precio
+          });
+        });
+
+        items.push({
+          title: 'Envio',
+          description: 'Concepto de transporte y logistica',
+          quantity: 1,
+          currency_id: 'PEN',
+          unit_price:  parseInt(this.precio_envio)
+        });
+
+        if(this.venta.cupon){
+          items.push({
+            title: 'Descuento',
+              description: 'Cupón aplicado ' + this.venta.cupon,
+              quantity: 1,
+              currency_id: 'PEN',
+              unit_price: 0//-(this.descuento)
+          });
+        }
+
+        let data = {
+          notification_url: 'https://hookb.in/6JlGBe8MYbsoRnwwRd1Z',
+          items: items,
+          back_urls: {
+            failure: "http://localhost:4200/carrito/",
+            //pending: response.sandbox_init_point,
+            success: "http://localhost:4200/inicio/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.total_pagar+'/'+this.subtotal,
+          },
+          //auto_return: "approved"
+        }
+
+        this._guestService.createToken(data).subscribe(
+          response=>{
+            console.log(response);
+            window.open(response.sandbox_init_point, '_blank');
+          }
+        );
+      }
+    );
   }
 
   get_direccion_principal(){
@@ -207,19 +260,14 @@ export class CarritoComponent implements OnInit {
     this._clienteService.obtener_direccion_principal_cliente(localStorage.getItem('_id'),this.token).subscribe(
       
       response=>{
-        console.log(response.data);
         if(response.data == undefined){
           console.log(response.data);
-          console.log("indefinido");
-          this.direccion_principal = undefined;
-          
+          this.direccion_principal = undefined; 
         }else{
           console.log(response.data);
           this.direccion_principal = response.data;
           this.venta.direccion = this.direccion_principal._id;
-        }
-        
-        
+        }  
       }
     );
   }
@@ -264,18 +312,13 @@ export class CarritoComponent implements OnInit {
     console.log(this.venta);
     
   }
+
   eliminar_item_guest(item:any){
     this.total_pagar  = 0;
     this.carrito_logout.splice(item._id,1);
     localStorage.removeItem('cart');
-    iziToast.show({
-      title: 'SUCCESS',
-      titleColor: '#1DC74C',
-      color: '#FFF',
-      class: 'text-success',
-      position: 'topRight',
-      message: 'Se eliminó el producto correctamente.'
-  });
+
+    MessageBox.messageSuccess('Se eliminó el producto correctamente.');
   
     if(this.carrito_logout.length >= 1){
       localStorage.setItem('cart',JSON.stringify(this.carrito_logout));
@@ -296,14 +339,8 @@ export class CarritoComponent implements OnInit {
     console.log(id);
     this._clienteService.eliminar_carrito_cliente(id,this.token).subscribe(
       response=>{
-          iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Se eliminó el producto correctamente.'
-        });
+        MessageBox.messageSuccess('Se eliminó el producto correctamente.');
+      
         console.log(response.data + "eliminaritem");
         this.socket.emit('delete-carrito',{data:response.data});
         this._clienteService.obtener_carrito_cliente(this.idcliente,this.token).subscribe(

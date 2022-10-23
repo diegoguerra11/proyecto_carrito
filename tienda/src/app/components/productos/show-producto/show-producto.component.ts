@@ -55,14 +55,20 @@ export class ShowProductoComponent implements OnInit {
 
     this.token = localStorage.getItem('token');
     this.url = GLOBAL.url;
+    
+
+  }
+
+  ngOnInit(): void {
     this._route.params.subscribe(
       params=>{
         this.slug = params['slug'];
-        
+            
         this._guestService.obtener_productos_slug_publico(this.slug).subscribe(
           response=>{
+            
             this.producto = response.data;
-
+            this.init_variedades();
             this._guestService.listar_productos_recomendados_publico(this.producto.categoria).subscribe(
               response=>{
                 this.productos_rec = response.data;
@@ -74,11 +80,7 @@ export class ShowProductoComponent implements OnInit {
         
       }
     );
-
-  }
-
-  ngOnInit(): void {
-
+    
     setTimeout(()=>{
       tns({
         container: '.cs-carousel-inner',
@@ -120,21 +122,21 @@ export class ShowProductoComponent implements OnInit {
   }
 
   init_variedades(){
-    this._guestService.obtener_variedades_productos_cliente(this.producto._id).subscribe(
+    this._guestService.obtener_variedades_productos_cliente(this.producto["_id"]).subscribe(
       response=>{
         this.variedades = response.data;
+        console.log(this.variedades);
       }
     );
   }
 
   select_variedad(){
-    console.log(this.select_variedad_lbl);
     let arr_variedad = this.select_variedad_lbl.split('_');
     this.obj_variedad_select.id = arr_variedad[0];
-    this.obj_variedad_select.variedad = arr_variedad[0];
-    this.obj_variedad_select.stock =this.producto.stock;
+    this.obj_variedad_select.variedad = arr_variedad[1];
+    this.obj_variedad_select.stock = arr_variedad[2];
 
-    console.log(this.obj_variedad_select);
+    console.log(arr_variedad);
   }
 
   SumCant(){
@@ -161,8 +163,7 @@ export class ShowProductoComponent implements OnInit {
     this._guestService.agregar_carrito_cliente(data,this.token).subscribe(response=>{
         if(response.data == undefined){
           this.btn_cart =false;
-          MessageBox.messageError('Producto Agregado Anteriormente');
-          return;
+          return MessageBox.messageError('Producto Agregado Anteriormente');
         }
 
         MessageBox.messageSuccess('Se agregó el producto al carrito.');
@@ -181,6 +182,7 @@ export class ShowProductoComponent implements OnInit {
       variedad: this.obj_variedad_select,
       cantidad: this.carrito_data.cantidad,
     }
+    console.log(data);
     let ls_carrito_guest = localStorage.getItem('cart');
     
     if(ls_carrito_guest == null){
@@ -213,10 +215,7 @@ export class ShowProductoComponent implements OnInit {
       let arr_carrito = JSON.parse(ls_carrito_guest);
       localStorage.removeItem('cart');
       arr_carrito.push(data);
-      console.log(arr_carrito[0].producto["_id"]);
       localStorage.setItem('cart',JSON.stringify(arr_carrito));
-      console.log("else");
-      console.log(arr_carrito);
 
       MessageBox.messageSuccess('Se agregó el producto a tu carrito.');
 

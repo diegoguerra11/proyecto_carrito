@@ -56,15 +56,16 @@
           </div>
           <div class="col-md-9">
             <div class="table-responsive mt-3">
-              <table class="table table-sm" *ngIf="producto.variedades">
+              <table class="table table-sm" *ngIf="variedades">
                 <thead class="thead-dark">
                   <tr>
              
                     <th>Titulo</th>
-                    <th>Eliminar</th>
+                    <th>Stock</th>
+                                  <th>Eliminar</th>
                   </tr>
                 </thead>
-                <ng-container *ngIf="producto.variedades.length== 0">
+                <ng-container *ngIf="variedades.length== 0">
                   <tbody>
                     <tr>
                       <td colspan="2" class="text-center">
@@ -74,11 +75,41 @@
                     </tr>
                   </tbody>
                 </ng-container>
-                <ng-container *ngIf="producto.variedades.length>=1">
-                  <tbody *ngFor= "let item of producto.variedades; let indice = index">
+                <ng-container *ngIf="variedades.length>=1">
+                  <tbody *ngFor="let item of variedades; let indice = index">
                     <tr>
-                        <td>{{item.titulo}}</td>
-                        <td><a style="cursor: pointer;" class="text-danger" (click)="eliminar_variedad(indice)">[Eliminar]</a></td>
+                      <td>{{item.valor}}</td>
+                      <td>{{item.stock}}</td>
+                      <td><a style="cursor: pointer;" class="text-danger" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#delete-'+item._id">[Eliminar]</a></td>
+
+                      <div class="modal fade" id="delete-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h4 class="modal-title">Confirmación de eliminación</h4>
+                              <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            </div>
+                            <div class="modal-body">
+                              <p>{{item.valor}}, desea eliminar esta variedad?</p>
+                              <p>Si la variedad tiene stock, no se podrá eliminar</p>
+                            </div>
+                            <div class="modal-footer">
+                              <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                              <ng-container *ngIf="item.stock != 0">
+                                <button class="btn btn-danger btn-shadow btn-sm" disabled type="button">Si, eliminar</button>
+                              </ng-container>
+                              <ng-container  *ngIf="item.stock == 0">
+                                <button *ngIf="!load_del" class="btn btn-danger btn-shadow btn-sm" (click)="eliminar_variedad(item._id)" type="button">Si, eliminar</button>
+                              </ng-container>
+                              
+                              <button disabled *ngIf="load_del" type="button" class="btn btn-danger btn-shadow btn-sm">
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                Eliminando...
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </tr>
                   </tbody>
                 </ng-container>
