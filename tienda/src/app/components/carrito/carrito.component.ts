@@ -94,18 +94,6 @@ export class CarritoComponent implements OnInit {
     );
 
     setTimeout(()=>{
-      // new Cleave('#cc-number', {
-      //     creditCard: true,
-      //     onCreditCardTypeChanged: function (type:any) {
-      //       // update UI ...
-      //     }
-      // });
-    
-      // new Cleave('#cc-exp-date', {
-      //   date: true,
-      //   datePattern: ['m', 'Y']
-      // });
-    
       new StickySidebar('.sidebar-sticky', {topSpacing: 20});
     });
 
@@ -156,7 +144,8 @@ export class CarritoComponent implements OnInit {
       }
     );
   }
-  generar_pedido(tipo:any){
+
+  generar_pedido(){
     this.venta.transaccion = 'Venta pedido';
     if(this.currency != 'PEN'){
       this.venta.currency = 'USD';
@@ -181,20 +170,14 @@ export class CarritoComponent implements OnInit {
       response=>{
         console.log(response);
         
-        if(response.venta != undefined){
+        if(response.venta == undefined){          
+          MessageBox.messageError(response.message);
           this.btn_load = false;
-          this._router.navigate(['/cuenta/pedidos',response.venta._id]);
-        }else{
-          iziToast.show({
-              title: 'ERROR',
-              titleColor: '#FF0000',
-              color: '#FFF',
-              class: 'text-danger',
-              position: 'topRight',
-              message: response.message
-          });
-          this.btn_load = false;
+          return;
         }
+
+        this.btn_load = false;
+        this._router.navigate(['/cuenta/pedidos',response.venta._id]);
       }
     );
   }
@@ -203,11 +186,9 @@ export class CarritoComponent implements OnInit {
     switch(this.metodo_pago){
       case 'pasarela_pago':
         this.get_token_mercado_pago();
-        
         break;
       case 'yape_plin':
-        
-        console.log('yape');
+        this.generar_pedido();
         break;
       case 'transferencia':
         console.log('trasnferencia');
@@ -218,59 +199,58 @@ export class CarritoComponent implements OnInit {
   get_token_mercado_pago(){
     this._guestService.comprobar_carrito_cliente({detalles:this.dventa},this.token).subscribe(
       (response: any)=>{
-        if(response.venta){
-          let items = [];
-          
-          this.carrito_arr.forEach(element => {
-            items.push({
-              title: element.producto.titulo,
-              description: element.producto.descripcion,
-              quantity: element.cantidad,
-              currency_id: 'PEN',
-              unit_price: element.producto.precio
-            });
-          });
-
-          items.push({
-            title: 'Envio',
-            description: 'Concepto de transporte y logistica',
-            quantity: 1,
-            currency_id: 'PEN',
-            unit_price:  parseInt(this.precio_envio)
-          });
-
-          if(this.venta.cupon){
-            items.push({
-              title: 'Descuento',
-                description: 'Cupón aplicado ' + this.venta.cupon,
-                quantity: 1,
-                currency_id: 'PEN',
-                unit_price: 0//-(this.descuento)
-            });
-          }
-
-          let data = {
-            notification_url: 'https://hookb.in/6JlGBe8MYbsoRnwwRd1Z',
-            items: items,
-            back_urls: {
-              // failure: "http://localhost:5000/verificar-pago/failure/"+this.direccion_envio._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.total_pagar+'/'+this.subtotal,
-              //pending: response.sandbox_init_point,
-              //success: this._router.navigate(['/']),
-            },
-            //auto_return: "approved"
-          }
-
-          this._guestService.createToken(data).subscribe(
-            response=>{
-              console.log(response);
-              window.open(response.sandbox_init_point, '_blank');
-              
-            }
-          );
-        }else{
-          MessageBox.messageError(response.message);
+        if(!response.venta){
           this.btn_load = false;
+          return MessageBox.messageError(response.message);
         }
+
+        let items = [];
+          
+        this.carrito_arr.forEach(element => {
+          items.push({
+            title: element.producto.titulo,
+            description: element.producto.descripcion,
+            quantity: element.cantidad,
+            currency_id: 'PEN',
+            unit_price: element.producto.precio
+          });
+        });
+
+        items.push({
+          title: 'Envio',
+          description: 'Concepto de transporte y logistica',
+          quantity: 1,
+          currency_id: 'PEN',
+          unit_price:  parseInt(this.precio_envio)
+        });
+
+        if(this.venta.cupon){
+          items.push({
+            title: 'Descuento',
+              description: 'Cupón aplicado ' + this.venta.cupon,
+              quantity: 1,
+              currency_id: 'PEN',
+              unit_price: 0//-(this.descuento)
+          });
+        }
+
+        let data = {
+          notification_url: 'https://hookb.in/6JlGBe8MYbsoRnwwRd1Z',
+          items: items,
+          back_urls: {
+            failure: "http://localhost:4200/carrito/",
+            //pending: response.sandbox_init_point,
+            success: "http://localhost:4200/inicio/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.total_pagar+'/'+this.subtotal,
+          },
+          //auto_return: "approved"
+        }
+
+        this._guestService.createToken(data).subscribe(
+          response=>{
+            console.log(response);
+            window.open(response.sandbox_init_point, '_blank');
+          }
+        );
       }
     );
   }
@@ -332,6 +312,7 @@ export class CarritoComponent implements OnInit {
     console.log(this.venta);
     
   }
+
   eliminar_item_guest(item:any){
     this.total_pagar  = 0;
     this.carrito_logout.splice(item._id,1);

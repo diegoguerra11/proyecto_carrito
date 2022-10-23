@@ -86,26 +86,19 @@ const listar_clientes_filtro_admin = async function (req,res){
 }
 
 const registro_cliente_admin = async function(req,res){
-    if(req.user){
-        if(req.user.role =='Admin'){
-            var data = req.body;
+    if(!req.user || req.user.role !='Admin'){return res.status(500).send({message: 'NoAccess'}); }
+    
+    var data = req.body;
 
-            bcrypt.hash('123456789',null,null, async function(err,hash){
-                if(hash){
-                    data.password = hash;
-                    let reg = await Cliente.create(data);
-                    res.status(200).send({data:reg});
-                }else{
-                    res.status(200).send({message:'Hubo un error en el servidor',data:undefined});
-                }
-            })
-
+    bcrypt.hash('123456789',null,null, async function(err,hash){
+        if(hash){
+            data.password = hash;
+            let reg = await Cliente.create(data);
+            res.status(200).send({data:reg});
         }else{
-            res.status(500).send({message: 'NoAccess'});
+            res.status(200).send({message:'Hubo un error en el servidor',data:undefined});
         }
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    }
+    });
 }
 
 
