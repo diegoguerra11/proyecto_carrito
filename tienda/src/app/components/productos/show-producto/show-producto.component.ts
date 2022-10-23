@@ -161,8 +161,7 @@ export class ShowProductoComponent implements OnInit {
     this._guestService.agregar_carrito_cliente(data,this.token).subscribe(response=>{
         if(response.data == undefined){
           this.btn_cart =false;
-          MessageBox.messageError('Producto Agregado Anteriormente');
-          return;
+          return MessageBox.messageError('Producto Agregado Anteriormente');
         }
 
         MessageBox.messageSuccess('Se agregó el producto al carrito.');
@@ -181,6 +180,7 @@ export class ShowProductoComponent implements OnInit {
       variedad: this.obj_variedad_select,
       cantidad: this.carrito_data.cantidad,
     }
+    console.log(data);
     let ls_carrito_guest = localStorage.getItem('cart');
     
     if(ls_carrito_guest == null){
@@ -213,10 +213,7 @@ export class ShowProductoComponent implements OnInit {
       let arr_carrito = JSON.parse(ls_carrito_guest);
       localStorage.removeItem('cart');
       arr_carrito.push(data);
-      console.log(arr_carrito[0].producto["_id"]);
       localStorage.setItem('cart',JSON.stringify(arr_carrito));
-      console.log("else");
-      console.log(arr_carrito);
 
       MessageBox.messageSuccess('Se agregó el producto a tu carrito.');
 

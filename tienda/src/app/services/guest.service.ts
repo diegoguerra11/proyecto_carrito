@@ -22,10 +22,14 @@ export class GuestService {
 
   }
 
-    
   listar_productos_recomendados_publico(categoria:any):Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
     return this._http.get(this.url+'listar_productos_recomendados_publico/'+categoria,{headers:headers});
+  }
+
+  comprobar_carrito_cliente(data:any,token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.post(this.url+'comprobar_carrito_cliente',data,{headers:headers});
   }
 
   obtener_variedades_productos_cliente(id:any):Observable<any>{
@@ -47,6 +51,15 @@ export class GuestService {
   obtener_descuento_activo():Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
     return this._http.get(this.url+'obtener_descuento_activo',{headers:headers});
+  }
+
+  //Mercado pago
+
+  createToken(data:any):Observable<any>{
+    let headers = new HttpHeaders()
+    .set('Content-Type','application/json')
+    .set('Authorization','Bearer TEST-1565437970717712-100416-3da5767dad6b8dfef6c0563925dadf81-612621626');
+    return this._http.post('https://api.mercadopago.com/checkout/preferences',data,{headers:headers});
   }
 
   //Regiones 

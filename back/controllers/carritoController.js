@@ -1,5 +1,5 @@
-const carrito = require('../models/carrito');
 var Carrito = require('../models/carrito');
+var Variedad = require('../models/Variedad');
 
 const agregar_carrito_cliente = async function(req,res){
     if(!req.user) {res.status(500).send({message: 'NoAccess'}); return;}
@@ -20,6 +20,31 @@ const agregar_carrito_cliente = async function(req,res){
     if(carrito_cliente.length >= 1){
         res.status(200).send({data:undefined}); 
         return;
+    }
+}
+
+const comprobar_carrito_cliente = async function(req,res){
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
+    
+    try {
+        var data = req.body;
+        var detalles = data.detalles;
+        let access = false;
+        let producto_sl = '';
+        for(var item of detalles){
+            let variedad = await Variedad.find({producto: item.producto, valor: item.variedad}).populate('producto');
+            console.log(variedad);
+            if(variedad.stock < item.cantidad){
+                access = true;
+                producto_sl = variedad.producto.titulo;
+            }
+        }
+
+        if(access){return res.status(200).send({venta:false,message:'Stock insuficiente para ' + producto_sl});}
+
+        return res.status(200).send({venta:true});
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -57,6 +82,7 @@ const eliminar_carrito_cliente = async function(req,res){
 
 module.exports = {
     agregar_carrito_cliente,
+    comprobar_carrito_cliente,
     actualizar_cantidad_carrito_cliente,
     obtener_carrito_cliente,
     eliminar_carrito_cliente

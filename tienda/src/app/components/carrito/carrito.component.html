@@ -140,67 +140,48 @@
                   <div class="card mb-3 px-4 py-3 border rounded box-shadow-sm">
                     <div class="card-header py-2">
                       <div class="accordion-heading custom-control custom-radio" data-toggle="collapse" data-target="#cc-card">
-                        <input type="radio" class="custom-control-input" id="cc" name="payment">
+                        <input type="radio" class="custom-control-input" id="cc" name="payment" [(ngModel)]="metodo_pago" value="pasarela_pago">
                         <label for="cc" class="custom-control-label d-flex align-items-center">
                           <strong class="d-block mr-3">Tarjeta de crédito</strong>
                           <img src="assets/img/cards.png" width="108" alt="Credit cards">
                         </label>
                       </div>
                     </div>
-                    <div class="collapse show" id="cc-card" data-parent="#payment-methods">
-                      <div class="card-body pt-3 pb-0">
-                        <div class="form-group mb-3">
-                          <label for="cc-number">Número de tarjeta</label>
-                          <input name="ncard" [(ngModel)]="card_data.ncard" type="text" id="cc-number" class="form-control form-control-lg" data-format="card" placeholder="0000 0000 0000 0000">
-                        </div>
-                        <div class="d-flex">
-                          <div class="form-group mb-3 mr-3">
-                            <label for="cc-exp-date">Expiración</label>
-                            <input name="exp" [(ngModel)]="card_data.exp" type="text" id="cc-exp-date" class="form-control form-control-lg" data-format="date" placeholder="mm/yyyy">
-                          </div>
-                          <div class="form-group mb-3">
-                            <label for="cc-cvc">CVC</label>
-                            <input name="cvc" [(ngModel)]="card_data.cvc" type="text" id="cc-cvc" class="form-control form-control-lg" data-format="cvc" placeholder="000">
-                          </div>
+
+                  </div>
+                  <!-- Card: Cash -->
+                  <div class="card mb-3 px-4 py-3 border rounded box-shadow-sm">
+                    <div class="card-header py-2">
+                      <div class="accordion-heading custom-control custom-radio" data-toggle="collapse" data-target="#cash-card">
+                        <input type="radio" class="custom-control-input" id="cash" name="payment" [(ngModel)]="metodo_pago" value="yape_plin">
+                        <label for="cash" class="custom-control-label">
+                          <strong class="d-block mr-3">Yape o Plin</strong>
+                        </label>
+                      </div>  
+                      <div class="collapse" id="cash-card" data-parent="#payment-methods">
+                        <div class="card-body pt-3 pb-0">
+                          <p class="mb-2 text-muted">966351229</p>
                         </div>
                       </div>
-                    </div>
                   </div>
-
-
-                  <!-- Card: Cash -->
-          <div class="card mb-3 px-4 py-3 border rounded box-shadow-sm">
-            <div class="card-header py-2">
-              <div class="accordion-heading custom-control custom-radio" data-toggle="collapse" data-target="#cash-card">
-                <input type="radio" class="custom-control-input" id="cash" name="payment">
-                <label for="cash" class="custom-control-label">
-                  <strong class="d-block mr-3">Yape o Plin</strong>
-                </label>
-              </div>
-            </div>
-            <div class="collapse" id="cash-card" data-parent="#payment-methods">
-              <div class="card-body pt-3 pb-0">
-                <p class="mb-2 text-muted">966351229</p>
-              </div>
-            </div>
-          </div>
+                </div>
 
           <!-- Card: transferencia -->
-          <div class="card mb-3 px-4 py-3 border rounded box-shadow-sm">
-            <div class="card-header py-2">
-              <div class="accordion-heading custom-control custom-radio" data-toggle="collapse" data-target="#transferencia-card">
-                <input type="radio" class="custom-control-input" id="transferencia" name="payment">
-                <label for="transferencia" class="custom-control-label">
-                  <strong class="d-block mr-3">Transferencia Bancaria</strong>
-                </label>
-              </div>
-            </div>
-            <div class="collapse" id="transferencia-card" data-parent="#payment-methods">
-              <div class="card-body pt-3 pb-0">
-                <p class="mb-2 text-muted">A mi cuentita</p>
-              </div>
-            </div>
-          </div>
+                <div class="card mb-3 px-4 py-3 border rounded box-shadow-sm">
+                  <div class="card-header py-2">
+                    <div class="accordion-heading custom-control custom-radio" data-toggle="collapse" data-target="#transferencia-card">
+                      <input type="radio" class="custom-control-input" id="transferencia" name="payment" [(ngModel)]="metodo_pago" value="transferencia">
+                      <label for="transferencia" class="custom-control-label">
+                        <strong class="d-block mr-3">Transferencia Bancaria</strong>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="collapse" id="transferencia-card" data-parent="#payment-methods">
+                    <div class="card-body pt-3 pb-0">
+                      <p class="mb-2 text-muted">A mi cuentita</p>
+                    </div>
+                  </div>
+                </div>
                 </div>
               </div>
             </div>
@@ -219,10 +200,7 @@
           <!-- Order totals (sticky sidebar) -->
           <!-- For more sticky sidebar options visit https://abouolia.github.io/sticky-sidebar/#options -->
           <aside class="col-lg-4">
-            <div class="sidebar-sticky" data-sidebar-sticky-options='{
-              "topSpacing": 120,
-              "minWidth": 991
-            }'>
+            <div class="sidebar-sticky">
               <div class="sidebar-sticky-inner">
                 <div class="form-group">
                   <label for="promo-code">Ingresar Cupón de Descuento</label>
@@ -244,7 +222,7 @@
                     </li>
                     <li class="d-flex justify-content-between mb-2">
                       <span>Envio:</span>
-                      <span>&mdash;</span>
+                      <span>S/. {{precio_envio}}</span>
                     </li>
                     <li class="d-flex justify-content-between mb-2">
                       <span>Descuento:</span>
@@ -256,14 +234,14 @@
                     <span class="h5 mb-0">S/.{{total_pagar}}</span>
                   </div>
                 </div>
-                <button type="button" class="btn btn-primary btn-lg btn-block">Completar Orden</button>
+                <button *ngIf="!btn_load" type="button" class="btn btn-primary btn-lg btn-block" (click)="pagar()">Completar Orden</button>
+                <button *ngIf="btn_load" type="button" class="btn btn-primary btn-lg btn-block">Completar Orden</button>
               </div>
             </div>
           </aside>
           
         </div>
       </section>
-
     </main>
   </ng-container>
 </div>
