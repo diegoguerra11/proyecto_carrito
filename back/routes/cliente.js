@@ -27,4 +27,8 @@ api.put('/cambiar_direccion_principal_cliente/:id/:cliente',auth.auth,clienteCon
 api.get('/obtener_direccion_principal_cliente/:id',auth.auth,clienteController.obtener_direccion_principal_cliente);
 api.delete('/eliminar_direccion_cliente/:id',auth.auth, clienteController.eliminar_direccion_cliente);
 
+//ORDENES
+api.post('/registro_pedido_compra_cliente', auth.auth, clienteController.registro_pedido_compra_cliente);
+api.get('/obtener_ordenes_cliente/:id', auth.auth, clienteController.obtener_ordenes_cliente);
+
 module.exports = api;

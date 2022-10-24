@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ProductoService } from '../../../services/producto.service';
 import { AdminService } from '../../../services/admin.service';
 import { Router } from '@angular/router';
+import { MessageBox } from 'src/app/utils/MessageBox';
 
-declare var iziToast;
 declare var jQuery:any;
 declare var $:any;
 
@@ -35,7 +35,6 @@ export class CreateProductoComponent implements OnInit {
       response=>{
         this.config_global = response.data;
         console.log(this.config_global);
-        
       }
     )
   }
@@ -44,114 +43,61 @@ export class CreateProductoComponent implements OnInit {
   }
 
   registro(registroForm){
-    if (registroForm.valid) {
-      if (this.file == undefined) {
-            iziToast.show({
-              title:'ERROR',
-              titleColor: '#FF0000',
-              color: '#FFF',
-              class: 'text-danger',
-              position: 'topRight',
-              message: 'Debe subir una portada para registrar'
-            });
-      }else{
-          console.log(this.producto);
-          console.log(this.file);      
-          this.load_btn = true;
-          this._productoService.registro_producto_admin(this.producto,this.file,this.token).subscribe(
-            response => {
-              iziToast.show({
-                  title:'SUCCESS',
-                  titleColor: '#1DC74C',
-                  color: '#FFF',
-                  class: 'text-success',
-                  position: 'topRight',
-                  message: 'Se registro correctamente el nuevo producto.'
-                });
-                this.load_btn = false;
-    
-                this._router.navigate(['/panel/productos']);
-            },
-            error=>{
-              console.log(error);
-              this.load_btn = false;
-            }
-          );
-      }
-
-    } else {
-      iziToast.show({
-        title:'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'Los datos del formulario no son validos'
-      });
-        this.load_btn = false;
-
-        $('#input-portada').text('Seleccionar imagen');
-        this.imgSelect ='assets/img/01.jpg';
-        this.file = undefined;
-    }
-  }
-
-  fileChangeEvent(event:any):void{
-    var file;
-    if(event.target.files && event.target.files[0]){
-      file = <File>event.target.files[0];
-      
-      
-    }else{
-      iziToast.show({
-          title: 'ERROR',
-          titleColor: '#FF0000',
-          color: '#FFF',
-          class: 'text-danger',
-          position: 'topRight',
-          message: 'No hay un imagen de envio'
-      });
-    }
-    if (file.size <= 4000000) {
-       if (file.type == 'image/png' || file.type == 'image/webp'|| file.type == 'image/jpg' || file.type == 'image/gif' || file.type == 'image/jpeg') {
-
-          const reader = new FileReader();
-          reader.onload = e => this.imgSelect = reader.result;
-          console.log(this.imgSelect);
-
-          reader.readAsDataURL(file);
-          
-          $('#input-portada').text(file.name);
-          this.file = file;
-        
-       }else{
-        iziToast.show({
-          title:'ERROR',
-          titleColor: '#FF0000',
-          color: '#FFF',
-          class: 'text-danger',
-          position: 'topRight',
-          message: 'El archivo debe ser una imagen'
-        });
-        $('#input-portada').text('Seleccionar imagen');
-        this.imgSelect ='assets/img/01.jpg';
-        this.file = undefined;
-       }
-    } else {
-      iziToast.show({
-        title:'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'La imagen no puede superar los 4MB'
-      });
+    if(!registroForm.valid) { 
+      this.load_btn = false;
       $('#input-portada').text('Seleccionar imagen');
       this.imgSelect ='assets/img/01.jpg';
       this.file = undefined;
-    } 
+      return MessageBox.messageError('Los datos del formulario no son validos');
+    }
+    if (this.file == undefined) {return MessageBox.messageError('Debe subir una portada para registrar');}
+
+    console.log(this.producto);
+    console.log(this.file);      
+    this.load_btn = true;
+    this._productoService.registro_producto_admin(this.producto,this.file,this.token).subscribe(
+      response => {
+        MessageBox.messageSuccess('Se registro correctamente el nuevo producto.');
+        this.load_btn = false;
+        this._router.navigate(['/panel/productos']);
+      },
+      error=>{
+        console.log(error);
+        this.load_btn = false;
+      }
+    );
+  }
+
+  fileChangeEvent(event:any):void{
+    if(!(event.target.files && event.target.files[0])){return MessageBox.messageError('No hay un imagen de envio');}
+
+    var file = <File>event.target.files[0]; 
+
+    if(file.size > 4000000) { 
+      $('#input-portada').text('Seleccionar imagen');
+      this.imgSelect ='assets/img/01.jpg';
+      this.file = undefined;
+      return MessageBox.messageError('La imagen no puede superar los 4MB');
+    }
+
+    if (file.type == 'image/png' || file.type == 'image/webp' || file.type == 'image/jpg' || file.type == 'image/gif' || file.type == 'image/jpeg') {
+
+      const reader = new FileReader();
+      reader.onload = e => this.imgSelect = reader.result;
+      console.log(this.imgSelect);
+
+      reader.readAsDataURL(file);
+      
+      $('#input-portada').text(file.name);
+      this.file = file;
+      
+    }else{
+      MessageBox.messageError('El archivo debe ser una imagen');
+      $('#input-portada').text('Seleccionar imagen');
+      this.imgSelect ='assets/img/01.jpg';
+      this.file = undefined;
+    }
     
     console.log(this.file);
-    
   }
 }

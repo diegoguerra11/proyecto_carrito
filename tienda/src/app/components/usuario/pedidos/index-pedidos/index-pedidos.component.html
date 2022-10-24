@@ -9,7 +9,7 @@
           <a [routerLink]="['/']"><i class="cxi-home"></i></a>
         </li>
 
-        <li class="breadcrumb-item active" aria-current="page">Mi Perfil</li>
+        <li class="breadcrumb-item active" aria-current="page">Mis Ordenes</li>
       </ol>
     </div>
   </nav>
@@ -21,11 +21,70 @@
       <aside class="col-xl-3 col-lg-4 pb-3 mb-4 mb-lg-0">
         <app-siderbar></app-siderbar>
       </aside>
+
       <div class="col align-item-center mb-4 pb-1 pb-sm-3">
         <div class="row justify-content-center">
           <h1 class="h1">Mi Cuenta</h1>
         </div>
+        <div class="col ml-auto">
+          <div class="d-flex align-items-center justify-content-between mb-4 pb-sm-2">
+            <h1 class="h2 mb-0">Mis ordenes</h1>
+            <!-- <div class="form-inline">
+              <label for="sort-orders" class="d-none d-sm-block font-weight-bold mr-2 pr-1">Sort orders</label>
+              <select id="sort-orders" class="custom-select">
+                <option>All</option>
+                <option>Delivered</option>
+                <option>In Progress</option>
+                <option>Delayed</option>
+                <option>Canceled</option>
+              </select>
+            </div> -->
+          </div>
 
+          <!-- Orders accordion -->
+          <div class="accordion-alt" *ngIf="!load_data" id="orders">
+            <!-- Order -->
+            <ng-container *ngIf="ordenes.length > 0">
+              <div class="card border-bottom" *ngFor="let item of ordenes | slice: (page-1)*pageSize : (page-1) * pageSize + pageSize;">
+                <div class="card-header accordion-heading py-1">
+                  <a href="#order-2" class="d-flex flex-wrap justify-content-between py-3" data-toggle="collapse" aria-expanded="false">
+                    <span class="pr-2"># {{ item._id.toUpperCase() }}</span>
+                    <span class="font-size-sm text-muted text-nowrap px-2">
+                      <i class="cxi-clock font-size-base align-middle mt-n1 mr-1"></i>
+                      {{ item.createdAt | date }}
+                    </span>
+                    <span class="badge badge-info">{{ item.estado }}</span>
+                    <span class="text-dark pl-1">S/.{{ item.total_pagar }}</span>
+                  </a>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="ordenes.length == 0">
+              <div class="card border-bottom">
+                <div class="card-header accordion-heading py-1">
+                  <a class="d-flex flex-wrap justify-content-between py-3">
+                    <span class="text-muted">Usted no se encuentra con pedidos actualmente</span>
+                  </a>
+                </div>
+              </div>
+            </ng-container>
+
+          </div>
+
+          <div class="row">
+            <div class="col text-center" *ngIf="load_data">
+              <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+              </div>
+            </div>
+          </div>
+        
+          <ngb-pagination
+            [(page)]="page"
+            [pageSize]="pageSize"
+            [collectionSize]="ordenes.length"
+          ></ngb-pagination>
+        </div>  
       </div>
     </div>
   </section>

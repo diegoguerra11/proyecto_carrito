@@ -31,7 +31,6 @@ export class LoginComponent implements OnInit {
 
   login(loginForm:any) {
     if(!ValidatonsIniciarSesion.login(loginForm.form.value)){return;}
-    console.log(this.login);
 
     let data = {
       email: this.user.email,
@@ -42,7 +41,8 @@ export class LoginComponent implements OnInit {
 
     this._clienteService.login_cliente(data).subscribe(
       response=>{
-        if(response.data == undefined){MessageBox.messageError(response.message); return;}
+        console.log(response);
+        if(response.data == undefined){return MessageBox.messageError(response.message);}
 
         this.usuario = response.data;
 
@@ -75,7 +75,7 @@ export class LoginComponent implements OnInit {
         response=>{},
         error=>{console.log(error);}
       )
-    })
+    });
   }
 
   registrar(loginForm:any) {

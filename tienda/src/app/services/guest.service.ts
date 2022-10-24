@@ -80,8 +80,8 @@ export class GuestService {
   }
 
   //Orden de Pedido
-  pedido_compra_cliente(data:any,token:any):Observable<any>{
+  registro_pedido_compra_cliente(data:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
-    return this._http.post(this.url+'pedido_compra_cliente',data,{headers:headers});
+    return this._http.post(this.url+'registro_pedido_compra_cliente',data,{headers:headers});
   }
 }

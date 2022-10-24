@@ -67,8 +67,7 @@
                     </div>
                     </div>
                     <div class="d-flex align-items-center flex-sm-column text-sm-center ml-sm-auto pt-3 pt-sm-0">
-                      <button class="btn btn-outline-primary btn-sm mr-2 mr-sm-0"(click)="eliminar_item(item._id)">Eliminar</button>
-                      
+                      <button class="btn btn-outline-primary btn-sm mr-2 mr-sm-0"(click)="eliminar_item(item._id)">Eliminar</button>  
                     </div>
                   </div>
                 </div>
@@ -200,7 +199,7 @@
           <!-- Order totals (sticky sidebar) -->
           <!-- For more sticky sidebar options visit https://abouolia.github.io/sticky-sidebar/#options -->
           <aside class="col-lg-4">
-            <div class="sidebar-sticky">
+            <div class="position-fixed">
               <div class="sidebar-sticky-inner">
                 <div class="form-group">
                   <label for="promo-code">Ingresar Cupón de Descuento</label>
@@ -235,7 +234,9 @@
                   </div>
                 </div>
                 <button *ngIf="!btn_load" type="button" class="btn btn-primary btn-lg btn-block" (click)="pagar()">Completar Orden</button>
-                <button *ngIf="btn_load" type="button" class="btn btn-primary btn-lg btn-block">Completar Orden</button>
+                <button *ngIf="btn_load" type="button" class="btn btn-primary btn-lg btn-block" disabled>
+                  <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"> </div>
+                </button>
               </div>
             </div>
           </aside>
