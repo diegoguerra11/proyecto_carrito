@@ -30,14 +30,15 @@ export class ValidatonsCupon {
         return false;
           }
 
-        if(form.tipo == "Valor Fijo" && form.limite <=0) {
+        if(form.tipo == "Valor Fijo" && form.valor <=0) {
           MessageBox.messageError('El Valor Fijo debe ser mayor que 0');
           return false;
         }
-        if(form.tipo == "Valor Fijo" && form.limite>=90) {
+        if(form.tipo == "Valor Fijo" && form.valor>=90) {
           MessageBox.messageError('El Valor Fijo debe ser menor que 90');
           return false;
             }
+
         return true;
     }
 }
