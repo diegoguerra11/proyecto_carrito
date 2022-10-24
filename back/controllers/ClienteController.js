@@ -58,7 +58,7 @@ const login_cliente = async function(req,res){
 const listar_clientes_filtro_admin = async function (req,res){
     console.log(req.user);
     if(req.user){
-        if(req.user.role == 'Admin'){
+        if(req.user.role == 'admin'){
             let tipo= req.params['tipo'];
             let filtro= req.params['filtro'];
 
@@ -88,7 +88,7 @@ const listar_clientes_filtro_admin = async function (req,res){
 }
 
 const registro_cliente_admin = async function(req,res){
-    if(!req.user || req.user.role !='Admin'){return res.status(500).send({message: 'NoAccess'}); }
+    if(!req.user || req.user.role !='admin'){return res.status(500).send({message: 'NoAccess'}); }
     
     var data = req.body;
 
@@ -106,7 +106,7 @@ const registro_cliente_admin = async function(req,res){
 
 const obtener_cliente_admin = async function (req,res){
     if(req.user){
-        if(req.user.role =='Admin'){
+        if(req.user.role =='admin'){
             
             var id = req.params['id'];
 
@@ -127,7 +127,7 @@ const obtener_cliente_admin = async function (req,res){
 
 const actualizar_cliente_admin = async function(req,res){
     if(req.user){
-        if(req.user.role =='Admin'){
+        if(req.user.role =='admin'){
             
             var id = req.params['id'];
             var data = req.body;
@@ -154,7 +154,7 @@ const actualizar_cliente_admin = async function(req,res){
 
 const eliminar_cliente_admin = async function (req,res){
     if(req.user){
-        if(req.user.role =='Admin'){
+        if(req.user.role =='admin'){
             
            var id = req.params['id'];
 

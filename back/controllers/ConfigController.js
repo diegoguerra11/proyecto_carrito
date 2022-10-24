@@ -5,7 +5,7 @@ var path = require('path');
 
 const obtener_config_admin = async function(req,res){
     if(req.user){
-        if(req.user.role == 'Admin'){
+        if(req.user.role == 'admin'){
 
          let reg = await Config.findById({_id:"6300eb210a5b39f5503f3aaf"});
          res.status(200).send({data:reg});
@@ -20,7 +20,7 @@ const obtener_config_admin = async function(req,res){
 
 const actualizar_config_admin = async function(req,res){
     if(req.user){
-        if(req.user.role == 'Admin'){
+        if(req.user.role == 'admin'){
 
             let data = req.body;
 
