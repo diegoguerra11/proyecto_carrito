@@ -42,20 +42,23 @@ export class ValidatonsCliente {
             MessageBox.messageError('Número de pasaporte Inválido');
             return false;
         }
+        console.log(añoActual-18);
         //Se puede mejorar ;)
         if(+(form.f_nacimiento.split("-")[0])> (añoActual-18)){
             MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
             return false;
         }
+        console.log("Pasó año");
         if(+(form.f_nacimiento.split("-")[1]) > mesActual){
             MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
             return false;
         }
+        console.log("Pasó mes");
         if(+(form.f_nacimiento.split("-")[2])> diaActual){
             MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
             return false;
         }
-        
+        console.log("Pasó día");
         return true;
     }
 }

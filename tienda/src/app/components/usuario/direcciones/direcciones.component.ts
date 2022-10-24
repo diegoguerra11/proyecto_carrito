@@ -116,8 +116,8 @@ export class DireccionesComponent implements OnInit {
             }
         });
         console.log(this.provincias);
-        
-        
+
+
       }
     );
   }
@@ -136,14 +136,14 @@ export class DireccionesComponent implements OnInit {
           }
       });
       console.log(this.distritos);
-        
+
       }
     );
   }
- 
+
   registrar(registroForm:any){
+    if(!ValidationsDireccion.registrarDireccion(registroForm.form.value)){return;}
     if(registroForm.valid){
-      if(!ValidationsDireccion.registrarDireccion(registroForm.form.value)){return;}
       this.regiones_arr.forEach(element => {
         if(parseInt(element.id) == parseInt(this.direccion.region)){
           this.direccion.region = element.name;
@@ -163,7 +163,7 @@ export class DireccionesComponent implements OnInit {
       });
 
 
- 
+
       let data = {
         destinatario: this.direccion.destinatario,
         numeroDocumento: this.direccion.numeroDocumento,
@@ -196,8 +196,6 @@ export class DireccionesComponent implements OnInit {
         }
       );
 
-    }else{
-      return MessageBox.messageError("Debe completar todos los campos");
     }
   }
   eliminarDireccion(id:any){

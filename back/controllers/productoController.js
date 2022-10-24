@@ -7,7 +7,7 @@ var path = require('path');
 
 const registro_producto_admin = async function (req,res){
     if (req.user) {
-        if (req.user.role == 'Admin') {
+        if (req.user.role == 'admin') {
             let data = req.body;
             
             var img_path = req.files.portada.path;
@@ -37,7 +37,7 @@ const registro_producto_admin = async function (req,res){
 
 const listar_productos_admin = async function(req,res){
     if(req.user){
-        if(req.user.role == 'Admin'){
+        if(req.user.role == 'admin'){
             
             var filtro = req.params['filtro'];
 
@@ -69,7 +69,7 @@ const obtener_portada = async function(req,res){
 
 const obtener_producto_admin = async function (req,res){
     if(req.user){
-        if(req.user.role =='Admin'){
+        if(req.user.role =='admin'){
             
             var id = req.params['id'];
 
@@ -91,7 +91,7 @@ const obtener_producto_admin = async function (req,res){
 
 const actualizar_producto_admin = async function (req,res){
     if (req.user) {
-        if (req.user.role == 'Admin') {
+        if (req.user.role == 'admin') {
             let id = req.params['id'];
             let data = req.body;
 
@@ -135,10 +135,6 @@ const actualizar_producto_admin = async function (req,res){
                 });
                 res.status(200).send({data:reg});
             }
-            
-
-            
-
         } else {
             res.status(500).send({message: 'NoAccess'});
         }
@@ -149,7 +145,7 @@ const actualizar_producto_admin = async function (req,res){
 
 const eliminar_producto_admin = async function (req,res){
     if(req.user){
-        if(req.user.role =='Admin'){
+        if(req.user.role =='admin'){
             
             var id = req.params['id'];
 
@@ -166,7 +162,7 @@ const eliminar_producto_admin = async function (req,res){
 
 const listar_inventario_producto_admin = async function(req,res){
     if(req.user){
-        if(req.user.role =='Admin'){
+        if(req.user.role =='admin'){
             
             var id = req.params['id'];
 
@@ -183,7 +179,7 @@ const listar_inventario_producto_admin = async function(req,res){
 
 const eliminar_inventario_producto_admin = async function (req,res){
     if(req.user){
-        if(req.user.role =='Admin'){
+        if(req.user.role =='admin'){
             //OBTENER ID DEL INVENTARIO
             var id = req.params['id'];
 
@@ -213,7 +209,7 @@ const eliminar_inventario_producto_admin = async function (req,res){
 
 const registro_inventario_producto_admin = async function(req,res){
     if(req.user){
-        if(req.user.role =='Admin'){
+        if(req.user.role =='admin'){
             
             let data = req.body;
 
@@ -243,7 +239,7 @@ const registro_inventario_producto_admin = async function(req,res){
 
 const actualizar_producto_variedades_admin = async function (req,res){
     if (req.user) {
-        if (req.user.role == 'Admin') {
+        if (req.user.role == 'admin') {
             let id = req.params['id'];
             let data = req.body;
 
@@ -266,7 +262,7 @@ const actualizar_producto_variedades_admin = async function (req,res){
 
 const agregar_imagen_galeria_admin = async function(req,res){
     if(req.user){
-        if(req.user.role == 'Admin'){
+        if(req.user.role == 'admin'){
             let id = req.params['id'];
             let data = req.body;
 
@@ -291,7 +287,7 @@ const agregar_imagen_galeria_admin = async function(req,res){
 
 const eliminar_imagen_galeria_admin = async function(req,res){
     if(req.user){
-        if(req.user.role == 'Admin'){
+        if(req.user.role == 'admin'){
             let id = req.params['id'];
             let data = req.body;
 
@@ -328,6 +324,8 @@ const listar_productos_recomendados_publico = async function(req,res){
     res.status(200).send({data: reg});
 }
 
+
+
 module.exports = {
     registro_producto_admin,
     listar_productos_admin,
@@ -343,6 +341,7 @@ module.exports = {
     eliminar_imagen_galeria_admin,
     listar_productos_publico,
     obtener_productos_slug_publico,
-    listar_productos_recomendados_publico
+    listar_productos_recomendados_publico,
+    
     
 }

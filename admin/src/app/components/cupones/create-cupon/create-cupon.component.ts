@@ -2,7 +2,9 @@ import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { CuponService } from '../../../services/cupon.service';
 import { Router } from '@angular/router';
-declare var iziToast;
+import { MessageBox } from 'src/app/utils/MessageBox';
+import { ValidatonsCupon } from 'src/app/validations/validationsCupon';
+
 
 @Component({
   selector: 'app-create-cupon',
@@ -11,7 +13,7 @@ declare var iziToast;
 })
 export class CreateCuponComponent implements OnInit {
 
-  public token;
+   public token;
 
   public cupon : any = {
     tipo : ''
@@ -21,7 +23,7 @@ export class CreateCuponComponent implements OnInit {
   constructor(
     private _cuponService : CuponService,
     private _router: Router
-  ) { 
+  ) {
     this.token = localStorage.getItem('token');
   }
 
@@ -29,41 +31,39 @@ export class CreateCuponComponent implements OnInit {
   }
 
   registro(registroForm){
-  if (registroForm.valid) {
+
+    if(!ValidatonsCupon.verificarCupon(registroForm.form.value)){return;}
+    console.log(this.cupon);
       this.load_btn = true;
       this._cuponService.registro_cupon_admin(this.cupon,this.token).subscribe(
         response=>{
-            iziToast.show({
-              title:'SUCCESS',
-              titleColor: '#1DC74C',
-              color: '#FFF',
-              class: 'text-success',
-              position: 'topRight',
-              message: 'Se registro correctamente el nuevo cupon'
-            });
-    
-              this.load_btn = false;
+        console.log(response);
+        MessageBox.messageSuccess("Cupón registrado correctamente");
+        this.cupon ={
+          codigo: '',
+          tipo: '',
+          valor: '',
+          limite: '',
+        }
 
-              this._router.navigate(['/panel/cupones']);
-    
-    
+        this.load_btn = false;
+
+        this._router.navigate(['/panel/cupones']);
         },
         error => {
-          console.log(error);
-          this.load_btn = false;
+        this.load_btn = false;
+        console.log(error);
         }
       );
-    
-  } else {
-      iziToast.show({
-        title:'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'Los datos del formulario no son validos'
-      });
-  }
+
+
+
+
+
+
+
+
+
   }
 
 }

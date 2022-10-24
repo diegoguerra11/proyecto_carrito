@@ -92,4 +92,86 @@ export class AdminService {
       return this._http.get(this.url+'obtener_config_publico',{headers:headers});
 
     }
+
+    registro_compra_manual_cliente(data:any,token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.post(this.url+'registro_compra_manual_cliente',data,{headers:headers});
+    }
+
+    listar_variedades_productos_admin(token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.get(this.url+'listar_variedades_productos_admin',{headers:headers});
+    }
+
+    obtener_direccion_todos_cliente(id:any,token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.get(this.url+'obtener_direccion_todos_cliente/'+id,{headers:headers});
+    }
+    listar_clientes_tienda(token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.get(this.url + 'listar_clientes_tienda',{headers:headers});
+    }
+  
+
+    //venta
+    obtener_ventas_admin(token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.get(this.url+'obtener_ventas_admin',{headers:headers});
+    }
+
+    obtener_detalles_ordenes_cliente(id:any,token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.get(this.url+'obtener_detalles_ordenes_cliente/'+id,{headers:headers});
+    }
+  
+    obtenerPago(id:any):Observable<any>{
+      let headers = new HttpHeaders()
+      .set('Content-Type','application/json')
+      .set('Authorization','Bearer TEST-1565437970717712-100416-3da5767dad6b8dfef6c0563925dadf81-612621626');
+      return this._http.get('https://api.mercadopago.com/v1/payments/'+id,{headers:headers});
+    }
+
+    marcar_finalizado_orden(id:any,data:any,token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.put(this.url+'marcar_finalizado_orden/'+id,data,{headers:headers});
+    }
+  
+    eliminar_orden_admin(id:any,token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.delete(this.url+'eliminar_orden_admin/'+id,{headers:headers});
+    }
+    marcar_envio_orden(id:any,data:any,token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.put(this.url+'marcar_envio_orden/'+id,data,{headers:headers});
+    }
+  
+    confirmar_pago_orden(id:any,data:any,token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.put(this.url+'confirmar_pago_orden/'+id,data,{headers:headers});
+    }
+
+    //variedades
+    
+  
+    actualizar_producto_variedades_admin(data:any,id:any,token:any):Observable<any>{
+      let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+      return this._http.put(this.url+'actualizar_producto_variedades_admin/'+id,data,{headers:headers});
+    }
+  
+
+listar_variedades_admin(id:any,token:any):Observable<any>{
+  let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+  return this._http.get(this.url + 'listar_variedades_admin/'+id,{headers:headers});
+}
+
+eliminar_variedad_admin(id:any,token:any):Observable<any>{
+  let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+  return this._http.delete(this.url+'eliminar_variedad_admin/'+id,{headers:headers});
+}
+
+agregar_nueva_variedad_admin(data:any,token:any):Observable<any>{
+  let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+  return this._http.post(this.url+'agregar_nueva_variedad_admin',data,{headers:headers});
+}
+  
   }

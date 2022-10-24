@@ -35,16 +35,22 @@
               (ngSubmit)="actualizar(actualizarForm)"
             >
               <div class="row pb-3">
-                <div class="col-sm-6 form-group">
-                  <label for="ac-email">Nro. de Documento</label>
-                  <input
-                    type="text"
-                    class="form-control form-control-lg"
-                    placeholder="Nro. de Documento"
-                    name="dni"
-                    [(ngModel)]="cliente.dni"
-                  />
+                <div class="col-sm-6">
+                  <label for="validationCustom01" class="form-label">Tipo de Documento</label>
+                  <select  name="tipoDocumento" required [(ngModel)]="cliente.tipoDocumento"   class="form-control custom-select" >
+                    <option value="" selected disabled>Seleccionar</option>
+                    <option value="dni">DNI</option>
+                    <option value="carnetExtranjeria">
+                      Carnet de Extranjería
+                    </option>
+                    <option value="pasaporte">Pasaporte</option>
+                  </select>
                 </div>
+                <div class="col-sm-6">
+                  <label for="validationCustom01" class="form-label">Número de Documento</label>
+                  <input  type="text" required class="form-control form-control-lg"  name="numeroDocumento"  [(ngModel)]="cliente.numeroDocumento" placeholder="Número de Documento"   />
+                </div>
+
                 <div class="col-sm-6 form-group">
                   <label for="ac-fn">Nombres</label>
                   <input
