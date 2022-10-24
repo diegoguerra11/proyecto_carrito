@@ -56,6 +56,7 @@
               </tbody>
 
               <ng-container  *ngIf="!load_data">
+                <ng-container *ngIf="productos.length > 0">
                   <tbody *ngFor="let item of productos| slice: (page-1)*pageSize : (page-1) * pageSize + pageSize">
                     <tr>
                       <td>
@@ -105,8 +106,15 @@
                       </td>
                     </tr>
                   </tbody>
+                </ng-container>
+                <ng-container *ngIf="productos.length == 0">
+                  <tbody>
+                    <tr>
+                      <td colspan="10">No hay prodcutos</td>
+                    </tr>
+                  </tbody>
+                </ng-container>
               </ng-container>
-              
               
             </table>
         </div>

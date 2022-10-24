@@ -25,6 +25,7 @@ io.on('connection', function(socket){
     });
 });
 
+var descuento_route = require('./routes/descuento');
 var cliente_route = require('./routes/cliente');
 var admin_route = require('./routes/admin');
 var producto_route = require('./routes/producto');
@@ -62,6 +63,7 @@ app.use('/api',producto_route);
 app.use('/api',cupon_route);
 app.use('/api',config_route);
 app.use('/api',carrito_route);
+app.use('/api',descuento_route);
 
 
 module.exports = app;

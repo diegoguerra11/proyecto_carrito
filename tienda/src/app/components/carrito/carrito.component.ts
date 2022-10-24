@@ -1,12 +1,11 @@
-import { Component, OnInit, Output, EventEmitter  } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { GLOBAL } from 'src/app/services/GLOBAL';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { io } from "socket.io-client";
 import { GuestService } from 'src/app/services/guest.service';
 import { Router } from '@angular/router';
-import { MessageBox } from '../../../../../admin/src/app/utils/MessageBox';
+import { MessageBox } from '../../Utils/MessageBox';
 
-declare var iziToast:any;
 // declare var Cleave:any;
 declare var StickySidebar:any;
 
@@ -93,9 +92,7 @@ export class CarritoComponent implements OnInit {
       }
     );
 
-    setTimeout(()=>{
-      new StickySidebar('.sidebar-sticky', {topSpacing: 20});
-    });
+    //var sidebar = new StickySidebar('.sidebar-sticky', {topSpacing: 20});
 
     this.init_Data();
     
@@ -103,25 +100,27 @@ export class CarritoComponent implements OnInit {
   }
 
   init_Data(){
-    this._clienteService.obtener_carrito_cliente(this.idcliente,this.token).subscribe(
-      response=>{
-        this.carrito_arr = response.data;
+    // this._clienteService.obtener_carrito_cliente(this.idcliente,this.token).subscribe(
+    //   response=>{
+    //     this.carrito_arr = response.data;
 
-        this.carrito_arr.forEach(element => {
-            this.dventa.push({
-              producto: element.producto._id,
-              subtotal: element.producto.precio,
-              variedad: element.variedad,
-              cantidad: element.cantidad,
-              cliente: localStorage.getItem('_id')
-            });
-        });
-        this.carrito_load = false;
+    //     this.carrito_arr.forEach(element => {
+    //         this.dventa.push({
+    //           producto: element.producto._id,
+    //           subtotal: element.producto.precio,
+    //           variedad: element.variedad,
+    //           cantidad: element.cantidad,
+    //           cliente: localStorage.getItem('_id')
+    //         });
+    //     });
+    //     this.carrito_load = false;
 
-        this.calcular_carrito();
-        this.cacular_total('Envio Gratis');
-      }
-    );
+       
+    //   }
+    // );
+
+    //this.obtener_carrito();
+    this.cacular_total('Envio Gratis');
   }
 
   obtener_carrito(){
@@ -133,14 +132,13 @@ export class CarritoComponent implements OnInit {
             this.dventa.push({
               producto: element.producto._id,
               subtotal: element.producto.precio,
-              variedad: element.variedad._id,
+              variedad: element.variedad,
               cantidad: element.cantidad,
               cliente: localStorage.getItem('_id')
             });
           }  
-      });
+        });
         this.calcular_carrito();
-        
       }
     );
   }
@@ -166,7 +164,7 @@ export class CarritoComponent implements OnInit {
     console.log(this.venta);
     
     this.btn_load = true;
-    this._guestService.pedido_compra_cliente(this.venta,this.token).subscribe(
+    this._guestService.registro_pedido_compra_cliente(this.venta,this.token).subscribe(
       response=>{
         console.log(response);
         
@@ -177,7 +175,8 @@ export class CarritoComponent implements OnInit {
         }
 
         this.btn_load = false;
-        this._router.navigate(['/cuenta/pedidos',response.venta._id]);
+        //this._router.navigate(['/']);
+        //this._router.navigate(['/cuenta/pedidos/',response.venta._id]);
       }
     );
   }
@@ -191,7 +190,7 @@ export class CarritoComponent implements OnInit {
         this.generar_pedido();
         break;
       case 'transferencia':
-        console.log('trasnferencia');
+        this.generar_pedido();
         break;
     }
   }
@@ -310,7 +309,6 @@ export class CarritoComponent implements OnInit {
     this.venta.envio_titulo = envio_titulo;
 
     console.log(this.venta);
-    
   }
 
   eliminar_item_guest(item:any){
