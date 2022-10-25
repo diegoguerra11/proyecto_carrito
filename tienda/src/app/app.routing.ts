@@ -11,6 +11,7 @@ import { CarritoComponent } from "./components/carrito/carrito.component";
 import { DireccionesComponent } from './components/usuario/direcciones/direcciones.component';
 import { IndexPedidosComponent } from './components/usuario/pedidos/index-pedidos/index-pedidos.component';
 import { PedidosDetallesComponent } from "./components/usuario/pedidos/pedidos-detalles/pedidos-detalles.component";
+import { VerificarPagoComponent } from "./components/verificar-pago/verificar-pago.component";
 
 const appRoute : Routes = [
     {path: '', component: InicioComponent},
@@ -21,6 +22,9 @@ const appRoute : Routes = [
     {path: 'cuenta/pedidos', component: IndexPedidosComponent, canActivate: [AuthGuard]},
     {path: 'cuenta/pedidos/:id', component: PedidosDetallesComponent, canActivate: [AuthGuard]},
     {path: 'carrito', component: CarritoComponent, canActivate: [AuthGuard]},
+
+
+    {path: 'verificar-pago/:tipo/:direccion/:cupon/:envio/:tipo_descuento/:valor_descuento/:total_pagar/:subtotal', component: VerificarPagoComponent},
 
     {path: 'productos', component: IndexProductoComponent},
     {path: 'productos/categoria/:categoria', component: IndexProductoComponent},

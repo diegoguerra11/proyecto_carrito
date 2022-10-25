@@ -20,6 +20,7 @@ import { CarritoComponent } from './components/carrito/carrito.component';
 import { DireccionesComponent } from './components/usuario/direcciones/direcciones.component';
 import { IndexPedidosComponent } from './components/usuario/pedidos/index-pedidos/index-pedidos.component';
 import { PedidosDetallesComponent } from './components/usuario/pedidos/pedidos-detalles/pedidos-detalles.component';
+import { VerificarPagoComponent } from './components/verificar-pago/verificar-pago.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { PedidosDetallesComponent } from './components/usuario/pedidos/pedidos-d
     DireccionesComponent,
     IndexPedidosComponent,
     PedidosDetallesComponent,
+    VerificarPagoComponent,
   ],
   imports: [
     BrowserModule,
