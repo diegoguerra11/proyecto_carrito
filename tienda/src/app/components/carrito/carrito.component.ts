@@ -47,6 +47,8 @@ export class CarritoComponent implements OnInit {
   public envio = 0;
   public nota = '';
 
+public totalAPagar = 0;
+
   constructor(
     private _clienteService: ClienteService,
     private _guestService:GuestService,
@@ -92,7 +94,9 @@ export class CarritoComponent implements OnInit {
       }
     );
 
-    //var sidebar = new StickySidebar('.sidebar-sticky', {topSpacing: 20});
+    // setTimeout(() => {
+    //   var sidebar = new StickySidebar('.sidebar-sticky', {topSpacing: 20});
+    // }, 3000);
 
     this.init_Data();
     
@@ -113,11 +117,11 @@ export class CarritoComponent implements OnInit {
     //           cliente: localStorage.getItem('_id')
     //         });
     //     });
-    //     this.carrito_load = false;
-
+    //    
        
     //   }
     // );
+    this.carrito_load = false;
 
     //this.obtener_carrito();
     this.cacular_total('Envio Gratis');
@@ -131,8 +135,8 @@ export class CarritoComponent implements OnInit {
           if(this.currency == 'PEN'){
             this.dventa.push({
               producto: element.producto._id,
-              subtotal: element.producto.precio,
-              variedad: element.variedad,
+              subtotal: element.producto.precio * element.cantidad,
+              variedad: element.variedad._id,
               cantidad: element.cantidad,
               cliente: localStorage.getItem('_id')
             });
@@ -145,11 +149,13 @@ export class CarritoComponent implements OnInit {
 
   generar_pedido(){
     this.venta.transaccion = 'Venta pedido';
+    
     if(this.currency != 'PEN'){
       this.venta.currency = 'USD';
     }else{
       this.venta.currency = 'PEN';
     }
+
     this.venta.subtotal = this.subtotal;
     this.venta.total_pagar = this.total_pagar;
     this.venta.envio_precio = this.envio;
@@ -161,22 +167,15 @@ export class CarritoComponent implements OnInit {
     this.venta.valor_descuento = this.valor_descuento;
     let idcliente = localStorage.getItem('_id');
     this.venta.cliente = idcliente;
-    console.log(this.venta);
-    
+
     this.btn_load = true;
     this._guestService.registro_pedido_compra_cliente(this.venta,this.token).subscribe(
       response=>{
-        console.log(response);
-        
-        if(response.venta == undefined){          
-          MessageBox.messageError(response.message);
-          this.btn_load = false;
-          return;
-        }
-
         this.btn_load = false;
-        //this._router.navigate(['/']);
-        //this._router.navigate(['/cuenta/pedidos/',response.venta._id]);
+
+        if(!response.data){return MessageBox.messageError(response.data.message);}
+  
+        this._router.navigate(['/cuenta/pedidos/',response.data._id]);
       }
     );
   }
@@ -184,6 +183,10 @@ export class CarritoComponent implements OnInit {
   pagar() {
     switch(this.metodo_pago){
       case 'pasarela_pago':
+        if(this.totalAPagar == 0){
+          this.totalAPagar = this.total_pagar;
+        }
+        
         this.get_token_mercado_pago();
         break;
       case 'yape_plin':
@@ -237,17 +240,22 @@ export class CarritoComponent implements OnInit {
           notification_url: 'https://hookb.in/6JlGBe8MYbsoRnwwRd1Z',
           items: items,
           back_urls: {
-            failure: "http://localhost:4200/carrito/",
+            //failure: "http://localhost:4200/carrito/",
             //pending: response.sandbox_init_point,
-            success: "http://localhost:4200/inicio/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.total_pagar+'/'+this.subtotal,
+            //success: "http://localhost:4200/inicio/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.total_pagar+'/'+this.subtotal,
+            //success: "http://localhost:4200/cuenta/pedidos/"
+            failure: "http://localhost:4200/verificar-pago/failure/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.totalAPagar+'/'+this.subtotal,
+            pending: "http://localhost:4200/verificar-pago/pending/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.totalAPagar+'/'+this.subtotal,
+            success: "http://localhost:4200/verificar-pago/success/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.totalAPagar+'/'+this.subtotal,
           },
-          //auto_return: "approved"
+          auto_return: "approved"
         }
 
         this._guestService.createToken(data).subscribe(
           response=>{
             console.log(response);
-            window.open(response.sandbox_init_point, '_blank');
+            console.log("miau");
+            window.open(response.sandbox_init_point);
           }
         );
       }
@@ -255,9 +263,7 @@ export class CarritoComponent implements OnInit {
   }
 
   get_direccion_principal(){
-   
     this._clienteService.obtener_direccion_principal_cliente(localStorage.getItem('_id'),this.token).subscribe(
-      
       response=>{
         if(response.data == undefined){
           console.log(response.data);
@@ -352,5 +358,64 @@ export class CarritoComponent implements OnInit {
       }
     );
   }
-  
+  select_direccion_envio(item:any){
+    this.envio_gratis = false;
+    this.direccion_principal = item;
+    if(this.direccion_principal.pais == 'Perú'){
+      if(this.direccion_principal.region == 'Lima'){
+        this.envio = 10;
+      }else if(this.direccion_principal.region != 'Lima'){
+        this.envio = 15;
+      }
+    }
+
+    if(this.venta.cupon != undefined){
+      this.total_pagar = (this.total_pagar -this.descuento)+this.envio;
+    }else{
+      this.total_pagar = this.total_pagar +this.envio;
+    }
+
+    
+    
+  }
+  validar_cupon(){
+    
+    if(this.venta.cupon){
+      if(this.venta.cupon.toString().length <= 25){
+        
+        this._clienteService.validar_cupon_admin(this.venta.cupon,this.token).subscribe(
+          response=>{
+            console.log(response);
+            
+            if(response.data != undefined){
+            
+              this.tipo_descuento =  response.data.tipo;
+                  if(response.data.tipo == 'Valor Fijo'){
+                    this.descuento = response.data.valor;
+                    this.valor_descuento = this.descuento;
+                    this.totalAPagar = (this.total_pagar - this.descuento) + this.envio;
+                  }else if(response.data.tipo == 'Porcentaje'){
+                  
+                    this.descuento =Math.round((this.total_pagar * response.data.valor)/100);
+                    this.valor_descuento = this.descuento;
+                    this.totalAPagar = (this.total_pagar - this.descuento) + this.envio;
+                  }
+                  this.select_direccion_envio(this.direccion_principal);
+                
+            }else{
+              MessageBox.messageError( response.message);
+              
+            }
+          }
+        );
+      }else{
+        MessageBox.messageError('El cupon debe ser menos de 25 caracteres.');
+      }
+    }else{
+      MessageBox.messageError('El cupon no es valido.');
+      
+
+    }
+  }
+
 }

@@ -128,20 +128,28 @@ export class ClienteService {
 
 
   //compra
-  registro_compra_cliente(data:any,token:any):Observable<any>{
+  registro_pedido_compra_cliente(data:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
-    return this._http.post(this.url+'registro_compra_cliente',data,{headers:headers});
+    return this._http.post(this.url+'registro_pedido_compra_cliente',data,{headers:headers});
   }
   enviar_correo_compra_cliente(id:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.get(this.url+'enviar_correo_compra_cliente/'+id,{headers:headers});
   }
-
+  registro_compra_cliente(data:any,token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.post(this.url+'registro_compra_cliente',data,{headers:headers});
+  }
 
   //Pedidos
   obtener_ordenes_cliente(id:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.get(this.url+'obtener_ordenes_cliente/'+id,{headers:headers});
+  }
+
+  obtener_detalles_ordenes_cliente(id: any, token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.get(this.url+'obtener_detalles_ordenes_cliente/'+id,{headers:headers});
   }
 
   //culqi
@@ -159,6 +167,13 @@ export class ClienteService {
     return this._http.post('https://api.culqi.com/v2/charges',data,{headers:headers});
   }
 
-
+  consultarIDPago(id:any,token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.get(this.url+'consultarIDPago/'+id,{headers:headers});
+  }
+  validar_cupon_admin(cupon:any,token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.get(this.url+'validar_cupon_admin/'+cupon,{headers:headers});
+  }
 
 }

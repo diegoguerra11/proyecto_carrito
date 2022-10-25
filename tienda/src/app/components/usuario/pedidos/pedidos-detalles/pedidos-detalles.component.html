@@ -26,9 +26,10 @@
         <div class="row justify-content-center">
           <h1 class="h1">Mi Cuenta</h1>
         </div>
-        <div class="col ml-auto">
+
+        <div class="col ml-auto" *ngIf="orden">
             <div class="d-flex align-items-center justify-content-between mb-4 pb-sm-2">
-              <h1 class="h2 mb-0">My orders</h1>
+              <h1 class="h2 mb-0">Mi Orden #{{ id.toUpperCase() }}</h1>
               
             </div>
 
@@ -40,16 +41,16 @@
                       <table class="table mb-0">
                         <tbody>
                           <tr>
-                            <th class="border-0 py-2 pl-0">Order No:</th>
-                            <td class="border-0 py-2 px-0 text-muted">34BV66580K92</td>
+                            <th class="border-0 py-2 pl-0">Orden No:</th>
+                            <td class="border-0 py-2 px-0 text-muted">{{ id.toUpperCase() }}</td>
                           </tr>
                           <tr>
-                            <th class="border-0 py-2 pl-0">Shiped via:</th>
-                            <td class="border-0 py-2 px-0 text-muted">UPS Ground</td>
+                            <th class="border-0 py-2 pl-0">Método de pago:</th>
+                            <td class="border-0 py-2 px-0 text-muted">{{ orden.metodo_pago }}</td>
                           </tr>
                           <tr>
-                            <th class="border-0 py-2 pl-0">Shipped on:</th>
-                            <td class="border-0 py-2 px-0 text-muted">August 29, 2020, 6:00pm</td>
+                            <th class="border-0 py-2 pl-0">Fecha de compra</th>
+                            <td class="border-0 py-2 px-0 text-muted">{{ orden.createdAt | date }}</td>
                           </tr>
                          
                         </tbody>
@@ -60,16 +61,12 @@
                         <tbody>
                         
                           <tr>
-                            <th class="border-0 py-2 pl-0">Destination:</th>
-                            <td class="border-0 py-2 px-0 text-muted">London, United Kingdom</td>
+                            <th class="border-0 py-2 pl-0">Transaccion:</th>
+                            <td class="border-0 py-2 px-0 text-muted">{{ orden.transaccion }}</td>
                           </tr>
                           <tr>
-                            <th class="border-0 py-2 pl-0">Expected date:</th>
-                            <td class="border-0 py-2 px-0 text-muted">September 4, 2020</td>
-                          </tr>
-                          <tr>
-                            <th class="border-0 py-2 pl-0">Status:</th>
-                            <td class="border-0 py-2 px-0 text-muted">In Transit</td>
+                            <th class="border-0 py-2 pl-0">Estado:</th>
+                            <td class="border-0 py-2 px-0 text-muted">{{ orden.estado }}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -79,163 +76,77 @@
                 </div>
               </div>
               <div class="col-12">
-                
+                <ng-container *ngIf="orden.direccion">
+                  <div class="card mb-3">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-3 col-sm-4 mb-sm-0 mb-3">
+                          <h3 class="mb-2 font-size-lg">
+                            {{ orden.direccion.destinatario }}
+                          </h3>
+                              
+                          <span class="d-block mb-3 font-size-sm text-muted">{{ orden.direccion.zip }}</span>
+                           
+                          <a  class="badge badge-primary">Dirección de envio</a>
+
+                        </div>
+                        <div class="col">
+                          <p class="mb-3">
+                            {{ orden.direccion.direccion }}
+                          </p>
+                          <p class="mb-3">
+                            <span *ngIf="orden.direccion.region">{{orden.direccion.region }}</span>
+                            -
+                            <span *ngIf="orden.direccion.provincia">{{orden.direccion.provincia}}</span>
+                            -
+                            <span *ngIf="orden.direccion.distrito">{{orden.direccion.distrito}}</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
               </div>
             </div>
             
             <div class="card border-bottom">
-              <div class="card-header accordion-heading py-1">
-                <a href="#order-1" class="d-flex flex-wrap justify-content-between py-3" data-toggle="collapse" aria-expanded="true">
-                  <span class="pr-2"># 34BV66580K92</span>
-                  <span class="font-size-sm text-muted text-nowrap px-2">
-                    <i class="cxi-clock font-size-base align-middle mt-n1 mr-1"></i>
-                    Dec 9, 2020
-                  </span>
-                  <span class="badge badge-info">In progress</span>
-                  <span class="text-dark pl-1">$230.00</span>
-                </a>
-              </div>
               <div id="order-1" class="collapse show" data-parent="#orders">
                 <div class="bg-secondary rounded mb-4">
                   <div class="table-responsive">
                     <table class="table mb-0">
                       <tbody>
-                        <tr>
+                        <tr *ngFor="let item of detalles">
                           <td class="border-top-0">
                             <div class="media pl-2 py-2">
-                              <a href="shop-single.html" style="min-width: 80px;">
-                                <img src="../../assets/img/ecommerce/cart/01.png" width="80" alt="Product thumb">
+                              <a style="min-width: 80px;">
+                                <img [src]="url +'obtener_portada/'+item.producto.portada" width="80" alt="Product thumb">
                               </a>
                               <div class="media-body pl-3">
                                 <h3 class="font-size-sm mb-3">
-                                  <a href="shop-single.html" class="nav-link font-weight-bold">Basic hooded sweatshirt in pink</a>
+                                  <a class="nav-link font-weight-bold">{{ item.producto.titulo }}</a>
                                 </h3>
                                 <ul class="list-unstyled font-size-xs mt-n2 mb-2">
-                                  <li class="mb-0"><span class="text-muted">Color:</span> Pink</li>
-                                  <li class="mb-0"><span class="text-muted">Size:</span> S</li>
+                                  <li class="mb-0"><span class="text-muted">{{ item.producto.titulo_variedad }}:</span>{{ item.variedad.valor }}</li>
                                 </ul>
                               </div>
                             </div>
                           </td>
                           <td class="border-top-0">
                             <div class="py-2">
-                              <div class="font-size-xs text-muted mb-1">Price:</div>
-                              <div class="font-size-sm text-dark">$15.00</div>
+                              <div class="font-size-xs text-muted mb-1">Precio:</div>
+                              <div class="font-size-sm text-dark">{{ item.producto.precio }}</div>
                             </div>
                           </td>
                           <td class="border-top-0">
                             <div class="py-2">
-                              <div class="font-size-xs text-muted mb-1">Quantity:</div>
-                              <div class="font-size-sm text-dark">1</div>
+                              <div class="font-size-xs text-muted mb-1">Cantidad:</div>
+                              <div class="font-size-sm text-dark">{{ item.cantidad }}</div>
                             </div>
                           </td>
                           <td class="border-top-0">
                             <div class="py-2 pr-3 text-right">
                               <div class="font-size-xs text-muted mb-1">Subtotal:</div>
-                              <div class="font-size-sm font-weight-bold text-dark">$15.00</div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="media pl-2 py-2">
-                              <a href="shop-single.html" style="min-width: 80px;">
-                                <img src="../../assets/img/ecommerce/cart/02.png" width="80" alt="Product thumb">
-                              </a>
-                              <div class="media-body pl-3">
-                                <h3 class="font-size-sm mb-3">
-                                  <a href="shop-single.html" class="nav-link font-weight-bold">Black and white sport cap</a>
-                                </h3>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="py-2">
-                              <div class="font-size-xs text-muted mb-1">Price:</div>
-                              <div class="font-size-sm text-dark">$18.15</div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="py-2">
-                              <div class="font-size-xs text-muted mb-1">Quantity:</div>
-                              <div class="font-size-sm text-dark">1</div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="py-2 pr-3 text-right">
-                              <div class="font-size-xs text-muted mb-1">Subtotal:</div>
-                              <div class="font-size-sm font-weight-bold text-dark">$18.15</div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="media pl-2 py-2">
-                              <a href="shop-single.html" style="min-width: 80px;">
-                                <img src="../../assets/img/ecommerce/cart/03.png" width="80" alt="Product thumb">
-                              </a>
-                              <div class="media-body pl-3">
-                                <h3 class="font-size-sm mb-3">
-                                  <a href="shop-single.html" class="nav-link font-weight-bold">Mid-rise slim cropped fit jeans</a>
-                                </h3>
-                                <ul class="list-unstyled font-size-xs mt-n2 mb-2">
-                                  <li class="mb-0"><span class="text-muted">Size:</span> M</li>
-                                </ul>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="py-2">
-                              <div class="font-size-xs text-muted mb-1">Price:</div>
-                              <div class="font-size-sm text-dark">$76.00</div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="py-2">
-                              <div class="font-size-xs text-muted mb-1">Quantity:</div>
-                              <div class="font-size-sm text-dark">1</div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="py-2 pr-3 text-right">
-                              <div class="font-size-xs text-muted mb-1">Subtotal:</div>
-                              <div class="font-size-sm font-weight-bold text-dark">$76.00</div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="media pl-2 py-2">
-                              <a href="shop-single.html" style="min-width: 80px;">
-                                <img src="../../assets/img/ecommerce/cart/04.png" width="80" alt="Product thumb">
-                              </a>
-                              <div class="media-body pl-3">
-                                <h3 class="font-size-sm mb-3">
-                                  <a href="shop-single.html" class="nav-link font-weight-bold">Men fashion gray shoes</a>
-                                </h3>
-                                <ul class="list-unstyled font-size-xs mt-n2 mb-2">
-                                  <li class="mb-0"><span class="text-muted">Color:</span> Gray</li>
-                                  <li class="mb-0"><span class="text-muted">Size:</span> 10.5</li>
-                                </ul>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="py-2">
-                              <div class="font-size-xs text-muted mb-1">Price:</div>
-                              <div class="font-size-sm text-dark">$84.00</div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="py-2">
-                              <div class="font-size-xs text-muted mb-1">Quantity:</div>
-                              <div class="font-size-sm text-dark">1</div>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="py-2 pr-3 text-right">
-                              <div class="font-size-xs text-muted mb-1">Subtotal:</div>
-                              <div class="font-size-sm font-weight-bold text-dark">$84.00</div>
+                              <div class="font-size-sm font-weight-bold text-dark">{{ orden.currency == 'PEN' ? 'S/.' : '$.' }}{{ item.subtotal }}</div>
                             </div>
                           </td>
                         </tr>
@@ -243,25 +154,13 @@
                           <td>
                             <div class="py-2 pl-2">
                               <span class="font-size-xs text-muted">Subtotal: </span>
-                              <span class="font-size-sm text-dark">$198.65</span>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="py-2">
-                              <span class="font-size-xs text-muted">Shipping: </span>
-                              <span class="font-size-sm text-dark">$25.00</span>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="py-2">
-                              <span class="font-size-xs text-muted">Tax: </span>
-                              <span class="font-size-sm text-dark">$6.35</span>
+                              <span class="font-size-sm text-dark">{{ orden.currency == 'PEN' ? 'S/.' : '$.' }}{{ orden.subtotal }}</span>
                             </div>
                           </td>
                           <td>
                             <div class="py-2 pr-3 text-right">
                               <span class="font-size-xs text-muted">Total: </span>
-                              <span class="font-size-sm font-weight-bold text-dark">$230.00</span>
+                              <span class="font-size-sm font-weight-bold text-dark">{{ orden.currency == 'PEN' ? 'S/.' : '$.' }}{{ orden.total_pagar }}</span>
                             </div>
                           </td>
                         </tr>
@@ -269,14 +168,18 @@
                     </table>
                   </div>
                 </div>
-                <div class="d-flex justify-content-end align-items-center mb-4">
-                  <span class="font-weight-bold text-dark mr-3">You can track your order here</span>
-                  <a href="order-tracking.html" class="btn btn-outline-primary btn-sm">Order tracking</a>
-                </div>
               </div>
             </div>
            
+        </div>
+
+        <div class="col ml-auto" *ngIf="!orden">
+          <div class="col-lg-12 col-md-5">
+            <h3 class="h6 mb-2 text-uppercase">No se encontro la venta</h3>
+            <h2 class="h1 pb-lg-3">Es posible que sea un error</h2>
           </div>
+        </div>
+          
       </div>
     </div>
   </section>

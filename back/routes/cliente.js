@@ -30,5 +30,10 @@ api.delete('/eliminar_direccion_cliente/:id',auth.auth, clienteController.elimin
 //ORDENES
 api.post('/registro_pedido_compra_cliente', auth.auth, clienteController.registro_pedido_compra_cliente);
 api.get('/obtener_ordenes_cliente/:id', auth.auth, clienteController.obtener_ordenes_cliente);
+api.get('/obtener_detalles_ordenes_cliente/:id', auth.auth, clienteController.obtener_detalles_ordenes_cliente);
+
+api.get('/consultarIDPago/:id',auth.auth,clienteController.consultarIDPago);
+api.post('/registro_compra_cliente',auth.auth,clienteController.registro_compra_cliente);
+
 
 module.exports = api;

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProductoService } from '../../../services/producto.service';
 import { GLOBAL } from '../../../services/GLOBAL';
 import { AdminService } from 'src/app/services/admin.service';
+import { MessageBox } from '../../../utils/MessageBox';
 declare var iziToast;
 declare var $:any;
 @Component({
@@ -18,6 +19,7 @@ export class VariedadProductoComponent implements OnInit {
   public variedades :Array<any> = [];
   public load_agregar = false;
   public load_data = true;
+  public stock = 0;
   public nueva_variedad = '';
   public load_btn = false;
   public url;
@@ -76,41 +78,25 @@ export class VariedadProductoComponent implements OnInit {
   }
 
   agregar_variedad(){
-    if(this.nueva_variedad){
+    if(!this.nueva_variedad) { return MessageBox.messageError('El campo de la variedad debe ser completada');}
 
-      let data = {
-        producto: this.id,
-        valor:this.nueva_variedad,
-      }
-      this.load_agregar = true;
-      this._adminService.agregar_nueva_variedad_admin(data,this.token).subscribe(
-        response=>{
-          console.log(data);
-          iziToast.show({
-              title: 'SUCCESS',
-              titleColor: '#1DC74C',
-              color: '#FFF',
-              class: 'text-success',
-              position: 'topRight',
-              message: 'Se agrego la nueva variedad.'
-          });
-          this.load_agregar = false;
-          this.listar_variedades();
-        }
-      );
-
-      this.nueva_variedad = '';
-    }else{
-      iziToast.show({
-          title: 'ERROR',
-          titleColor: '#FF0000',
-          color: '#FFF',
-          class: 'text-danger',
-          position: 'topRight',
-          message: 'El campo de la variedad debe ser completada'
-      });
-   
+    let data = {
+      producto: this.id,
+      valor:this.nueva_variedad,
+      stock: this.stock
     }
+
+    this.load_agregar = true;
+    this._adminService.agregar_nueva_variedad_admin(data,this.token).subscribe(
+      response=>{
+        console.log(data);
+        MessageBox.messageSuccess('Se agrego la nueva variedad.');
+        this.load_agregar = false;
+        this.listar_variedades();
+      }
+    );
+
+    this.nueva_variedad = '';
   }
 
   eliminar_variedad(id:any){

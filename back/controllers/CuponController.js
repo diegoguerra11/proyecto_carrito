@@ -95,11 +95,32 @@ const eliminar_cupon_admin = async function (req,res){
         res.status(500).send({message: 'NoAcceess'});
     }
 }
+const validar_cupon_admin = async function(req,res){
+    if(req.user){
+        var cupon = req.params['cupon'];
+
+        var data = await Cupon.findOne({codigo:cupon});
+
+        if(data){
+           if(data.limite == 0){
+             res.status(200).send({data:undefined,message: 'Se superó el mimite máximo de canjes'});
+           }else{
+             res.status(200).send({data:data});
+           }
+        }else{
+            res.status(200).send({data:undefined,message: 'El cupón no existe'});
+        }
+
+    }else{
+        res.status(500).send({message: 'NoAccess'});
+    }
+}
 
 module.exports = {
     registro_cupon_admin,
     listar_cupones_admin,
     obtener_cupon_admin,
     actualizar_cupon_admin,
-    eliminar_cupon_admin
+    eliminar_cupon_admin,
+    validar_cupon_admin
 }

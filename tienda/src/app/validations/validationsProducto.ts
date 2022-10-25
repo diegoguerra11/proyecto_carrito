@@ -19,8 +19,8 @@ export class ValidationsProducto {
             return false;
         }
     
-        if(carrito_data.cantidad >= obj_variedad_select.stock) {
-            MessageBox.messageError('La cantidad máxima del producto es ' + obj_variedad_select.stock);
+        if(carrito_data.cantidad >= parseInt(obj_variedad_select.stock)) {
+            MessageBox.messageError('La cantidad máxima del producto debe ser menor a ' + obj_variedad_select.stock);
             return false;
         }
 

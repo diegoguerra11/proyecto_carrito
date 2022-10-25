@@ -12,4 +12,5 @@ api.get('/obtener_cupon_admin/:id',auth.auth,CuponController.obtener_cupon_admin
 api.put('/actualizar_cupon_admin/:id', auth.auth, CuponController.actualizar_cupon_admin);
 api.delete('/eliminar_cupon_admin/:id',auth.auth, CuponController.eliminar_cupon_admin);
 
+api.get('/validar_cupon_admin/:cupon',auth.auth,CuponController.validar_cupon_admin);
 module.exports = api;
