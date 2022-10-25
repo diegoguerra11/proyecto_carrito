@@ -41,28 +41,25 @@
             <div class="col-md-9">
               <input class="form-control" required type="text" id="text-input" placeholder="Titulo de la variedad" name="titulo_variedad" [(ngModel)]="producto.titulo_variedad">
             </div>
-          </div>
+        </div>
         <div class="form-group row align-items-center">
-          <label class="col-md-3 col-form-label font-weight-medium" for="text-input">Variedades</label>
           <div class="col-md-9">
-            <div class="input-group">
+            <label class="col-md-3 col-form-label font-weight-medium" for="text-input">Variedades</label>
+              <div class="input-group">
                 <input class="form-control" type="text" placeholder="Nueva variedad" name="nueva_variedad" [(ngModel)]="nueva_variedad">
+                <input class="form-control" type="number" placeholder="Stock" name="stock" [(ngModel)]="stock">
                 <button class="btn btn-primary" type="button" (click)="agregar_variedad()">Agregar</button>
               </div>
           </div>
 
-          <div class="col-md-3">
-
-          </div>
           <div class="col-md-9">
             <div class="table-responsive mt-3">
               <table class="table table-sm" *ngIf="variedades">
                 <thead class="thead-dark">
                   <tr>
-             
                     <th>Titulo</th>
                     <th>Stock</th>
-                                  <th>Eliminar</th>
+                    <th>Eliminar</th>
                   </tr>
                 </thead>
                 <ng-container *ngIf="variedades.length== 0">

@@ -1,7 +1,7 @@
 <app-nav></app-nav>
 
 <div *ngIf="user_lc != undefined">
-  <ng-container *ngIf="carrito_arr.length ==0">
+  <ng-container *ngIf="carrito_arr.length == 0">
     <div class="col-12 text-center">
       <div class="cart__content">
         <div class="ps-form__header">
@@ -56,7 +56,7 @@
                         <a [routerLink]="['/productos', item.producto.slug]"   class="nav-link font-weight-bold">{{item.producto.titulo}}</a>
                       </h3>
                       <ul class="list-unstyled font-size-xs mt-n2 mb-2">
-                        <li class="mb-0"><span class="text-muted">{{item.producto.titulo_variedad}}: </span>{{item.variedad}}</li>
+                        <li class="mb-0"><span class="text-muted">{{item.producto.titulo_variedad}}: </span>{{item.variedad.valor}}</li>
                       </ul>
                     </div>
                     <div class="d-flex pr-sm-3">

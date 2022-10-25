@@ -47,7 +47,7 @@
             <ng-container *ngIf="ordenes.length > 0">
               <div class="card border-bottom" *ngFor="let item of ordenes | slice: (page-1)*pageSize : (page-1) * pageSize + pageSize;">
                 <div class="card-header accordion-heading py-1">
-                  <a href="#order-2" class="d-flex flex-wrap justify-content-between py-3" data-toggle="collapse" aria-expanded="false">
+                  <a [routerLink]="['/cuenta/pedidos',item._id]"class="d-flex flex-wrap justify-content-between py-3" data-toggle="collapse" aria-expanded="false">
                     <span class="pr-2"># {{ item._id.toUpperCase() }}</span>
                     <span class="font-size-sm text-muted text-nowrap px-2">
                       <i class="cxi-clock font-size-base align-middle mt-n1 mr-1"></i>

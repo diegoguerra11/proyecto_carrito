@@ -92,7 +92,9 @@ export class CarritoComponent implements OnInit {
       }
     );
 
-    //var sidebar = new StickySidebar('.sidebar-sticky', {topSpacing: 20});
+    // setTimeout(() => {
+    //   var sidebar = new StickySidebar('.sidebar-sticky', {topSpacing: 20});
+    // }, 3000);
 
     this.init_Data();
     
@@ -113,11 +115,11 @@ export class CarritoComponent implements OnInit {
     //           cliente: localStorage.getItem('_id')
     //         });
     //     });
-    //     this.carrito_load = false;
-
+    //    
        
     //   }
     // );
+    this.carrito_load = false;
 
     //this.obtener_carrito();
     this.cacular_total('Envio Gratis');
@@ -131,8 +133,8 @@ export class CarritoComponent implements OnInit {
           if(this.currency == 'PEN'){
             this.dventa.push({
               producto: element.producto._id,
-              subtotal: element.producto.precio,
-              variedad: element.variedad,
+              subtotal: element.producto.precio * element.cantidad,
+              variedad: element.variedad._id,
               cantidad: element.cantidad,
               cliente: localStorage.getItem('_id')
             });
@@ -145,11 +147,13 @@ export class CarritoComponent implements OnInit {
 
   generar_pedido(){
     this.venta.transaccion = 'Venta pedido';
+    
     if(this.currency != 'PEN'){
       this.venta.currency = 'USD';
     }else{
       this.venta.currency = 'PEN';
     }
+
     this.venta.subtotal = this.subtotal;
     this.venta.total_pagar = this.total_pagar;
     this.venta.envio_precio = this.envio;
@@ -161,22 +165,15 @@ export class CarritoComponent implements OnInit {
     this.venta.valor_descuento = this.valor_descuento;
     let idcliente = localStorage.getItem('_id');
     this.venta.cliente = idcliente;
-    console.log(this.venta);
-    
+
     this.btn_load = true;
     this._guestService.registro_pedido_compra_cliente(this.venta,this.token).subscribe(
       response=>{
-        console.log(response);
-        
-        if(response.venta == undefined){          
-          MessageBox.messageError(response.message);
-          this.btn_load = false;
-          return;
-        }
-
         this.btn_load = false;
-        //this._router.navigate(['/']);
-        //this._router.navigate(['/cuenta/pedidos/',response.venta._id]);
+
+        if(!response.data){return MessageBox.messageError(response.data.message);}
+  
+        this._router.navigate(['/cuenta/pedidos/',response.data._id]);
       }
     );
   }
@@ -255,9 +252,7 @@ export class CarritoComponent implements OnInit {
   }
 
   get_direccion_principal(){
-   
     this._clienteService.obtener_direccion_principal_cliente(localStorage.getItem('_id'),this.token).subscribe(
-      
       response=>{
         if(response.data == undefined){
           console.log(response.data);
@@ -352,5 +347,5 @@ export class CarritoComponent implements OnInit {
       }
     );
   }
-  
+
 }

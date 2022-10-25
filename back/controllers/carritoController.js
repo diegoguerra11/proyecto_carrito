@@ -53,7 +53,7 @@ const obtener_carrito_cliente = async function(req,res){
     
     let id = req.params['id'];
 
-    let carrito_cliente = await Carrito.find({cliente:id}).populate('producto');
+    let carrito_cliente = await Carrito.find({cliente:id}).populate('variedad').populate('producto');
     res.status(200).send({data:carrito_cliente});
 }
 

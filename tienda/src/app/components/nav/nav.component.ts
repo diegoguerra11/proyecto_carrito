@@ -56,21 +56,17 @@ export class NavComponent implements OnInit {
    if (this.token) {
     this._clienteService.obtener_cliente_guest(this.id,this.token).subscribe(
       response=>{
-
         this.user = response.data;
         localStorage.setItem('user_data',JSON.stringify(this.user));
         if(localStorage.getItem('user_data')){
           this.user_lc = JSON.parse(localStorage.getItem('user_data')!);
 
           this.obtener_carrito();         
-    
         }else{
           this.user_lc = undefined;
         }
-    
       },
       error=>{
-
         this.user = undefined;
       }
     );
@@ -82,21 +78,17 @@ export class NavComponent implements OnInit {
       response=>{
         this.carrito_arr = response.data;
         this.calcular_carrito();
-        
       }
     );
   }
 
   ngOnInit(): void {
-
-
     if(this.token == null){
       this.socket.on('new-carrito-add',(data)=>{
         if(this.user_lc == undefined){
           let ls_cart = localStorage.getItem('cart');
           if(ls_cart != null){
             this.carrito_logout = JSON.parse(ls_cart);
-            console.log(this.carrito_logout);
             this.calcular_carrito();
           }else{
             this.carrito_logout = [];

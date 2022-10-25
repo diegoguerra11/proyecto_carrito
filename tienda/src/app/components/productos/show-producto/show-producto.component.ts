@@ -5,7 +5,6 @@ import { GuestService } from '../../../services/guest.service';
 import { ClienteService } from '../../../services/cliente.service';
 import { io } from "socket.io-client";
 import { MessageBox } from 'src/app/Utils/MessageBox';
-import { isNumber } from '@ng-bootstrap/ng-bootstrap/util/util';
 import { ValidationsProducto } from '../../../validations/validationsProducto';
 
 declare var tns:any;
@@ -43,11 +42,9 @@ export class ShowProductoComponent implements OnInit {
     variedad: ''
   }
   constructor(
-
     private _route : ActivatedRoute,
     private _guestService: GuestService,
     private _clienteService: ClienteService
-
   ) {  
     
     let obj_lc :any= localStorage.getItem('user_data');
@@ -66,7 +63,6 @@ export class ShowProductoComponent implements OnInit {
             
         this._guestService.obtener_productos_slug_publico(this.slug).subscribe(
           response=>{
-            
             this.producto = response.data;
             this.init_variedades();
             this._guestService.listar_productos_recomendados_publico(this.producto.categoria).subscribe(
@@ -182,7 +178,7 @@ export class ShowProductoComponent implements OnInit {
       variedad: this.obj_variedad_select,
       cantidad: this.carrito_data.cantidad,
     }
-    console.log(data);
+    
     let ls_carrito_guest = localStorage.getItem('cart');
     
     if(ls_carrito_guest == null){
