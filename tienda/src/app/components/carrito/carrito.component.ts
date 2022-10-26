@@ -6,9 +6,6 @@ import { GuestService } from 'src/app/services/guest.service';
 import { Router } from '@angular/router';
 import { MessageBox } from '../../Utils/MessageBox';
 
-// declare var Cleave:any;
-declare var StickySidebar:any;
-
 @Component({
   selector: 'app-carrito',
   templateUrl: './carrito.component.html',
@@ -25,7 +22,6 @@ export class CarritoComponent implements OnInit {
   public carrito_logout :Array<any> = [];
   public url;
   public subtotal = 0;
-  public total_pagar = 0;
   public socket = io('http://localhost:4201');
   public currency = 'PEN';
   public subtotal_const = 0;
@@ -47,7 +43,12 @@ export class CarritoComponent implements OnInit {
   public envio = 0;
   public nota = '';
 
-public totalAPagar = 0;
+
+  public cuponTemporal = "";
+
+
+  public totalAPagarEstatico = 0;
+  public totalAPagarMovible = 0;
 
   constructor(
     private _clienteService: ClienteService,
@@ -94,36 +95,14 @@ public totalAPagar = 0;
       }
     );
 
-    // setTimeout(() => {
-    //   var sidebar = new StickySidebar('.sidebar-sticky', {topSpacing: 20});
-    // }, 3000);
-
     this.init_Data();
     
     this.get_direccion_principal();   
   }
 
   init_Data(){
-    // this._clienteService.obtener_carrito_cliente(this.idcliente,this.token).subscribe(
-    //   response=>{
-    //     this.carrito_arr = response.data;
-
-    //     this.carrito_arr.forEach(element => {
-    //         this.dventa.push({
-    //           producto: element.producto._id,
-    //           subtotal: element.producto.precio,
-    //           variedad: element.variedad,
-    //           cantidad: element.cantidad,
-    //           cliente: localStorage.getItem('_id')
-    //         });
-    //     });
-    //    
-       
-    //   }
-    // );
+   
     this.carrito_load = false;
-
-    //this.obtener_carrito();
     this.cacular_total('Envio Gratis');
   }
 
@@ -147,6 +126,7 @@ public totalAPagar = 0;
     );
   }
 
+
   generar_pedido(){
     this.venta.transaccion = 'Venta pedido';
     
@@ -157,7 +137,7 @@ public totalAPagar = 0;
     }
 
     this.venta.subtotal = this.subtotal;
-    this.venta.total_pagar = this.total_pagar;
+    this.venta.total_pagar = this.totalAPagarEstatico;
     this.venta.envio_precio = this.envio;
     this.venta.detalles = this.dventa;
     this.venta.metodo_pago = this.metodo_pago;
@@ -183,10 +163,6 @@ public totalAPagar = 0;
   pagar() {
     switch(this.metodo_pago){
       case 'pasarela_pago':
-        if(this.totalAPagar == 0){
-          this.totalAPagar = this.total_pagar;
-        }
-        
         this.get_token_mercado_pago();
         break;
       case 'yape_plin':
@@ -232,7 +208,7 @@ public totalAPagar = 0;
               description: 'Cupón aplicado ' + this.venta.cupon,
               quantity: 1,
               currency_id: 'PEN',
-              unit_price: 0//-(this.descuento)
+              unit_price: -this.descuento
           });
         }
 
@@ -240,22 +216,16 @@ public totalAPagar = 0;
           notification_url: 'https://hookb.in/6JlGBe8MYbsoRnwwRd1Z',
           items: items,
           back_urls: {
-            //failure: "http://localhost:4200/carrito/",
-            //pending: response.sandbox_init_point,
-            //success: "http://localhost:4200/inicio/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.total_pagar+'/'+this.subtotal,
-            //success: "http://localhost:4200/cuenta/pedidos/"
-            failure: "http://localhost:4200/verificar-pago/failure/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.totalAPagar+'/'+this.subtotal,
-            pending: "http://localhost:4200/verificar-pago/pending/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.totalAPagar+'/'+this.subtotal,
-            success: "http://localhost:4200/verificar-pago/success/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.totalAPagar+'/'+this.subtotal,
+            failure: "http://localhost:4200/verificar-pago/failure/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.totalAPagarMovible+'/'+this.subtotal,
+            pending: "http://localhost:4200/verificar-pago/pending/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.totalAPagarMovible+'/'+this.subtotal,
+            success: "http://localhost:4200/verificar-pago/success/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.totalAPagarMovible+'/'+this.subtotal,
           },
           auto_return: "approved"
         }
 
         this._guestService.createToken(data).subscribe(
           response=>{
-            console.log(response);
-            console.log("miau");
-            window.open(response.sandbox_init_point);
+            window.location.href = response.sandbox_init_point;
           }
         );
       }
@@ -266,10 +236,10 @@ public totalAPagar = 0;
     this._clienteService.obtener_direccion_principal_cliente(localStorage.getItem('_id'),this.token).subscribe(
       response=>{
         if(response.data == undefined){
-          console.log(response.data);
+          
           this.direccion_principal = undefined; 
         }else{
-          console.log(response.data);
+          
           this.direccion_principal = response.data;
           this.venta.direccion = this.direccion_principal._id;
         }  
@@ -305,20 +275,24 @@ public totalAPagar = 0;
       }
     }
     this.subtotal_const = this.subtotal;
-    this.total_pagar = this.subtotal_const;
+    this.totalAPagarMovible = this.subtotal_const;
   }
 
   cacular_total(envio_titulo:any){
-    this.total_pagar = parseInt(this.subtotal.toString()) + parseInt(this.precio_envio);
-    this.venta.subtotal = this.total_pagar;
+    let descuentoActual = 0;
+    if(this.valor_descuento != 0){
+      descuentoActual = this.valor_descuento;
+    }
+    this.totalAPagarMovible = parseInt(this.subtotal.toString()) + parseInt(this.precio_envio) - parseInt(descuentoActual.toString()); 
+    this.venta.subtotal = this.totalAPagarMovible;
     this.venta.envio_precio = parseInt(this.precio_envio);
     this.venta.envio_titulo = envio_titulo;
 
-    console.log(this.venta);
+    this.totalAPagarEstatico = this.totalAPagarMovible;
   }
 
   eliminar_item_guest(item:any){
-    this.total_pagar  = 0;
+    this.totalAPagarMovible  = 0;
     this.carrito_logout.splice(item._id,1);
     localStorage.removeItem('cart');
 
@@ -336,16 +310,15 @@ public totalAPagar = 0;
       this.subtotal = this.subtotal -monto;
     }
     this.subtotal_const = this.subtotal;
-    this.total_pagar = this.subtotal_const;
+    this.totalAPagarMovible = this.subtotal_const;
+    this.totalAPagarEstatico = this.totalAPagarMovible;
   }
 
   eliminar_item(id:any){
-    console.log(id);
     this._clienteService.eliminar_carrito_cliente(id,this.token).subscribe(
       response=>{
         MessageBox.messageSuccess('Se eliminó el producto correctamente.');
       
-        console.log(response.data + "eliminaritem");
         this.socket.emit('delete-carrito',{data:response.data});
         this._clienteService.obtener_carrito_cliente(this.idcliente,this.token).subscribe(
           response=>{
@@ -368,38 +341,42 @@ public totalAPagar = 0;
         this.envio = 15;
       }
     }
-
+    this.totalAPagarEstatico = this.totalAPagarMovible;
+    
     if(this.venta.cupon != undefined){
-      this.total_pagar = (this.total_pagar -this.descuento)+this.envio;
+     
+      this.totalAPagarMovible = (this.totalAPagarEstatico -this.descuento)+this.envio;
     }else{
-      this.total_pagar = this.total_pagar +this.envio;
+      this.totalAPagarMovible = this.totalAPagarEstatico +this.envio;
     }
 
     
     
   }
   validar_cupon(){
-    
+    if(this.cuponTemporal == ""){
     if(this.venta.cupon){
       if(this.venta.cupon.toString().length <= 25){
         
         this._clienteService.validar_cupon_admin(this.venta.cupon,this.token).subscribe(
           response=>{
-            console.log(response);
             
             if(response.data != undefined){
-            
+              this.totalAPagarEstatico = this.totalAPagarMovible;
               this.tipo_descuento =  response.data.tipo;
                   if(response.data.tipo == 'Valor Fijo'){
                     this.descuento = response.data.valor;
+                    let descuentoLocal = 0;
                     this.valor_descuento = this.descuento;
-                    this.totalAPagar = (this.total_pagar - this.descuento) + this.envio;
+                    this.totalAPagarMovible = (this.totalAPagarEstatico - descuentoLocal) + this.envio;
                   }else if(response.data.tipo == 'Porcentaje'){
                   
-                    this.descuento =Math.round((this.total_pagar * response.data.valor)/100);
+                    this.descuento =Math.round((this.totalAPagarEstatico * response.data.valor)/100);
+                    let descuentoLocal = 0;
                     this.valor_descuento = this.descuento;
-                    this.totalAPagar = (this.total_pagar - this.descuento) + this.envio;
+                    this.totalAPagarMovible = (this.totalAPagarEstatico - descuentoLocal) + this.envio;
                   }
+                  this.cuponTemporal = this.venta.cupon;
                   this.select_direccion_envio(this.direccion_principal);
                 
             }else{
@@ -416,6 +393,9 @@ public totalAPagar = 0;
       
 
     }
+  }else{
+    MessageBox.messageError("Solo se puede canejar un cupón por compra");
   }
+}
 
 }

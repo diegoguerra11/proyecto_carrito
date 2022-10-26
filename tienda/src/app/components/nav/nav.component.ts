@@ -46,12 +46,13 @@ export class NavComponent implements OnInit {
         
         if(ls_cart != null){
           this.carrito_logout = JSON.parse(ls_cart);
-          console.log(this.carrito_logout);
+          
           this.calcular_carrito();
         }else{
           this.carrito_logout = [];
         }
       } 
+      console.log(this.carrito_logout);
 
    if (this.token) {
     this._clienteService.obtener_cliente_guest(this.id,this.token).subscribe(

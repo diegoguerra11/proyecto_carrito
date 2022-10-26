@@ -220,7 +220,7 @@
               <a  [routerLink]="['/productos/',item.producto.slug]"  class="nav-link font-weight-bold">{{item.producto.titulo}}</a>
             </h3>
             <ul class="list-unstyled font-size-xs mt-n2 mb-2">
-              <li class="mb-0"><span class="text-muted">{{item.producto.titulo_variedad}}: </span>{{item.variedad.id}}</li>
+              <li class="mb-0"><span class="text-muted">{{item.producto.titulo_variedad}}: </span>{{item.variedad.variedad}}</li>
             </ul>
             <div class="d-flex align-items-center">
               <input type="number" class="form-control form-control-sm bg-light mr-3" readonly style="width: 4.5rem;" value="{{item.cantidad}}">
