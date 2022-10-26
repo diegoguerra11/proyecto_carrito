@@ -226,7 +226,7 @@ export class CarritoComponent implements OnInit {
               description: 'Cupón aplicado ' + this.venta.cupon,
               quantity: 1,
               currency_id: 'PEN',
-              unit_price: 0//-(this.descuento)
+              unit_price: 0//-(this.valor_descuento)
           });
         }
 
