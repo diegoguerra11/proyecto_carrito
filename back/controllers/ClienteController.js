@@ -422,6 +422,109 @@ const listar_productos_recomendados_publico = async function(req,res){
     let reg = await Producto.find({categoria: categoria,estado:'Publicado'}).sort({createdAt:-1}).limit(8);
     res.status(200).send({data: reg});
 }
+const registro_compra_cliente = async function(req,res){
+    if(req.user){
+
+        var data = req.body;
+        var detalles = data.detalles;
+
+        data.estado = 'Procesando';
+
+        let venta = await Venta.create(data);
+
+        for(var element of detalles){
+            element.venta = venta._id;
+            await Dventa.create(element);
+
+            let element_producto = await Producto.findById({_id:element.producto});
+            let new_stock = element_producto.stock - element.cantidad;
+            let new_ventas = element_producto.nventas + 1;
+
+            let element_variedad = await Variedad.findById({_id:element.variedad});
+            let new_stock_variedad = element_variedad.stock - element.cantidad;
+
+            await Producto.findByIdAndUpdate({_id: element.producto},{
+                stock: new_stock,
+                nventas: new_ventas
+            });
+
+            await Variedad.findByIdAndUpdate({_id: element.variedad},{
+                stock: new_stock_variedad,
+            });
+
+            //limpiar carrito
+            await Carrito.remove({cliente:data.cliente});
+        }
+
+        enviar_orden_compra(venta._id);
+
+        res.status(200).send({data:venta});
+    }else{
+        res.status(500).send({message: 'NoAccess'});
+    }
+}
+const enviar_orden_compra = async function(venta){
+    try {
+        var readHTMLFile = function(path, callback) {
+            fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                if (err) {
+                    throw err;
+                    callback(err);
+                }
+                else {
+                    callback(null, html);
+                }
+            });
+        };
+    
+        var transporter = nodemailer.createTransport(smtpTransport({
+            service: 'gmail',
+            host: 'smtp.gmail.com',
+            auth: {
+                user: 'renzo.carrascom@gmail.com',
+                pass: 'mjqzblcffaegvdzm'
+            }
+        }));
+    
+     
+        var orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
+        var dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
+    
+    
+        readHTMLFile(process.cwd() + '/mails/email_compra.html', (err, html)=>{
+                                
+            let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
+    
+            var template = handlebars.compile(rest_html);
+            var htmlToSend = template({op:true});
+    
+            var mailOptions = {
+                from: 'renzo.carrascom@gmail.com',
+                to: orden.cliente.email,
+                subject: 'Confirmación de compra ' + orden._id,
+                html: htmlToSend
+            };
+          
+            transporter.sendMail(mailOptions, function(error, info){
+                if (!error) {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+        
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+const consultarIDPago = async function(req,res){
+    if(req.user){
+        var id = req.params['id'];
+        var ventas = await Venta.find({transaccion:id});
+        res.status(200).send({data:ventas});
+    }else{
+        res.status(500).send({message: 'NoAccess'});
+    }
+}
 
 module.exports = {
     registro_cliente,
@@ -445,4 +548,6 @@ module.exports = {
     obtener_variedades_productos_cliente,
     obtener_productos_slug_publico,
     listar_productos_recomendados_publico,
+    registro_compra_cliente,
+    consultarIDPago,
 }

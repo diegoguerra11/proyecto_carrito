@@ -433,6 +433,27 @@ const pedido_compra_cliente = async function(req,res){
         res.status(500).send({message: 'NoAccess'});
     }
 }
+const cambiar_vs_producto_admin = async function(req,res){
+    if(req.user){
+        var id = req.params['id'];
+        var estado = req.params['estado'];
+
+        try {
+            if(estado == 'Edicion'){
+                await Producto.findByIdAndUpdate({_id:id},{estado:'Publicado'});
+                res.status(200).send({data:true});
+            }else if(estado == 'Publicado'){
+                await Producto.findByIdAndUpdate({_id:id},{estado:'Edicion'});
+                res.status(200).send({data:true});
+            }
+        } catch (error) {
+            res.status(200).send({data:undefined});
+        }
+        
+     }else{
+         res.status(500).send({message: 'NoAccess'});
+     }
+}
 module.exports ={
     registro_admin,
     login_admin,
@@ -449,6 +470,7 @@ module.exports ={
     eliminar_variedad_admin,
     registro_compra_manual_cliente,
     actualizar_producto_variedades_admin,
-    pedido_compra_cliente
+    pedido_compra_cliente,
+    cambiar_vs_producto_admin
 
 }

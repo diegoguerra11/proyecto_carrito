@@ -3,6 +3,8 @@ import { ProductoService } from '../../../services/producto.service';
 import { GLOBAL } from '../../../services/GLOBAL';
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
+import { AdminService } from 'src/app/services/admin.service';
+import { MessageBox } from 'src/app/utils/MessageBox';
 
 declare var iziToast;
 declare var jQuery:any;
@@ -24,11 +26,13 @@ export class IndexProductoComponent implements OnInit {
   public page=1;
   public pageSize = 20;
   
+  public load_estado = false;
   public load_btn = false;
 
   constructor(
       
-    private _productoService : ProductoService
+    private _productoService : ProductoService,
+    public _adminService : AdminService
 
   ) { 
     this.token = localStorage.getItem('token');
@@ -161,4 +165,24 @@ download_excel(){
   });
 }
 
+cambiar_vs(id:any,vs:any){
+  this.load_estado = true;
+  this._adminService.cambiar_vs_producto_admin(id,vs,this.token).subscribe(
+    response=>{
+      MessageBox.messageSuccess('Se cambió el estado correctamente el producto.');
+
+      $('#vs-'+id).modal('hide');
+      $('.modal-backdrop').remove();
+      this.load_estado = false;
+      this.init_data();
+
+    },
+    error=>{
+      MessageBox.messageError( 'Ocurrió un error en el servidor.');
+      
+      console.log(error);
+      this.load_btn = false;
+    }
+  )
+}
 }

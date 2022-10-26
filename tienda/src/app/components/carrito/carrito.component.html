@@ -203,9 +203,9 @@
                 <div class="form-group">
                   <label for="promo-code">Ingresar Cupón de Descuento</label>
                   <div class="input-group input-group-lg">
-                    <input type="text" id="promo-code" class="form-control" placeholder="Cupón de Descuento">
+                    <input type="text" id="promo-code" class="form-control" placeholder="Cupón de Descuento" name="cupon" [(ngModel)]="venta.cupon">
                     <div class="input-group-append">
-                      <button type="button" class="btn btn-primary">&nbsp;&nbsp;Aplicar&nbsp;&nbsp;</button>
+                      <button type="button" class="btn btn-primary" (click)="validar_cupon()">&nbsp;&nbsp;Aplicar&nbsp;&nbsp;</button>
                     </div>
                   </div>
                 </div>
@@ -224,12 +224,12 @@
                     </li>
                     <li class="d-flex justify-content-between mb-2">
                       <span>Descuento:</span>
-                      <span>&mdash;</span>
+                      <span>S/. {{descuento}}</span>
                     </li>
                   </ul>
                   <div class="d-flex justify-content-between p-4">
                     <span class="h5 mb-0">Total:</span>
-                    <span class="h5 mb-0">S/.{{total_pagar}}</span>
+                    <span class="h5 mb-0">S/.{{totalAPagarMovible}}</span>
                   </div>
                 </div>
                 <button *ngIf="!btn_load" type="button" class="btn btn-primary btn-lg btn-block" (click)="pagar()">Completar Orden</button>

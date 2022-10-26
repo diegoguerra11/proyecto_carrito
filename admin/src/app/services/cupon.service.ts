@@ -46,4 +46,10 @@ export class CuponService {
     return this._http.delete(this.url+'eliminar_cupon_admin/'+id,{headers:headers});
 
   }
+
+  validar_cupon_admin(cupon:any,token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.get(this.url+'validar_cupon_admin/'+cupon,{headers:headers});
+  }
+ 
 }

@@ -306,7 +306,7 @@ const eliminar_imagen_galeria_admin = async function(req,res){
 const listar_productos_publico = async function(req,res){
     var filtro = req.params['filtro'];
 
-            let reg = await Producto.find({titulo: new RegExp(filtro, 'i')}).sort({createdAt:-1});
+            let reg = await Producto.find({estado: "Publicado",titulo: new RegExp(filtro, 'i')}).sort({createdAt:-1});
             res.status(200).send({data: reg});
 }
 
