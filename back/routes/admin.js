@@ -26,4 +26,5 @@ api.put('/actualizar_producto_variedades_admin/:id',auth.auth,adminController.ac
 api.delete('/eliminar_variedad_admin/:id',auth.auth,adminController.eliminar_variedad_admin);
 api.post('/agregar_nueva_variedad_admin',auth.auth,adminController.agregar_nueva_variedad_admin);
 
+api.get('/cambiar_vs_producto_admin/:id/:estado',auth.auth,adminController.cambiar_vs_producto_admin);
 module.exports = api;

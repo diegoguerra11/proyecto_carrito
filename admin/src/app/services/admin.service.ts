@@ -174,4 +174,8 @@ agregar_nueva_variedad_admin(data:any,token:any):Observable<any>{
   return this._http.post(this.url+'agregar_nueva_variedad_admin',data,{headers:headers});
 }
   
+cambiar_vs_producto_admin(id:any,estado:any,token:any):Observable<any>{
+  let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+  return this._http.get(this.url+'cambiar_vs_producto_admin/'+id+'/'+estado,{headers:headers});
+}
   }

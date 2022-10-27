@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AdminService } from '../../services/admin.service';
 import { v4 as uuidv4 } from 'uuid';
 import { GLOBAL } from 'src/app/services/GLOBAL';
+import { MessageBox } from '../../utils/MessageBox';
+import { validationsConfig } from '../../validations/validationsConfig';
 
 declare var iziToast;
 
@@ -38,7 +40,6 @@ export class ConfigComponent implements OnInit {
       },
       error=>{
         console.log(error);
-        
       }
     );
   }
@@ -57,111 +58,51 @@ export class ConfigComponent implements OnInit {
       this.titulo_cat = '';
       this.icono_cat = '';
     } else {
-      iziToast.show({
-        title:'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'Debe ingresar un titulo e icono para la categoria'
-      });
+      MessageBox.messageError('Debe ingresar un titulo e icono para la categoria');
     }
   }
 
   actualizar(confForm){
-    if (confForm.valid) {
-      let data={
-        titulo: confForm.value.titulo,
-        categorias: this.config.categorias,
-        logo: this.file
-      }
-        console.log(data);
-        
-        this._adminService.actualizar_config_admin("6300eb210a5b39f5503f3aaf",data,this.token).subscribe(
-          response=>{
-              iziToast.show({
-                title:'SUCCESS',
-                titleColor: '#1DC74C',
-                color: '#FFF',
-                class: 'text-success',
-                position: 'topRight',
-                message: 'Se actualizo correctamente la configuracion.'
-            });
-            
-          }
-        );
-
-    } else {
-      iziToast.show({
-        title:'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'Complete correctamente el formulario'
-      });
+    if(!confForm.valid){return MessageBox.messageError('Complete correctamente el formulario');}
+    
+    let data={
+      titulo: confForm.value.titulo,
+      categorias: this.config.categorias,
+      logo: this.file
     }
+    console.log(data);
+    
+    this._adminService.actualizar_config_admin("61abe55d2dce63583086f108",data,this.token).subscribe(
+      response=>{
+        MessageBox.messageSuccess('Se actualizo correctamente la configuracion.'); 
+      }
+    );
   }
 
   fileChangeEvent(event){
-    var file;
-    if(event.target.files && event.target.files[0]){
-      file = <File>event.target.files[0];
-      
-      
-    }else{
-      iziToast.show({
-          title: 'ERROR',
-          titleColor: '#FF0000',
-          color: '#FFF',
-          class: 'text-danger',
-          position: 'topRight',
-          message: 'No hay un imagen de envio'
-      });
-    }
-    if (file.size <= 4000000) {
-       if (file.type == 'image/png' || file.type == 'image/webp'|| file.type == 'image/jpg' || file.type == 'image/gif' || file.type == 'image/jpeg') {
+    if(!event.target.files || !event.target.files[0]) {return MessageBox.messageError('No hay una imagen de envio');}
+  
+    var file = <File>event.target.files[0];
 
-          const reader = new FileReader();
-          reader.onload = e => this.imgSelect = reader.result!;
-          $('.cs-file-drop-icon').addClass('cs-file-drop-preview img-thumbnail rounded');
-          $('.cs-file-drop-icon').removeClass('cs-file-drop-icon cxi-upload');
-          console.log(this.imgSelect);
-
-          reader.readAsDataURL(file);
-          
-          $('#input-portada').text(file.name);
-          this.file = file;
-        
-       }else{
-        iziToast.show({
-          title:'ERROR',
-          titleColor: '#FF0000',
-          color: '#FFF',
-          class: 'text-danger',
-          position: 'topRight',
-          message: 'El archivo debe ser una imagen'
-        });
-        $('#input-portada').text('Seleccionar imagen');
-        this.imgSelect ='assets/img/01.jpg';
-        this.file = undefined!;
-       }
-    } else {
-      iziToast.show({
-        title:'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'La imagen no puede superar los 4MB'
-      });
+    if(!validationsConfig.verificarImagen(file)) {
       $('#input-portada').text('Seleccionar imagen');
       this.imgSelect ='assets/img/01.jpg';
       this.file = undefined!;
-    } 
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => this.imgSelect = reader.result!;
+    $('.cs-file-drop-icon').addClass('cs-file-drop-preview img-thumbnail rounded');
+    $('.cs-file-drop-icon').removeClass('cs-file-drop-icon cxi-upload');
+    console.log(this.imgSelect);
+
+    reader.readAsDataURL(file);
     
-    console.log(this.file);
-    
+    $('#input-portada').text(file.name);
+    this.file = file;
+  
+    console.log(this.file);    
   }
 
   ngDoCheck(): void {

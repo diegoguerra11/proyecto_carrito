@@ -73,7 +73,7 @@ export class ClienteService {
     return this._http.get(this.url+'obtener_config_publico',{headers:headers});
 
   }
-
+  
   listar_productos_publico(filtro:any):Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
     return this._http.get(this.url+'listar_productos_publico/'+filtro,{headers:headers});
@@ -175,5 +175,19 @@ export class ClienteService {
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.get(this.url+'validar_cupon_admin/'+cupon,{headers:headers});
   }
+  
+  disminuir_cupon(cupon:any,token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.get(this.url+'disminuir_cupon/'+cupon,{headers:headers});
+  }
+  listar_productos_nuevos_publico():Observable<any>{
+    let headers = new HttpHeaders().set('Content-Type','application/json');
+    return this._http.get(this.url + 'listar_productos_nuevos_publico',{headers:headers});
+  }
+  /*
+  listar_productos_publico():Observable<any>{
+    let headers = new HttpHeaders().set('Content-Type','application/json');
+    return this._http.get(this.url+'listar_productos_publico',{headers:headers});
+  }*/
 
 }
