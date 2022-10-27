@@ -1,189 +1,93 @@
 <app-sidebar></app-sidebar>
 
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="row justify-content-center">
-          <div class="col-12 col-lg-25 col-xl-18">
-
-            <!-- Header -->
-            <div class="header mt-md-5">
-              <div class="header-body">
-                <div class="row align-items-center">
-                  <div class="col">
-
-                    <!-- Pretitle -->
-                    <h6 class="header-pretitle">
-                      Módulo
-                    </h6>
-
-                    <!-- Title -->
-                    <h1 class="header-title">
-                        Ventas
-                    </h1>
-
-                  </div>
-                </div> <!-- / .row -->
-      
-              </div>
-            </div>
-
-            <!-- Alert -->
-
-
-            <!-- Card -->
-            <div class="card">
-              <div class="card-header">
-
-                <!-- Title -->
-                <h4 class="card-header-title">
-                  Mostrando todos tus ventas {{ventas.length}}
-                </h4>
-
-              </div>
-              <div class="card-body">
-                    <div class="row justify-content-between mb-4">
-                        <div class="col-6">
-                            <div class="input-group input-group-merge">
-                                <input type="text" class="form-control form-control-appended" placeholder="Buscar venta por código" name="filtro" [(ngModel)]="filtro">
-                                <div class="input-group-append">
-                                  <button class="btn btn-primary" (click)="filtrar_ventas()">
-                                      Buscar
-                                  </button>
-                                </div>
-                              </div>
-                        </div>
-                        <div class="col">
-                            <a class="btn btn-primary btn-block" [routerLink]="['/panel/ventas/create']" routerLinkActive="router-link-active"  style="cursor: pointer;">
-                                Nueva venta
-                            </a>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <input type="date" class="form-control" name="desde" [(ngModel)]="desde">
-                        </div>
-                        <div class="col">
-                            <input type="date" class="form-control" name="hasta" [(ngModel)]="hasta">
-                        </div>
-                        <div class="col">
-                            <button class="btn btn-primary btn-block" (click)="filtrar_fechas()">
-                                Buscar
-                            </button>
-                        </div>
-                        <div class="col">
-                            <button class="btn btn-danger btn-block" (click)="reset_data()">
-                                Reset
-                            </button>
-                        </div>
-                    </div>
-              </div>
-              <div class="table-responsive">
-                <table class="table table-sm table-nowrap card-table">
-                  <thead>
-                    <tr>
-                      <th>Cliente</th>
-                      
-                      <th>Monto</th>
-                      <th>Metodo</th>
-                      <th>Estado</th>
-                      <th>Opciones</th>
-                    </tr>
-                  </thead>
-                  <tbody class="font-size-base" *ngIf="!load">
-                    <tr *ngFor="let item of ventas | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize">
-                      <td>
-                        <a class="text-primary">{{item.cliente.nombres}} {{item.cliente.apellidos}}</a><br>
-                        <small class="text-muted"> {{item._id}} </small>
-                      </td>
-                      <td>
-                        <span *ngIf="item.currency == 'PEN'">{{item.total_pagar|currency:'PEN'}}</span>
-                        <span *ngIf="item.currency == 'USD'">{{item.total_pagar|currency:'USD'}}</span>
-                      </td>
-                      <td>
-                        {{item.metodo_pago}}
-                      </td>
-                      <td>
-                        <span class="badge badge-warning" *ngIf="item.estado == 'En espera'">{{item.estado}}</span>
-                        <span class="badge badge-success" *ngIf="item.estado == 'Procesando'">{{item.estado}}</span>
-                        <span class="badge badge-info" *ngIf="item.estado == 'Enviado'">{{item.estado}}</span>
-                        <span class="badge badge-danger" *ngIf="item.estado == 'Finalizado'">{{item.estado}}</span>
-                      </td>
-                      <td>
-                        <div class="dropdown">
-
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonAlias" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              Opciones
-                            </button>
-                          
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButtonAlias">
-                              <li>
-                                <a class="dropdown-item" [routerLink]="['/panel/ventas/',item._id]">Detalles</a>
-                              </li>
-                              
-                            </ul>
-                            
-                        </div>
-
-                        <div class="modal fade" id="delete-{{item._id}}" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-                          <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                              <div class="modal-card card" data-list="{&quot;valueNames&quot;: [&quot;name&quot;]}">
-                                <div class="card-header">
-                    
-                                  <!-- Title -->
-                                  <h4 class="card-header-title" id="exampleModalCenterTitle">
-                                    Confirmación de eliminación
-                                  </h4>
-                    
-                                  <!-- Close -->
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                  </button>
-                    
-                                </div>
-                             
-                                <div class="card-body">
-                                  <p>Desea eliminar el cupón?</p>
-                    
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                  <button type="button" class="btn btn-danger" (click)="eliminar(item._id)">Eliminar</button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                      
-                      </td>
-                    </tr>
-                   
-                  </tbody>
-                  <tbody *ngIf="load">
-                    <tr>
-                        <td colspan="5" class="text-center">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden"></span>
-                            </div>
-                        </td>
-                    </tr>
-                  </tbody>  
-                </table>
-                
-              </div>
-
-            </div>
-                <ngb-pagination *ngIf="ventas.length >= 1"
-                        [(page)]="page"
-                        [pageSize]="pageSize"
-                        [maxSize]="10"
-                        [rotate]="true" [boundaryLinks]="true"
-                [collectionSize]="ventas.length"></ngb-pagination>
-  
-            <br>
-
-          </div>
-        </div> <!-- / .row -->
-      </div>
+<div class="border-bottom pt-5 mt-2 mb-5">
+    <h1 class="mt-2 mt-md-4 mb-3 pt-5">Pedidos</h1>
+    <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
+      <p class="text-muted">Este módulo lista todas los pedidos de la tienda.</p>
+        
+    </div>>
 </div>
+
+<div class="card box-shadow-sm">
+  <div class="card-header">
+    <h5 style="margin-bottom: 0px;">Filtro de pedidos</h5>
+</div>
+<div class="card-header">
+  <div class="row">
+    <div class="col-6">
+      <div class="form-group">
+        <label class="form-label" for="pass-visibility">Desde</label>
+        <input class="form-control" type="date" name="desde" [(ngModel)]="desde">
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="form-group">
+        <label class="form-label" for="pass-visibility">Hasta</label>
+        <input class="form-control" type="date" name="hasta" [(ngModel)]="hasta">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card-footer">
+  <button type="button" class="btn btn-primary" (click)="filtrar()">Filtrar</button>
+</div>
+<div class="card-body">
+  <ng-container *ngFor="let item of ventas | slice: (page-1)*pageSize : (page-1) * pageSize + pageSize">
+    <div class="row mt-3 justify-content-between">
+      <div class="col">
+        <h3 class="h5 mb-2 nav-dark">
+          <a href="blog-single.html" class="nav-link">{{item.cliente.nombres}} {{item.cliente.apellidos}}</a>
+        </h3>
+      </div>
+      <div class="col text-right">
+        <span class="badge badge-primary mb-3">{{item.estado}}</span>
+        <div class="dropdown">
+          <a style="cursor: pointer;"class="dropdown-toggle" data-toggle="dropdown">
+            <span class="cxi-settings"></span>
+          </a>
+          <div class="dropdown-menu">
+            <a [routerLink]="['/panel/ventas',item._id]" routerLinkActive="router-link-active"  class="dropdown-item">Ver detalles</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <ul class="nav nav-muted mb-2 pb-1">
+          <li class="nav-item mr-2">
+            <span class="badge badge-dark MR-3">#{{item.nventa}}</span>
+            <span class="text-border px-1">|</span>
+          </li>
+          <li class="nav-item mr-2">
+            <a class="nav-link d-inline-block mr-2 p-0 font-size-sm font-weight-normal">
+              {{item.createdAt |date}}
+            </a>
+          </li>
+          <li class="nav-item mr-2">
+            <a class="nav-link d-inline-block mr-2 p-0 font-size-sm font-weight-normal">
+              <i class="cxi-truck mt-n1 mr-2 font-size-base align-middle"></i>
+              {{item.envio_titulo}}
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-12 mb-3">
+        <div class="d-flex align-items-center">
+          <span class="h5 d-inline-block mb-0">${{item.subtotal}}</span>
+        </div>
+      </div>
+    </div>
+  
+  <hr>
+  </ng-container>
+
+</div>
+<div class="card-footer">
+  <ngb-pagination
+  [(page)]="page"
+  [pageSize]="pageSize"
+  [collectionSize]="ventas.length"></ngb-pagination>
+</div>
+
+</div>
+      

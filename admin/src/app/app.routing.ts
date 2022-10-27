@@ -20,6 +20,7 @@ import { GaleriaProductoComponent } from './components/productos/galeria-product
 import { IndexVentasComponent } from "./components/ventas/index-ventas/index-ventas.component";
 import { CreateVentasComponent } from "./components/ventas/create-ventas/create-ventas.component";
 import { ShowVentasComponent } from "./components/ventas/show-ventas/show-ventas.component";
+import { DetalleVentasComponent } from "./components/ventas/detalle-ventas/detalle-ventas.component";
 
 
 const appRoute : Routes = [
@@ -40,18 +41,18 @@ const appRoute : Routes = [
         {path: 'productos/variedades/:id', component: VariedadProductoComponent, canActivate: [AdminGuard]},
         {path: 'productos/galeria/:id', component: GaleriaProductoComponent, canActivate: [AdminGuard]},
 
-
         {path: 'cupones/registro', component: CreateCuponComponent,canActivate: [AdminGuard]},
         {path: 'cupones', component: IndexCuponComponent,canActivate: [AdminGuard]},
         {path: 'cupones/:id', component: UpdateCuponComponent, canActivate: [AdminGuard]},
 
 
         {path: 'ventas', component: IndexVentasComponent, canActivate:[AdminGuard]},
-         {path: 'ventas/create', component: CreateVentasComponent, canActivate:[AdminGuard]},
-         {path: 'ventas/:id', component: ShowVentasComponent, canActivate:[AdminGuard]},
+         //{path: 'ventas/create', component: CreateVentasComponent, canActivate:[AdminGuard]},
+         {path: 'ventas/:id', component: DetalleVentasComponent, canActivate:[AdminGuard]},
 
     
         {path: 'configuraciones', component: ConfigComponent, canActivate: [AdminGuard]},
+
     ]},
 
     {path: 'login',component: LoginComponent}

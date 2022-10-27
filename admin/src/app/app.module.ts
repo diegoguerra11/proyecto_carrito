@@ -28,6 +28,7 @@ import { GaleriaProductoComponent } from './components/productos/galeria-product
 import { CreateVentasComponent } from './components/ventas/create-ventas/create-ventas.component';
 import { IndexVentasComponent } from './components/ventas/index-ventas/index-ventas.component';
 import { ShowVentasComponent } from './components/ventas/show-ventas/show-ventas.component';
+import { DetalleVentasComponent } from './components/ventas/detalle-ventas/detalle-ventas.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { ShowVentasComponent } from './components/ventas/show-ventas/show-ventas
     GaleriaProductoComponent,
     CreateVentasComponent,
     IndexVentasComponent,
-    ShowVentasComponent
+    ShowVentasComponent,
+    DetalleVentasComponent
   ],
   imports: [
     BrowserModule,

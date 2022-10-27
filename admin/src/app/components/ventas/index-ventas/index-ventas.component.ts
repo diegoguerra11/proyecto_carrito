@@ -10,37 +10,51 @@ export class IndexVentasComponent implements OnInit {
 
   public ventas : Array<any>=[];
   public const_ventas : Array<any>=[];
-  public token = localStorage.getItem('token');
+  public token; //= localStorage.getItem('token');
   public page = 1;
-  public pageSize = 24;
+  public pageSize = 15;
   public filtro = '';
-  public desde :any = undefined;
-  public hasta :any = undefined;
+  public desde; // :any = undefined;
+  public hasta; //:any = undefined;
   public load = false;
 
   constructor(
     private _adminService:AdminService
-  ) { }
+  ) {this.token = localStorage.getItem('token') }
 
   ngOnInit(): void { 
-    this.load = true;
-    this._adminService.obtener_ventas_admin(this.token).subscribe(
+    //this.load = true;
+    this._adminService.obtener_ventas_admin(this.desde, this.hasta, this.token).subscribe(
       response=>{
+        console.log(response);
         this.ventas = response.data;
-        this.const_ventas = this.ventas;
-        this.load = false;
+        // this.const_ventas = this.ventas;
+        // this.load = false;
       }
     );
   }
 
-  filtrar_ventas(){
+  filtrar(){
+    this._adminService.obtener_ventas_admin(this.desde, this.hasta, this.token).subscribe(
+      response=>{
+        this.ventas = response.data;
+      }
+      );
+    /*if(this.filtro){
+      var term = new RegExp(this.filtro.toString().trim() , 'i');
+      this.ventas = this.const_ventas.filter(item=>term.test(item._id)||term.test(item.cliente.email)||term.test(item.cliente.apellidos)||term.test(item.dni));
+    } else{
+      this.ventas = this.const_ventas;
+    */}
+
+   /* filtrar_ventas(){
     if(this.filtro){
       var term = new RegExp(this.filtro.toString().trim() , 'i');
       this.ventas = this.const_ventas.filter(item=>term.test(item._id)||term.test(item.cliente.email)||term.test(item.cliente.apellidos)||term.test(item.dni));
     }else{
       this.ventas = this.const_ventas;
     }
-  }
+  } 
 
   filtrar_fechas(){
 
@@ -59,15 +73,15 @@ export class IndexVentasComponent implements OnInit {
     }else{
       this.ventas = this.const_ventas;
     }
-  }
+  } */
 
-  reset_data(){
+  /* reset_data(){
     this.desde = '';
     this.hasta = '';
     this.ventas = this.const_ventas;
-  }
+  } */
 
-  eliminar(id:any){}
+  // eliminar(id:any){}
   /* if(desde == 'undefined' && hasta == 'undefined'){
                 
   }else{
