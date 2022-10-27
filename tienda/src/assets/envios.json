@@ -1,12 +1,10 @@
 [
     {
-        "titulo": "Envio por Olva",
-        "tiempo": "1 a 3 días",
-        "precio": 20
+        "titulo": "Recojo en Tienda",
+        "tiempo": "Al Instante"
     },
     {
-        "titulo": "Recojo en Tienda",
-        "tiempo": "Al Instante",
-        "precio": 0
+        "titulo": "Delivery",
+        "tiempo": "máximo 1 mes"
     }
 ]

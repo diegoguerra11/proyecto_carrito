@@ -27,7 +27,6 @@ export class CarritoComponent implements OnInit {
   public subtotal_const = 0;
   public carrito_load = true;
 
-  public precio_envio = "0";
   public direccion_principal : any = {};
   public envios : Array<any>=[];
   public venta : any = {};
@@ -97,13 +96,14 @@ export class CarritoComponent implements OnInit {
 
     this.init_Data();
     
-    this.get_direccion_principal();   
+    this.get_direccion_principal(); 
+ 
   }
 
   init_Data(){
    
     this.carrito_load = false;
-    this.cacular_total('Envio Gratis');
+    this.cacular_total('Recojo en tienda');
   }
 
   obtener_carrito(){
@@ -199,7 +199,7 @@ export class CarritoComponent implements OnInit {
           description: 'Concepto de transporte y logistica',
           quantity: 1,
           currency_id: 'PEN',
-          unit_price:  parseInt(this.precio_envio)
+          unit_price:  this.envio
         });
 
         if(this.venta.cupon){
@@ -236,10 +236,8 @@ export class CarritoComponent implements OnInit {
     this._clienteService.obtener_direccion_principal_cliente(localStorage.getItem('_id'),this.token).subscribe(
       response=>{
         if(response.data == undefined){
-          
           this.direccion_principal = undefined; 
         }else{
-          
           this.direccion_principal = response.data;
           this.venta.direccion = this.direccion_principal._id;
         }  
@@ -275,17 +273,24 @@ export class CarritoComponent implements OnInit {
       }
     }
     this.subtotal_const = this.subtotal;
-    this.totalAPagarMovible = this.subtotal_const;
+    this.totalAPagarMovible = this.subtotal_const + this.envio;
   }
 
   cacular_total(envio_titulo:any){
     let descuentoActual = 0;
     if(this.valor_descuento != 0){
+      this.descuento = this.valor_descuento;
       descuentoActual = this.valor_descuento;
     }
-    this.totalAPagarMovible = parseInt(this.subtotal.toString()) + parseInt(this.precio_envio) - parseInt(descuentoActual.toString()); 
+
+    if(envio_titulo == 'Recojo en Tienda'){
+      this.envio = 0;
+    } else {
+      this.select_direccion_envio(this.direccion_principal);
+    }
+    this.totalAPagarMovible = parseInt(this.subtotal.toString()) + this.envio - parseInt(descuentoActual.toString()); 
     this.venta.subtotal = this.totalAPagarMovible;
-    this.venta.envio_precio = parseInt(this.precio_envio);
+    this.venta.envio_precio = this.envio;
     this.venta.envio_titulo = envio_titulo;
 
     this.totalAPagarEstatico = this.totalAPagarMovible;
@@ -323,79 +328,63 @@ export class CarritoComponent implements OnInit {
         this._clienteService.obtener_carrito_cliente(this.idcliente,this.token).subscribe(
           response=>{
             this.carrito_arr = response.data;
-            this.calcular_carrito();
-            
+            this.calcular_carrito();       
           }
         );
         
       }
     );
   }
+
   select_direccion_envio(item:any){
     this.envio_gratis = false;
-    this.direccion_principal = item;
-    if(this.direccion_principal.pais == 'Perú'){
-      if(this.direccion_principal.region == 'Lima'){
+    var direccion = item;
+    if(direccion.pais == 'Perú'){
+      if(direccion.region == 'Lima'){
         this.envio = 10;
-      }else if(this.direccion_principal.region != 'Lima'){
+      }else if(direccion.region != 'Lima'){
         this.envio = 15;
       }
     }
     this.totalAPagarEstatico = this.totalAPagarMovible;
     
     if(this.venta.cupon != undefined){
-     
       this.totalAPagarMovible = (this.totalAPagarEstatico -this.descuento)+this.envio;
     }else{
-      this.totalAPagarMovible = this.totalAPagarEstatico +this.envio;
+      this.totalAPagarMovible = this.totalAPagarEstatico + this.envio;
     }
-
-    
-    
   }
+
   validar_cupon(){
-    if(this.cuponTemporal == ""){
-    if(this.venta.cupon){
-      if(this.venta.cupon.toString().length <= 25){
-        
-        this._clienteService.validar_cupon_admin(this.venta.cupon,this.token).subscribe(
-          response=>{
-            
-            if(response.data != undefined){
-              this.totalAPagarEstatico = this.totalAPagarMovible;
-              this.tipo_descuento =  response.data.tipo;
-                  if(response.data.tipo == 'Valor Fijo'){
-                    this.descuento = response.data.valor;
-                    let descuentoLocal = 0;
-                    this.valor_descuento = this.descuento;
-                    this.totalAPagarMovible = (this.totalAPagarEstatico - descuentoLocal) + this.envio;
-                  }else if(response.data.tipo == 'Porcentaje'){
-                  
-                    this.descuento =Math.round((this.totalAPagarEstatico * response.data.valor)/100);
-                    let descuentoLocal = 0;
-                    this.valor_descuento = this.descuento;
-                    this.totalAPagarMovible = (this.totalAPagarEstatico - descuentoLocal) + this.envio;
-                  }
-                  this.cuponTemporal = this.venta.cupon;
-                  this.select_direccion_envio(this.direccion_principal);
-                
-            }else{
-              MessageBox.messageError( response.message);
-              
-            }
-          }
-        );
-      }else{
-        MessageBox.messageError('El cupon debe ser menos de 25 caracteres.');
-      }
-    }else{
-      MessageBox.messageError('El cupon no es valido.');
-      
+    if(this.cuponTemporal != "") {return MessageBox.messageError("Solo se puede canejar un cupón por compra");}
+    if(!this.venta.cupon) {return MessageBox.messageError('El cupon no es valido.');}
+    if(this.venta.cupon.toString().length > 25) {return MessageBox.messageError('El cupon debe ser menos de 25 caracteres.');}
 
-    }
-  }else{
-    MessageBox.messageError("Solo se puede canejar un cupón por compra");
+    this._clienteService.validar_cupon_admin(this.venta.cupon,this.token).subscribe(
+      response=>{
+        if(!response.data){return MessageBox.messageError( response.message);}
+        this.totalAPagarEstatico = this.totalAPagarMovible;
+        this.tipo_descuento =  response.data.tipo;
+
+        if(response.data.tipo == 'Valor Fijo'){
+          this.descuento = response.data.valor;
+          let descuentoLocal = 0;
+          this.valor_descuento = this.descuento;
+          this.totalAPagarMovible = (this.totalAPagarEstatico - descuentoLocal) + this.envio;
+
+        }
+        
+        if(response.data.tipo == 'Porcentaje'){
+        
+          this.descuento =Math.round((this.totalAPagarEstatico * response.data.valor)/100);
+          let descuentoLocal = 0;
+          this.valor_descuento = this.descuento;
+          this.totalAPagarMovible = (this.totalAPagarEstatico - descuentoLocal) + this.envio;
+        }
+
+        this.cuponTemporal = this.venta.cupon;
+      }
+    );
   }
-}
 
 }

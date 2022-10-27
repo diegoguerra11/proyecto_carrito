@@ -11,6 +11,7 @@ import { GLOBAL } from '../../../../../../../admin/src/app/services/GLOBAL';
 export class PedidosDetallesComponent implements OnInit {
 
   public url: any;
+  public igv: any;
   public token: any;
   public orden: any = [];
   public detalles: Array<any> = [];

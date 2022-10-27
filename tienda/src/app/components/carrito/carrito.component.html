@@ -117,18 +117,16 @@
             <!-- Shipping -->
             <h2 class="h4 mb-4">3. Metodos de envio</h2>
             <div class="custom-control custom-radio mb-3" *ngFor="let item of envios">
-              <input (change)="cacular_total(item.titulo)" type="radio" class="custom-control-input" id="courier" name="shipping" name="precio_envio" [(ngModel)]="precio_envio" value="{{item.precio}}">
+              <input (change)="cacular_total(item.titulo)" type="radio" class="custom-control-input" id="courier" name="shipping" name="titulo_envio">
               <label for="courier" class="custom-control-label d-flex align-items-center">
                 <span>
                   <strong class="d-block">{{item.titulo}}</strong>
                   <span class="text-muted font-size-sm">{{item.tiempo}}</span>
                 </span>
-                <span class="ml-auto">S/.{{item.precio}}</span>
               </label>
             </div>
           
-
-            <hr class="border-top-0 border-bottom pt-4 mb-4">
+            <!-- <hr class="border-top-0 border-bottom pt-4 mb-4"> -->
 
             <!-- Payment -->
             <h2 class="h4 pt-2 mb-4">4. Metodos de pago</h2>
@@ -220,7 +218,7 @@
                     </li>
                     <li class="d-flex justify-content-between mb-2">
                       <span>Envio:</span>
-                      <span>S/. {{precio_envio}}</span>
+                      <span>S/. {{envio}}</span>
                     </li>
                     <li class="d-flex justify-content-between mb-2">
                       <span>Descuento:</span>

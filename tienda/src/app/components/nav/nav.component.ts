@@ -34,25 +34,23 @@ export class NavComponent implements OnInit {
     this.id = localStorage.getItem('_id');
     this.url = GLOBAL.url;
 
-   
-      this._clienteService.obtener_config_publico().subscribe(
-        response=>{
-          this.config_global = response.data;
-          
-        }
-      )
-      if(this.user_lc == undefined){
-        let ls_cart = localStorage.getItem('cart');
+    this._clienteService.obtener_config_publico().subscribe(
+      response=>{
+        this.config_global = response.data;
+      }
+    )
+    if(this.user_lc == undefined){
+      let ls_cart = localStorage.getItem('cart');
+      
+      if(ls_cart != null){
+        this.carrito_logout = JSON.parse(ls_cart);
         
-        if(ls_cart != null){
-          this.carrito_logout = JSON.parse(ls_cart);
-          
-          this.calcular_carrito();
-        }else{
-          this.carrito_logout = [];
-        }
-      } 
-      console.log(this.carrito_logout);
+        this.calcular_carrito();
+      }else{
+        this.carrito_logout = [];
+      }
+    } 
+    console.log(this.carrito_logout);
 
    if (this.token) {
     this._clienteService.obtener_cliente_guest(this.id,this.token).subscribe(
