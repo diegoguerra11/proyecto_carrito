@@ -63,7 +63,11 @@
                         <h6 style="padding-bottom: 0;margin-bottom: 0;">
                           <img style="width:50px" [src]="url +'obtener_portada/'+item.portada" class="img-thumbnail rounded-0" alt="Square image">
                           {{item.titulo}}
+                          
                         </h6>
+                         <!-- Text -->
+                         <span class="badge badge-success" *ngIf="item.estado == 'Publicado'">{{item.estado}}</span>
+                         <span class="badge badge-warning" *ngIf="item.estado == 'Edicion'">{{item.estado}}</span>
                       </td>
                       <td>{{item.stock}}</td>
                       <td>{{item.precio}}</td>
@@ -78,7 +82,43 @@
                             <a class="dropdown-item" [routerLink]="['/panel/productos/inventario',item._id]"  >Inventario</a>
                             <a class="dropdown-item" [routerLink]="['/panel/productos/variedades',item._id]"  >Variedades</a>
                             <a class="dropdown-item" [routerLink]="['/panel/productos/galeria',item._id]"  >Galeria</a>
+                            <a *ngIf="item.estado == 'Edicion'" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#vs-'+item._id">Mostrar producto</a>
+                            <a *ngIf="item.estado == 'Publicado'" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#vs-'+item._id">Ocultar producto</a>
 
+                          </div>
+                          <div class="modal fade" id="vs-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h4 class="modal-title">Confirmación de visibilidad</h4>
+                                  <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                </div>
+                                <div class="modal-body">
+                                  <div class="alert d-flex alert-danger" role="alert" *ngIf="item.galeria.length!= 4">
+                                    <i class="ci-close-round lead me-3"></i>
+                                    <div>
+                                      Debe tener 4 imagenes en la galería.
+                                    </div>
+                                  </div>
+        
+                                  <p *ngIf="!item.vs">Desea hacer visible el producto en la tienda?</p>
+                                  <p *ngIf="item.vs">Desea ocultar el producto de la tienda?</p>
+                                </div>
+                                <div class="modal-footer">
+                                  <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                                  <ng-container *ngIf="!load_estado">
+                                    <button *ngIf="item.galeria.length!= 4" class="btn btn-danger btn-shadow btn-sm" disabled type="button">Si, cambiar</button>
+                                    <button *ngIf="item.galeria.length== 4" class="btn btn-danger btn-shadow btn-sm" (click)="cambiar_vs(item._id,item.estado)" type="button">Si, cambiar</button>
+                                  </ng-container>
+                                  
+                                  
+                                  <button disabled *ngIf="load_estado" type="button" class="btn btn-danger btn-shadow btn-sm">
+                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    Cambiando...
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
 

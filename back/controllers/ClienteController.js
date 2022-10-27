@@ -525,6 +525,7 @@ const consultarIDPago = async function(req,res){
         res.status(500).send({message: 'NoAccess'});
     }
 }
+
 module.exports = {
     registro_cliente,
     login_cliente,
@@ -548,6 +549,5 @@ module.exports = {
     obtener_productos_slug_publico,
     listar_productos_recomendados_publico,
     registro_compra_cliente,
-    consultarIDPago
-
+    consultarIDPago,
 }
