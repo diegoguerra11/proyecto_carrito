@@ -13,7 +13,7 @@ const registro_admin = async function(req,res){
     var data = req.body;
     var admin_arr = [];
 
-    admin_arr = await Admin.find({email: data.email});
+    admin_arr = await Admin.findOne({email: data.email});
 
     if(admin_arr.length == 0){
         /*  */

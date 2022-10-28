@@ -5,7 +5,7 @@ const registro_cupon_admin = async function (req,res){
                 if (req.user.role == 'admin') {
 
                     let data = req.body;
-                    let existeCupon = await Cupon.find({codigo:data.codigo.trim()});
+                    let existeCupon = await Cupon.findOne({codigo:data.codigo.trim()});
                    
                     if(existeCupon){
                         console.log(existeCupon);

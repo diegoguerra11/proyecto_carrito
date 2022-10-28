@@ -98,7 +98,7 @@ const registro_cliente_admin = async function(req,res){
     bcrypt.hash('123456789',null,null, async function(err,hash){
         if(hash){
             data.password = hash;
-            let existeNdoc = await Cliente.find({numeroDocumento: data.numeroDocumento});
+            let existeNdoc = await Cliente.findOne({numeroDocumento: data.numeroDocumento});
         console.log(existeNdoc);   
         if(existeNdoc){
             res.status(200).send({data: undefined});
