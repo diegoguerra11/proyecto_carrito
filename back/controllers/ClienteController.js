@@ -1,34 +1,33 @@
 'use strict'
 
-var Cliente = require('../models/cliente');
-var Carrito = require('../models/carrito');
-var Venta = require('../models/Venta');
-var Dventa = require('../models/Dventa');
-var bcrypt = require('bcrypt-nodejs');
-var jwt = require('../helpers/jwt');
-var Variedad = require('../models/Variedad');
-var Direccion = require("../models/direccion");
-var Producto = require("../models/producto");
-
+let Cliente = require('../models/cliente');
+let Carrito = require('../models/carrito');
+let Venta = require('../models/Venta');
+let Dventa = require('../models/Dventa');
+let bcrypt = require('bcrypt-nodejs');
+let jwt = require('../helpers/jwt');
+let Variedad = require('../models/Variedad');
+let Direccion = require("../models/direccion");
+let Producto = require("../models/producto");
+let nodemailer = require("nodemailer");
+let fs = require('fs');
+let ejs = require('ejs');
+let handlebars = require('handlebars');
 const registro_cliente = async function(req,res){
     try {
-        var data = req.body;
+        let data = req.body;
         
         
 
         /*Validaciones*/ 
        if(!data.password){return res.status(200).send({message: 'El campo contraseña es obligatorio', data: undefined});}
-
-        var existe_correo = await Cliente.findOne({email: data.email});
-        
-        console.log(data.email);
        
         /*Termina validaciones*/
 
         bcrypt.hash(data.password, null, null, async function(err, hash) {
             if(!hash){throw ex;}
             data.password = hash;
-            var reg = await Cliente.create(data);
+            let reg = await Cliente.create(data);
             res.status(200).send({data: reg});
         });
     } catch(ex) {
@@ -38,9 +37,9 @@ const registro_cliente = async function(req,res){
  
 const login_cliente = async function(req,res){
     try {
-        var data = req.body;
+        let data = req.body;
 
-        var user = await Cliente.findOne({email: data.email});
+        let user = await Cliente.findOne({email: data.email});
 
         /*Validaciones*/
         if(!user){return res.status(200).send({message: 'El correo no existe en la base de datos', data: undefined});}
@@ -59,14 +58,11 @@ const login_cliente = async function(req,res){
 }
 
 const listar_clientes_filtro_admin = async function (req,res){
-    console.log(req.user);
+    
     if(req.user){
         if(req.user.role == 'admin'){
             let tipo= req.params['tipo'];
             let filtro= req.params['filtro'];
-
-              console.log(tipo);
-
             if(tipo == null || tipo == 'null'){
                 let reg = await Cliente.find();
                 res.status(200).send({data:reg});
@@ -93,13 +89,13 @@ const listar_clientes_filtro_admin = async function (req,res){
 const registro_cliente_admin = async function(req,res){
     if(!req.user || req.user.role !='admin'){return res.status(500).send({message: 'NoAccess'}); }
     
-    var data = req.body;
+    let data = req.body;
 
     bcrypt.hash('123456789',null,null, async function(err,hash){
         if(hash){
             data.password = hash;
-            let existeNdoc = await Cliente.find({numeroDocumento: data.numeroDocumento});
-        console.log(existeNdoc);   
+            let existeNdoc = await Cliente.findOne({numeroDocumento: data.numeroDocumento});
+
         if(existeNdoc){
             res.status(200).send({data: undefined});
         }else{
@@ -118,10 +114,10 @@ const obtener_cliente_admin = async function (req,res){
     if(req.user){
         if(req.user.role =='admin'){
             
-            var id = req.params['id'];
+            let id = req.params['id'];
 
             try {
-                var reg = await Cliente.findById({_id:id});
+                let reg = await Cliente.findById({_id:id});
 
                 res.status(200).send({data:reg});
             } catch (error) {
@@ -139,10 +135,10 @@ const actualizar_cliente_admin = async function(req,res){
     if(req.user){
         if(req.user.role =='admin'){
             
-            var id = req.params['id'];
-            var data = req.body;
+            let id = req.params['id'];
+            let data = req.body;
 
-            var reg = await Cliente.findByIdAndUpdate({_id:id},{
+            let reg = await Cliente.findByIdAndUpdate({_id:id},{
                 nombres: data.nombres,
                 apellidos: data.apellidos,
                 email: data.email,
@@ -166,7 +162,7 @@ const eliminar_cliente_admin = async function (req,res){
     if(req.user){
         if(req.user.role =='admin'){
             
-           var id = req.params['id'];
+           let id = req.params['id'];
 
            let reg = await Cliente.findByIdAndRemove({_id:id});
            res.status(200).send({data:reg});
@@ -181,10 +177,10 @@ const eliminar_cliente_admin = async function (req,res){
 
 const obtener_cliente_guest = async function(req,res){
     if(req.user){
-        var id = req.params['id'];
+        let id = req.params['id'];
 
         try {
-            var reg = await Cliente.findById({_id:id});
+            let reg = await Cliente.findById({_id:id});
 
             res.status(200).send({data:reg});
         } catch (error) {
@@ -197,15 +193,11 @@ const obtener_cliente_guest = async function(req,res){
 
 const actualizar_perfil_cliente_guest = async function(req,res){
     if(req.user){
-        var id = req.params['id'];
-        var data = req.body;
-
-        console.log(data.password);
-
+        let id = req.params['id'];
+        let data = req.body;
         if (data.password) {
-            console.log('con contraseña');
             bcrypt.hash(data.password,null,null, async function(err,hash){
-                var reg = await Cliente.findByIdAndUpdate({_id:id},{
+                let reg = await Cliente.findByIdAndUpdate({_id:id},{
                     nombres: data.nombres,
                     apellidos: data.apellidos,
                     telefono: data.telefono,
@@ -220,8 +212,7 @@ const actualizar_perfil_cliente_guest = async function(req,res){
             });
             
         } else {
-            console.log('sin contraseña');
-            var reg = await Cliente.findByIdAndUpdate({_id:id},{
+            let reg = await Cliente.findByIdAndUpdate({_id:id},{
                 nombres: data.nombres,
                 apellidos: data.apellidos,
                 telefono: data.telefono,
@@ -232,7 +223,7 @@ const actualizar_perfil_cliente_guest = async function(req,res){
                 pais: data.pais,
             });
             res.status(200).send({data:reg});
-        }registro_pedido_compra_cliente
+        }
        
     }else{
         res.status(500).send({message: 'NoAccess'});
@@ -244,14 +235,14 @@ const actualizar_perfil_cliente_guest = async function(req,res){
 const registro_pedido_compra_cliente = async function(req, res) {
     if(!req.user){return  res.status(500).send({message: 'NoAccess'});}
     
-    var data = req.body;
-    var detalles = data.detalles;
+    let data = req.body;
+    let detalles = data.detalles;
     
     data.estado = 'Procesando';
 
     let venta = await Venta.create(data);
 
-    for(var element of detalles){
+    for(let element of detalles){
         element.venta = venta._id;
         await Dventa.create(element);
 
@@ -275,15 +266,13 @@ const registro_pedido_compra_cliente = async function(req, res) {
         await Carrito.deleteMany({cliente:data.cliente});
     }
 
-    //enviar_orden_compra(venta._id);
-
     res.status(200).send({data:venta});
 }
 
 const obtener_ordenes_cliente  = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
-    var id = req.params['id'];
+    let id = req.params['id'];
 
     let reg = await Venta.find({cliente: id}).sort({createdAt: -1});
 
@@ -295,7 +284,7 @@ const obtener_ordenes_cliente  = async function(req,res){
 const obtener_detalles_ordenes_cliente  = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess', data: undefined});}
 
-    var id = req.params['id'];
+    let id = req.params['id'];
 
     try {
         let venta = await Venta.findById({_id: id}).populate('direccion').populate('cliente');
@@ -311,7 +300,7 @@ const obtener_detalles_ordenes_cliente  = async function(req,res){
 
 const registro_direccion_cliente  = async function(req,res){
     if(req.user){
-        var data = req.body;
+        let data = req.body;
 
         if(data.principal){
             let direcciones = await Direccion.find({cliente:data.cliente});
@@ -330,10 +319,9 @@ const registro_direccion_cliente  = async function(req,res){
 }
 
 const eliminar_direccion_cliente = async function(req,res){
-    console.log("miau");
+
     if(req.user){
-        var id = req.params['id'];
-        console.log(id);
+        let id = req.params['id'];
         let reg = await Direccion.findByIdAndRemove({_id:id});
         res.status(200).send({data:reg});
     
@@ -344,7 +332,7 @@ const eliminar_direccion_cliente = async function(req,res){
 
 const obtener_direccion_todos_cliente  = async function(req,res){
     if(req.user){
-        var id = req.params['id'];
+        let id = req.params['id'];
 
         let direcciones = await Direccion.find({cliente:id}).populate('cliente').sort({createdAt:-1});
         res.status(200).send({data:direcciones});
@@ -355,8 +343,8 @@ const obtener_direccion_todos_cliente  = async function(req,res){
 
 const cambiar_direccion_principal_cliente  = async function(req,res){
     if(req.user){
-        var id = req.params['id'];
-        var cliente = req.params['cliente'];
+        let id = req.params['id'];
+        let cliente = req.params['cliente'];
 
         let direcciones = await Direccion.find({cliente:cliente});
 
@@ -374,8 +362,8 @@ const cambiar_direccion_principal_cliente  = async function(req,res){
 
 const obtener_direccion_principal_cliente  = async function(req,res){
     if(req.user){
-        var id = req.params['id'];
-        var direccion = undefined;
+        let id = req.params['id'];
+        let direccion = undefined;
      
         direccion = await Direccion.findOne({cliente:id,principal:true});
         
@@ -392,7 +380,7 @@ const obtener_direccion_principal_cliente  = async function(req,res){
 
 const listar_clientes_tienda = async function(req,res){
     if(req.user){
-        var clientes = await Cliente.find();
+        let clientes = await Cliente.find();
         res.status(200).send({data:clientes});
     }else{
         res.status(500).send({message: 'NoAccess'});
@@ -403,15 +391,13 @@ const obtener_variedades_productos_cliente = async function(req,res){
     let id = req.params['id'];
 
     if(id == "undefined"){return;}
-
-    console.log(id + "miau");
     
     let variedades = await Variedad.find({producto:id});
     res.status(200).send({data:variedades});
 }
 
 const obtener_productos_slug_publico = async function(req,res){
-    var slug = req.params['slug'];
+    let slug = req.params['slug'];
     
     try {
         let producto = await Producto.findOne({slug:String(slug), estado:'Publicado'});
@@ -427,21 +413,21 @@ const obtener_productos_slug_publico = async function(req,res){
 }
 
 const listar_productos_recomendados_publico = async function(req,res){
-    var categoria = req.params['categoria'];
+    let categoria = req.params['categoria'];
     let reg = await Producto.find({categoria: categoria,estado:'Publicado'}).sort({createdAt:-1}).limit(8);
     res.status(200).send({data: reg});
 }
 const registro_compra_cliente = async function(req,res){
     if(req.user){
 
-        var data = req.body;
-        var detalles = data.detalles;
+        let data = req.body;
+        let detalles = data.detalles;
 
         data.estado = 'Procesando';
 
         let venta = await Venta.create(data);
 
-        for(var element of detalles){
+        for(let element of detalles){
             element.venta = venta._id;
             await Dventa.create(element);
 
@@ -474,11 +460,11 @@ const registro_compra_cliente = async function(req,res){
 }
 const enviar_orden_compra = async function(venta){
     try {
-        var readHTMLFile = function(path, callback) {
+        let readHTMLFile = function(path, callback) {
             fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
                 if (err) {
-                    throw err;
                     callback(err);
+                    throw err;
                 }
                 else {
                     callback(null, html);
@@ -486,7 +472,7 @@ const enviar_orden_compra = async function(venta){
             });
         };
     
-        var transporter = nodemailer.createTransport(smtpTransport({
+        let transporter = nodemailer.createTransport(({
             service: 'gmail',
             host: 'smtp.gmail.com',
             auth: {
@@ -496,18 +482,18 @@ const enviar_orden_compra = async function(venta){
         }));
     
      
-        var orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
-        var dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
+        let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
+        let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
     
     
         readHTMLFile(process.cwd() + '/mails/email_compra.html', (err, html)=>{
                                 
             let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
     
-            var template = handlebars.compile(rest_html);
-            var htmlToSend = template({op:true});
+            let template = handlebars.compile(rest_html);
+            let htmlToSend = template({op:true});
     
-            var mailOptions = {
+            let mailOptions = {
                 from: 'renzo.carrascom@gmail.com',
                 to: orden.cliente.email,
                 subject: 'Confirmación de compra ' + orden._id,
@@ -527,8 +513,8 @@ const enviar_orden_compra = async function(venta){
 }
 const consultarIDPago = async function(req,res){
     if(req.user){
-        var id = req.params['id'];
-        var ventas = await Venta.find({transaccion:id});
+        let id = req.params['id'];
+        let ventas = await Venta.find({transaccion:id});
         res.status(200).send({data:ventas});
     }else{
         res.status(500).send({message: 'NoAccess'});

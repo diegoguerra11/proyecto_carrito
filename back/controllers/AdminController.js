@@ -1,17 +1,20 @@
 'use strict'
 
-var Admin = require('../models/admin');
-var Venta = require('../models/Venta');
-var Variedad = require('../models/Variedad');
-var Producto = require('../models/producto');
-var Dventa = require('../models/Dventa');
-var bcrypt = require('bcrypt-nodejs');
-var jwt = require('../helpers/jwt');
-
+let Admin = require('../models/admin');
+let Venta = require('../models/Venta');
+let Variedad = require('../models/Variedad');
+let Producto = require('../models/producto');
+let Dventa = require('../models/Dventa');
+let bcrypt = require('bcrypt-nodejs');
+let jwt = require('../helpers/jwt');
+let nodemailer = require("nodemailer");
+let fs = require('fs');
+let ejs = require('ejs');
+let handlebars = require('handlebars');
 const registro_admin = async function(req,res){
     //
-    var data = req.body;
-    var admin_arr = [];
+    let data = req.body;
+    let admin_arr = [];
 
     admin_arr = await Admin.find({email: data.email});
 
@@ -22,7 +25,7 @@ const registro_admin = async function(req,res){
             bcrypt.hash(data.password,null,null, async function(err,hash){
                 if(hash){
                     data.password = hash;
-                    var reg = await Admin.create(data);
+                    let reg = await Admin.create(data);
                     res.status(200).send({data:reg});
                 }else{
                     res.status(200).send({message:'ErrorServer',data:undefined});
@@ -40,8 +43,8 @@ const registro_admin = async function(req,res){
 
 
 const login_admin = async function(req,res){
-    var data = req.body;
-    var admin_arr = [];
+    let data = req.body;
+    let admin_arr = [];
 
     admin_arr = await Admin.find({email:data.email});
 
@@ -80,8 +83,8 @@ const login_admin = async function(req,res){
                 let tt_desde = Date.parse(new Date(desde +'T00:00:00'))/1000;
                 let tt_hasta = Date.parse(new Date(hasta +'T00:00:00'))/1000;
                 let tem_ventas = await Venta.find().populate('cliente').populate('direccion').sort({createdAt:-1});
-                for(var item of tem_ventas){
-                    var tt_created = Date.parse(new Date(item.createdAt))/1000;
+                for(let item of tem_ventas){
+                    let tt_created = Date.parse(new Date(item.createdAt))/1000;
                      if(tt_created >= tt_desde && tt_created <= tt_hasta){
                         ventas.push(item);
                     }
@@ -98,7 +101,7 @@ const login_admin = async function(req,res){
 }
 const listar_variedades_admin = async function(req,res){
     if(req.user){
-        var id = req.params['id'];
+        let id = req.params['id'];
         let data = await Variedad.find({producto:id});
        
         res.status(200).send({data:data});
@@ -109,7 +112,7 @@ const listar_variedades_admin = async function(req,res){
 }
 const listar_variedades_productos_admin = async function(req,res){
     if(req.user){
-        var productos = await Variedad.find().populate('producto');
+        let productos = await Variedad.find().populate('producto');
         res.status(200).send({data:productos});
     }else{
         res.status(500).send({message: 'NoAccess'});
@@ -119,7 +122,7 @@ const listar_variedades_productos_admin = async function(req,res){
 //venta
 const obtener_detalles_ordenes_cliente  = async function(req,res){
     if(req.user){
-        var id = req.params['id'];
+        let id = req.params['id'];
 
         try {
             let venta = await Venta.findById({_id:id}).populate('direccion').populate('cliente');
@@ -141,10 +144,9 @@ const obtener_detalles_ordenes_cliente  = async function(req,res){
 const marcar_finalizado_orden = async function(req,res){
     if(req.user){
 
-        var id = req.params['id'];
-        let data = req.body;
+        let id = req.params['id'];
 
-        var venta = await Venta.findByIdAndUpdate({_id:id},{
+        let venta = await Venta.findByIdAndUpdate({_id:id},{
             estado: 'Finalizado'
         });
 
@@ -157,9 +159,9 @@ const marcar_finalizado_orden = async function(req,res){
 const eliminar_orden_admin = async function(req,res){
     if(req.user){
 
-        var id = req.params['id'];
+        let id = req.params['id'];
 
-        var venta = await Venta.findOneAndRemove({_id:id});
+        let venta = await Venta.findOneAndRemove({_id:id});
         await Dventa.remove({venta:id});
 
         res.status(200).send({data:venta});
@@ -171,10 +173,10 @@ const eliminar_orden_admin = async function(req,res){
 const marcar_envio_orden = async function(req,res){
     if(req.user){
 
-        var id = req.params['id'];
+        let id = req.params['id'];
         let data = req.body;
 
-        var venta = await Venta.findByIdAndUpdate({_id:id},{
+        let venta = await Venta.findByIdAndUpdate({_id:id},{
             tracking: data.tracking,
             estado: 'Enviado'
         });
@@ -190,15 +192,14 @@ const marcar_envio_orden = async function(req,res){
 const confirmar_pago_orden = async function(req,res){
     if(req.user){
 
-        var id = req.params['id'];
-        let data = req.body;
+        let id = req.params['id'];
 
-        var venta = await Venta.findByIdAndUpdate({_id:id},{
+        let venta = await Venta.findByIdAndUpdate({_id:id},{
             estado: 'Procesando'
         });
 
-        var detalles = await Dventa.find({venta:id});
-        for(var element of detalles){
+        let detalles = await Dventa.find({venta:id});
+        for(let element of detalles){
             let element_producto = await Producto.findById({_id:element.producto});
             let new_stock = element_producto.stock - element.cantidad;
             let new_ventas = element_producto.nventas + 1;
@@ -223,11 +224,11 @@ const confirmar_pago_orden = async function(req,res){
 }
 const mail_confirmar_envio = async function(venta){
     try {
-        var readHTMLFile = function(path, callback) {
+        let readHTMLFile = function(path, callback) {
             fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
                 if (err) {
-                    throw err;
                     callback(err);
+                    throw err;
                 }
                 else {
                     callback(null, html);
@@ -235,7 +236,7 @@ const mail_confirmar_envio = async function(venta){
             });
         };
     
-        var transporter = nodemailer.createTransport(smtpTransport({
+        let transporter = nodemailer.createTransport(({
             service: 'gmail',
             host: 'smtp.gmail.com',
             auth: {
@@ -245,18 +246,18 @@ const mail_confirmar_envio = async function(venta){
         }));
     
      
-        var orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
-        var dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
+        let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
+        let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
     
     
         readHTMLFile(process.cwd() + '/mails/email_enviado.html', (err, html)=>{
                                 
             let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
     
-            var template = handlebars.compile(rest_html);
-            var htmlToSend = template({op:true});
+            let template = handlebars.compile(rest_html);
+            let htmlToSend = template({op:true});
     
-            var mailOptions = {
+            let mailOptions = {
                 from: 'renzo.carrascom@gmail.com',
                 to: orden.cliente.email,
                 subject: 'Tu pedido ' + orden._id + ' fué enviado',
@@ -279,7 +280,7 @@ const mail_confirmar_envio = async function(venta){
 
 const eliminar_variedad_admin = async function(req,res){
     if(req.user){
-        var id = req.params['id'];
+        let id = req.params['id'];
 
         let reg = await Variedad.findByIdAndRemove({_id:id});
         res.status(200).send({data:reg});
@@ -291,7 +292,7 @@ const eliminar_variedad_admin = async function(req,res){
 
 const agregar_nueva_variedad_admin = async function(req,res){
     if(req.user){
-        var data = req.body;
+        let data = req.body;
 
         console.log(data);
         let reg = await Variedad.create(data);
@@ -320,8 +321,8 @@ const actualizar_producto_variedades_admin = async function(req,res){
 const registro_compra_manual_cliente = async function(req,res){
     if(req.user){
 
-        var data = req.body;
-        var detalles = data.detalles;
+        let data = req.body;
+        let detalles = data.detalles;
 
         data.estado = 'Procesando';
         
@@ -329,7 +330,7 @@ const registro_compra_manual_cliente = async function(req,res){
 
         let venta = await Venta.create(data);
 
-        for(var element of detalles){
+        for(let element of detalles){
             element.venta = venta._id;
             element.cliente = venta.cliente;
             await Dventa.create(element);
@@ -360,11 +361,12 @@ const registro_compra_manual_cliente = async function(req,res){
 }
 const enviar_orden_compra = async function(venta){
     try {
-        var readHTMLFile = function(path, callback) {
+        let readHTMLFile = function(path, callback) {
             fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
                 if (err) {
-                    throw err;
+                    console.log(err);
                     callback(err);
+                    throw err;
                 }
                 else {
                     callback(null, html);
@@ -372,7 +374,7 @@ const enviar_orden_compra = async function(venta){
             });
         };
     
-        var transporter = nodemailer.createTransport(smtpTransport({
+        let transporter = nodemailer.createTransport(({
             service: 'gmail',
             host: 'smtp.gmail.com',
             auth: {
@@ -382,18 +384,18 @@ const enviar_orden_compra = async function(venta){
         }));
     
      
-        var orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
-        var dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
+        let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
+        let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
     
     
         readHTMLFile(process.cwd() + '/mails/email_compra.html', (err, html)=>{
                                 
             let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
     
-            var template = handlebars.compile(rest_html);
-            var htmlToSend = template({op:true});
+            let template = handlebars.compile(rest_html);
+            let htmlToSend = template({op:true});
     
-            var mailOptions = {
+            let mailOptions = {
                 from: 'renzo.carrascom@gmail.com',
                 to: orden.cliente.email,
                 subject: 'Confirmación de compra ' + orden._id,
@@ -414,12 +416,12 @@ const enviar_orden_compra = async function(venta){
 const pedido_compra_cliente = async function(req,res){
     if(req.user){
         try {
-            var data = req.body;
-            var detalles = data.detalles;
+            let data = req.body;
+            let detalles = data.detalles;
             let access = false;
             let producto_sl = '';
 
-            for(var item of detalles){
+            for(let item of detalles){
                 let variedad = await Variedad.findById({_id:item.variedad}).populate('producto');
                 if(variedad.stock < item.cantidad){
                     access = true;
@@ -431,7 +433,7 @@ const pedido_compra_cliente = async function(req,res){
                 data.estado = 'En espera';
                 let venta = await Venta.create(data);
         
-                for(var element of detalles){
+                for(let element of detalles){
                     element.venta = venta._id;
                     await Dventa.create(element);
                     await Carrito.remove({cliente:data.cliente});
@@ -452,8 +454,8 @@ const pedido_compra_cliente = async function(req,res){
 }
 const cambiar_vs_producto_admin = async function(req,res){
     if(req.user){
-        var id = req.params['id'];
-        var estado = req.params['estado'];
+        let id = req.params['id'];
+        let estado = req.params['estado'];
 
         try {
             if(estado == 'Edicion'){

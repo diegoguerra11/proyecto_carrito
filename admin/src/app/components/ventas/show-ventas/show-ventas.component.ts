@@ -144,7 +144,7 @@ export class ShowVentasComponent implements OnInit {
         });
         $('#openEliminar').modal('hide');
         $('.modal-backdrop').remove();
-        this._router.navigate(['/ventas']);
+        this._router.navigate(['/panel/ventas']);
         this.load_del = false;
       }
     );

@@ -27,7 +27,12 @@ export class LoginComponent implements OnInit {
     if(this.token){this._router.navigate(['/']);}
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { /* TODO Generación automática de Login, innecesaria implementación de código */ 
+    //inicio de sesión 
+    MessageBox.messageWelcome("Bienvenido, Inicie Sesión o Regístrese");
+
+
+  }
 
   login(loginForm:any) {
     if(!ValidatonsIniciarSesion.login(loginForm.form.value)){return;}
@@ -66,7 +71,7 @@ export class LoginComponent implements OnInit {
     productos.map((producto: any) => {
       let data = {
         producto: producto.producto._id,
-        cliente:  cliente,
+        cliente:  cliente, 
         cantidad: producto.cantidad,
         variedad: producto.variedad.variedad,
       }

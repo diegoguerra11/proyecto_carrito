@@ -1,14 +1,14 @@
-var Descuento = require('../models/descuento');
-var fs = require('fs');
-var path = require('path');
+let Descuento = require('../models/descuento');
+let fs = require('fs');
+let path = require('path');
 const registro_descuento_admin = async function(req,res){
     if(req.user){
         if(req.user.role == 'admin'){
             let data = req.body;
             
-            var img_path = req.files.banner.path;
-            var name = img_path.split('\\');
-            var banner_name = name[2];
+            let img_path = req.files.banner.path;
+            let name = img_path.split('\\');
+            let banner_name = name[2];
 
             data.banner = banner_name;
             let reg = await Descuento.create(data);
@@ -27,7 +27,7 @@ const listar_descuentos_admin = async function(req,res){
     if(req.user){
         if(req.user.role == 'admin'){
             
-            var filtro = req.params['filtro'];
+            let filtro = req.params['filtro'];
 
             let reg = await Descuento.find({titulo: new RegExp(filtro, 'i')}).sort({createdAt:-1});
             res.status(200).send({data: reg});
@@ -41,7 +41,7 @@ const listar_descuentos_admin = async function(req,res){
 }
 
 const obtener_banner_descuento = async function(req,res){
-    var img = req.params['img'];
+    let img = req.params['img'];
 
 
     fs.stat('./uploads/descuentos/'+img, function(err){
@@ -59,10 +59,10 @@ const obtener_descuento_admin = async function(req,res){
     if(req.user){
         if(req.user.role =='admin'){
             
-            var id = req.params['id'];
+            let id = req.params['id'];
 
             try {
-                var reg = await Descuento.findById({_id:id});
+                let reg = await Descuento.findById({_id:id});
 
                 res.status(200).send({data:reg});
             } catch (error) {
@@ -86,9 +86,9 @@ const actualizar_descuento_admin = async function(req,res){
 
             if(req.files){
                 //SI HAY IMAGEN
-                var img_path = req.files.banner.path;
-                var name = img_path.split('\\');
-                var banner_name = name[2];
+                let img_path = req.files.banner.path;
+                let name = img_path.split('\\');
+                let banner_name = name[2];
 
                 
                 let reg = await Descuento.findByIdAndUpdate({_id:id},{
@@ -131,7 +131,7 @@ const eliminar_descuento_admin = async function(req,res){
     if(req.user){
         if(req.user.role =='admin'){
             
-            var id = req.params['id'];
+            let id = req.params['id'];
 
             let reg = await Descuento.findByIdAndRemove({_id:id});
             res.status(200).send({data:reg});
@@ -146,12 +146,12 @@ const eliminar_descuento_admin = async function(req,res){
 
 const obtener_descuento_activo = async function(req,res){
     let descuentos = await Descuento.find().sort({createdAt:-1});
-    var arr_descuentos = [];
-    var today = Date.parse(new Date().toString())/1000;
+    let arr_descuentos = [];
+    let today = Date.parse(new Date().toString())/1000;
    
     descuentos.forEach(element => {
-        var tt_inicio = Date.parse(element.fecha_inicio+"T00:00:00")/1000;
-        var tt_fin = Date.parse(element.fecha_fin+"T23:59:59")/1000;
+        let tt_inicio = Date.parse(element.fecha_inicio+"T00:00:00")/1000;
+        let tt_fin = Date.parse(element.fecha_fin+"T23:59:59")/1000;
 
         if(today >= tt_inicio && today <= tt_fin){
             arr_descuentos.push(element);

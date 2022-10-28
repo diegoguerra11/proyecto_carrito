@@ -1,14 +1,14 @@
 'use strict'
 
-var express = require('express');
-var app = express();
-var bodyparser = require('body-parser');
-var mongoose = require('mongoose');
-var port = process.env.port || 4201;
+let express = require('express');
+let app = express();
+let bodyparser = require('body-parser');
+let mongoose = require('mongoose');
+let port = process.env.port || 4201;
 
-var server = require('http').createServer(app);
-var io = require('socket.io')(server,{
-    cors: {origin:'*'}
+let server = require('http').createServer(app);
+let io = require('socket.io')(server,{
+    cors: {"Access-Control-Allow-Origin":'*'}
 });
 
 io.on('connection', function(socket){
@@ -25,13 +25,13 @@ io.on('connection', function(socket){
     });
 });
 
-var descuento_route = require('./routes/descuento');
-var cliente_route = require('./routes/cliente');
-var admin_route = require('./routes/admin');
-var producto_route = require('./routes/producto');
-var cupon_route = require ('./routes/cupon');
-var config_route = require ('./routes/config');
-var carrito_route = require ('./routes/carrito');
+let descuento_route = require('./routes/descuento');
+let cliente_route = require('./routes/cliente');
+let admin_route = require('./routes/admin');
+let producto_route = require('./routes/producto');
+let cupon_route = require ('./routes/cupon');
+let config_route = require ('./routes/config');
+let carrito_route = require ('./routes/carrito');
 
 
 const cors = require('cors');
@@ -39,13 +39,16 @@ const cors = require('cors');
 mongoose.connect('mongodb://127.0.0.1:27017/tienda',{useUnifiedTopology: true, useNewUrlParser: true},(err,res)=>{
     if(err){
         console.log(err);
+        throw err;
     }else{
         server.listen(port,function(){
             console.log('Servidor corriendo en el puerto ' + port);
         });
     }
 });
-app.use(cors({origin: '*'}));
+app.use(cors({"Access-Control-Allow-Origin": '*'}));
+
+
 app.use(bodyparser.urlencoded({limit: '50mb', extended: true}));
 app.use(bodyparser.json({limit: '50mb',extended: true}));
 

@@ -1,11 +1,12 @@
-var Cupon = require('../models/cupon');
+let Cupon = require('../models/cupon');
 
 const registro_cupon_admin = async function (req,res){
             if (req.user) {
                 if (req.user.role == 'admin') {
 
                     let data = req.body;
-                    let existeCupon = await Cupon.find({codigo:data.codigo.trim()});
+                    console.log(data.codigo);
+                    let existeCupon = await Cupon.findOne({codigo:data.codigo.trim()});
                    
                     if(existeCupon){
                         console.log(existeCupon);
@@ -30,7 +31,7 @@ const registro_cupon_admin = async function (req,res){
     if(req.user){
         if(req.user.role == 'admin'){
             
-            var filtro = req.params['filtro'];
+            let filtro = req.params['filtro'];
 
             let reg = await Cupon.find({codigo: new RegExp(filtro, 'i')}).sort({createdAt: -1});
             res.status(200).send({data: reg});
@@ -47,10 +48,10 @@ const obtener_cupon_admin = async function (req,res){
     if(req.user){
         if(req.user.role =='admin'){
             
-            var id = req.params['id'];
+            let id = req.params['id'];
 
             try {
-                var reg = await Cupon.findById({_id:id});
+                let reg = await Cupon.findById({_id:id});
 
                 res.status(200).send({data:reg});
             } catch (error) {
@@ -68,8 +69,8 @@ const actualizar_cupon_admin = async function (req,res){
     if(req.user){
         if(req.user.role =='admin'){
             
-            var data = req.body;
-            var id = req.params['id'];
+            let data = req.body;
+            let id = req.params['id'];
 
             let reg = await Cupon.findByIdAndUpdate({_id:id,},{
                 codigo : data.codigo,
@@ -92,7 +93,7 @@ const eliminar_cupon_admin = async function (req,res){
     if(req.user){
         if(req.user.role =='admin'){
             
-           var id = req.params['id'];
+           let id = req.params['id'];
 
            let reg = await Cupon.findByIdAndRemove({_id:id});
            res.status(200).send({data:reg});
@@ -107,9 +108,9 @@ const eliminar_cupon_admin = async function (req,res){
 const validar_cupon_admin = async function(req,res){
 
     if(req.user){
-        var cupon = req.params['cupon'];
+        let cupon = req.params['cupon'];
 
-        var data = await Cupon.findOne({codigo:cupon});
+        let data = await Cupon.findOne({codigo:cupon});
 
         if(data){
            if(data.limite == 0){
@@ -128,7 +129,7 @@ const validar_cupon_admin = async function(req,res){
 
 const disminuir_cupon = async function(req, res){
     if(req.user){
-        var cupon = req.params['cupon'];
+        let cupon = req.params['cupon'];
         if(cupon == undefined){
             return;
         }

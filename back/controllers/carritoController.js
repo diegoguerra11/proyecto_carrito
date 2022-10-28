@@ -1,5 +1,5 @@
-var Carrito = require('../models/carrito');
-var Variedad = require('../models/Variedad');
+let Carrito = require('../models/carrito');
+let Variedad = require('../models/Variedad');
 
 const agregar_carrito_cliente = async function(req,res){
     if(!req.user) {res.status(500).send({message: 'NoAccess'}); return;}
@@ -27,11 +27,11 @@ const comprobar_carrito_cliente = async function(req,res){
     if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
     try {
-        var data = req.body;
-        var detalles = data.detalles;
+        let data = req.body;
+        let detalles = data.detalles;
         let access = false;
         let producto_sl = '';
-        for(var item of detalles){
+        for(let item of detalles){
             let variedad = await Variedad.find({producto: item.producto, valor: item.variedad}).populate('producto');
             console.log(variedad);
             if(variedad.stock < item.cantidad){
@@ -63,8 +63,8 @@ const actualizar_cantidad_carrito_cliente = async function(req, res) {
     let id = req.param['id'];
     let cantidad = req.param['cantidad'];
 
-    var filter = {_id: id};
-    var newvalues = { $set: { cantidad: cantidad} };
+    let filter = {_id: id};
+    let newvalues = { $set: { cantidad: cantidad} };
 
     let carrito_cliente = await Carrito.updateOne(filter, newvalues);
 
