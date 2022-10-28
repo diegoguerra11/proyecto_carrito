@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
     let productos = localStorage['cart'] ? JSON.parse(localStorage['cart']) : undefined;
 
     this._clienteService.login_cliente(data).subscribe(
-      response=>{
+      (response: any)=>{
         console.log(response);
         if(response.data == undefined){return MessageBox.messageError(response.message);}
 
@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit {
         }
         this._router.navigate(['/']);
       },
-      error=>{console.log(error);}
+      (error: any)=>{console.log(error);}
     );
   }
 

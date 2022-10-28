@@ -7,472 +7,412 @@ let Producto = require('../models/producto');
 let Dventa = require('../models/Dventa');
 let bcrypt = require('bcrypt-nodejs');
 let jwt = require('../helpers/jwt');
-let nodemailer = require("nodemailer");
-let fs = require('fs');
-let ejs = require('ejs');
-let handlebars = require('handlebars');
-const registro_admin = async function(req,res){
-    //
+// let nodemailer = require("nodemailer");
+// let fs = require('fs');
+// let ejs = require('ejs');
+// let handlebars = require('handlebars');
+
+const registro_admin = async function(req, res){
     let data = req.body;
-    let admin_arr = [];
 
-    admin_arr = await Admin.find({email: data.email});
+    let existe_correo = await Admin.exists({email: data.email});
 
-    if(admin_arr.length == 0){
-        /*  */
+    if(!data.password){return res.status(200).send({message:'El campo contraseña es obligatorio', data:undefined});}
+    if(existe_correo){return res.status(200).send({message:'El correo ya existe en la base de datos', data:undefined});}
 
-        if(data.password){
-            bcrypt.hash(data.password,null,null, async function(err,hash){
-                if(hash){
-                    data.password = hash;
-                    let reg = await Admin.create(data);
-                    res.status(200).send({data:reg});
-                }else{
-                    res.status(200).send({message:'ErrorServer',data:undefined});
-                }
-            })
-        }else{
-            res.status(200).send({message:'No hay una contraseña',data:undefined});
-        }
-
-        
-    }else{
-        res.status(200).send({message:'El correo ya existe en la base de datos',data:undefined});
-    }
+    bcrypt.hash(data.password,null,null, async function(err,hash){
+        if(!hash){return res.status(500).send({message:'ErrorServer', data:undefined});}
+        data.password = hash;
+        let reg = await Admin.create(data);
+        res.status(200).send({data:reg});
+    });
 }
 
-
-const login_admin = async function(req,res){
+const login_admin = async function(req, res){
     let data = req.body;
     let admin_arr = [];
 
     admin_arr = await Admin.find({email:data.email});
 
-    if(admin_arr.length == 0){
-        res.status(200).send({message: 'No se encontro el correo', data:undefined});
-    }else{
-        //LOGIN
-        let user = admin_arr[0];
+    if(admin_arr.length == 0){return res.status(200).send({message: 'No se encontro el correo', data:undefined});}  
+    
+    //LOGIN
+    let user = admin_arr[0];
 
-        bcrypt.compare(data.password,user.password,async function(error,check){
-            if(check){
-                res.status(200).send({
-                    data:user,
-                    token: jwt.createToken(user)
-                });
-            }else{
-                res.status(200).send({message: 'La contraseña no coincide', data: undefined});
-            }
+    bcrypt.compare(data.password,user.password,async function(error, check){
+        if(!check){return res.status(500).send({message: 'La contraseña no coincide', data: undefined});}
+
+        res.status(200).send({
+            data:user,
+            token: jwt.createToken(user)
         });
-       
-    }
-
+    });
  } 
+
  const obtener_ventas_admin  = async function(req,res){
-    if(req.user){
-        if(req.user.role == 'admin'){
-            let ventas = [];
-            let desde = req.params['desde'];
-            let hasta = req.params['hasta'];
-            
-            if(desde == 'undefined' && hasta == 'undefined'){
-                ventas = await Venta.find().populate('cliente').populate('direccion').sort({createdAt:-1});
-                res.status(200).send({data:ventas});
-            }
-            else{
-                let tt_desde = Date.parse(new Date(desde +'T00:00:00'))/1000;
-                let tt_hasta = Date.parse(new Date(hasta +'T00:00:00'))/1000;
-                let tem_ventas = await Venta.find().populate('cliente').populate('direccion').sort({createdAt:-1});
-                for(let item of tem_ventas){
-                    let tt_created = Date.parse(new Date(item.createdAt))/1000;
-                     if(tt_created >= tt_desde && tt_created <= tt_hasta){
-                        ventas.push(item);
-                    }
-                }
-                res.status(200).send({data:ventas});
+    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    
+    let desde = req.params['desde'];
+    let hasta = req.params['hasta'];
+    
+    let ventas = await Venta.find().populate('cliente').populate('direccion').sort({createdAt:-1});
+
+    if(desde != 'undefined' && hasta != 'undefined'){
+        let ventas_fecha = []
+        let tt_desde = Date.parse(new Date(desde +'T00:00:00'))/1000;
+        let tt_hasta = Date.parse(new Date(hasta +'T00:00:00'))/1000;
+
+        for(let item of tem_ventas){
+            let tt_created = Date.parse(new Date(item.createdAt))/1000;
+             if(tt_created >= tt_desde && tt_created <= tt_hasta){
+                ventas_fecha.push(item);
             }
         }
-        else{
-            res.status(500).send({data:ventas});
-        }   
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    } 
-}
-const listar_variedades_admin = async function(req,res){
-    if(req.user){
-        let id = req.params['id'];
-        let data = await Variedad.find({producto:id});
-       
-        res.status(200).send({data:data});
-        
-    }else{
-        res.status(500).send({message: 'NoAccess'});
+
+        return res.status(200).send({data: ventas_fecha});
     }
+
+    res.status(200).send({data: ventas});
 }
+
+const listar_variedades_admin = async function(req,res){
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
+    
+    let id = req.params['id'];
+    let data = await Variedad.find({producto:id});
+   
+    res.status(200).send({data: data});
+}
+
 const listar_variedades_productos_admin = async function(req,res){
-    if(req.user){
-        let productos = await Variedad.find().populate('producto');
-        res.status(200).send({data:productos});
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    } 
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});} 
+
+    let productos = await Variedad.find().populate('producto');
+    res.status(200).send({data: productos});
 }
 
 //venta
 const obtener_detalles_ordenes_cliente  = async function(req,res){
-    if(req.user){
-        let id = req.params['id'];
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
+    
+    let id = req.params['id'];
 
-        try {
-            let venta = await Venta.findById({_id:id}).populate('direccion').populate('cliente');
-            let detalles = await Dventa.find({venta:venta._id}).populate('producto').populate('variedad');
-            res.status(200).send({data:venta,detalles:detalles});
+    try {
+        let venta = await Venta.findById({_id:id}).populate('direccion').populate('cliente');
+        let detalles = await Dventa.find({venta: venta._id}).populate('producto').populate('variedad');
+        res.status(200).send({data:venta, detalles:detalles});
 
-        } catch (error) {
-            console.log(error);
-            res.status(200).send({data:undefined});
-        }
-        
-        
-        
-    }else{
-        res.status(500).send({message: 'NoAccess'});
+    } catch (error) {
+        res.status(200).send({message:'Error server', data:undefined});
     }
 }
 
 const marcar_finalizado_orden = async function(req,res){
-    if(req.user){
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
+   
+    let id = req.params['id'];
 
-        let id = req.params['id'];
+    let venta = await Venta.findByIdAndUpdate({_id:id}, {
+        estado: 'Finalizado'
+    });
 
-        let venta = await Venta.findByIdAndUpdate({_id:id},{
-            estado: 'Finalizado'
-        });
-
-        res.status(200).send({data:venta});
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    }
+    res.status(200).send({data:venta});
 }
 
 const eliminar_orden_admin = async function(req,res){
-    if(req.user){
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
+    let id = req.params['id'];
 
-        let id = req.params['id'];
+    let venta = await Venta.findOneAndRemove({_id:id});
 
-        let venta = await Venta.findOneAndRemove({_id:id});
-        await Dventa.remove({venta:id});
+    await Dventa.remove({venta:id});
 
-        res.status(200).send({data:venta});
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    }
+    res.status(200).send({data:venta});
 }
 
 const marcar_envio_orden = async function(req,res){
-    if(req.user){
-
-        let id = req.params['id'];
-        let data = req.body;
-
-        let venta = await Venta.findByIdAndUpdate({_id:id},{
-            tracking: data.tracking,
-            estado: 'Enviado'
-        });
-
-        mail_confirmar_envio(id);
-
-        res.status(200).send({data:venta});
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    }
-}
-
-const confirmar_pago_orden = async function(req,res){
-    if(req.user){
-
-        let id = req.params['id'];
-
-        let venta = await Venta.findByIdAndUpdate({_id:id},{
-            estado: 'Procesando'
-        });
-
-        let detalles = await Dventa.find({venta:id});
-        for(let element of detalles){
-            let element_producto = await Producto.findById({_id:element.producto});
-            let new_stock = element_producto.stock - element.cantidad;
-            let new_ventas = element_producto.nventas + 1;
-
-            let element_variedad = await Variedad.findById({_id:element.variedad});
-            let new_stock_variedad = element_variedad.stock - element.cantidad;
-
-            await Producto.findByIdAndUpdate({_id: element.producto},{
-                stock: new_stock,
-                nventas: new_ventas
-            });
-
-            await Variedad.findByIdAndUpdate({_id: element.variedad},{
-                stock: new_stock_variedad,
-            });
-        }
-
-        res.status(200).send({data:venta});
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    }
-}
-const mail_confirmar_envio = async function(venta){
-    try {
-        let readHTMLFile = function(path, callback) {
-            fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                if (err) {
-                    callback(err);
-                    throw err;
-                }
-                else {
-                    callback(null, html);
-                }
-            });
-        };
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
-        let transporter = nodemailer.createTransport(({
-            service: 'gmail',
-            host: 'smtp.gmail.com',
-            auth: {
-                user: 'renzo.carrascom@gmail.com',
-                pass: 'mjqzblcffaegvdzm'
-            }
-        }));
+    let id = req.params['id'];
+    let data = req.body;
+
+    let venta = await Venta.findByIdAndUpdate({_id:id},{
+        tracking: data.tracking,
+        estado: 'Enviado'
+    });
+
+    mail_confirmar_envio(id);
+
+    res.status(200).send({data:venta});
+}
+
+const confirmar_pago_orden = async function(req,res) {
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
+    
+    let id = req.params['id'];
+
+    let venta = await Venta.findByIdAndUpdate({_id:id},{
+        estado: 'Procesando'
+    });
+
+    let detalles = await Dventa.find({venta:id});
+
+    for(let element of detalles){
+        let element_producto = await Producto.findById({_id:element.producto});
+        let new_stock = element_producto.stock - element.cantidad;
+        let new_ventas = element_producto.nventas + 1;
+
+        let element_variedad = await Variedad.findById({_id:element.variedad});
+        let new_stock_variedad = element_variedad.stock - element.cantidad;
+
+        await Producto.findByIdAndUpdate({_id: element.producto},{
+            stock: new_stock,
+            nventas: new_ventas
+        });
+
+        await Variedad.findByIdAndUpdate({_id: element.variedad},{
+            stock: new_stock_variedad,
+        });
+    }
+
+    res.status(200).send({data:venta});
+}
+
+const mail_confirmar_envio = async function(venta){
+    // try {
+    //     let readHTMLFile = function(path, callback) {
+    //         fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+    //             if (err) {
+    //                 callback(err);
+    //                 throw err;
+    //             }
+    //             else {
+    //                 callback(null, html);
+    //             }
+    //         });
+    //     };
+    
+    //     let transporter = nodemailer.createTransport(({
+    //         service: 'gmail',
+    //         host: 'smtp.gmail.com',
+    //         auth: {
+    //             user: 'renzo.carrascom@gmail.com',
+    //             pass: 'mjqzblcffaegvdzm'
+    //         }
+    //     }));
     
      
-        let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
-        let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
+    //     let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
+    //     let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
     
     
-        readHTMLFile(process.cwd() + '/mails/email_enviado.html', (err, html)=>{
+    //     readHTMLFile(process.cwd() + '/mails/email_enviado.html', (err, html)=>{
                                 
-            let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
+    //         let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
     
-            let template = handlebars.compile(rest_html);
-            let htmlToSend = template({op:true});
+    //         let template = handlebars.compile(rest_html);
+    //         let htmlToSend = template({op:true});
     
-            let mailOptions = {
-                from: 'renzo.carrascom@gmail.com',
-                to: orden.cliente.email,
-                subject: 'Tu pedido ' + orden._id + ' fué enviado',
-                html: htmlToSend
-            };
+    //         let mailOptions = {
+    //             from: 'renzo.carrascom@gmail.com',
+    //             to: orden.cliente.email,
+    //             subject: 'Tu pedido ' + orden._id + ' fué enviado',
+    //             html: htmlToSend
+    //         };
           
-            transporter.sendMail(mailOptions, function(error, info){
-                if (!error) {
-                    console.log('Email sent: ' + info.response);
-                }
-            });
+    //         transporter.sendMail(mailOptions, function(error, info){
+    //             if (!error) {
+    //                 console.log('Email sent: ' + info.response);
+    //             }
+    //         });
         
-        });
-    } catch (error) {
-        console.log(error);
-    }
+    //     });
+    // } catch (error) {
+    //     console.log(error);
+    // }
     
 }
 
-
 const eliminar_variedad_admin = async function(req,res){
-    if(req.user){
-        let id = req.params['id'];
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
+    
+    let id = req.params['id'];
 
-        let reg = await Variedad.findByIdAndRemove({_id:id});
-        res.status(200).send({data:reg});
-            
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    }
+    let reg = await Variedad.findByIdAndRemove({_id:id});
+    res.status(200).send({data:reg});
 }
 
 const agregar_nueva_variedad_admin = async function(req,res){
-    if(req.user){
-        let data = req.body;
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
+    
+    let data = req.body;
 
-        console.log(data);
-        let reg = await Variedad.create(data);
+    let reg = await Variedad.create(data);
 
-        res.status(200).send({data:reg});
-        
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    }
+    res.status(200).send({data:reg});
 }
-const actualizar_producto_variedades_admin = async function(req,res){
-    if(req.user){
-        let id = req.params['id'];
-        let data = req.body;
 
-        console.log(data.titulo_variedad);
-        let reg = await Producto.findByIdAndUpdate({_id:id},{
-            titulo_variedad: data.titulo_variedad,
-        });
-        res.status(200).send({data:reg});
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    }
+const actualizar_producto_variedades_admin = async function(req,res){
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
+    
+    let id = req.params['id'];
+    let data = req.body;
+
+    let reg = await Producto.findByIdAndUpdate({_id:id},{
+        titulo_variedad: data.titulo_variedad,
+    });
+
+    res.status(200).send({data:reg});
 }
 
 const registro_compra_manual_cliente = async function(req,res){
-    if(req.user){
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
+    let data = req.body;
+    let detalles = data.detalles;
+
+    data.estado = 'Procesando';
+    
+    let venta = await Venta.create(data);
+
+    for(let element of detalles){
+        element.venta = venta._id;
+        element.cliente = venta.cliente;
+        await Dventa.create(element);
+
+        let element_producto = await Producto.findById({_id:element.producto});
+        let new_stock = element_producto.stock - element.cantidad;
+        let new_ventas = element_producto.nventas + 1;
+
+        let element_variedad = await Variedad.findById({_id:element.variedad});
+        let new_stock_variedad = element_variedad.stock - element.cantidad;
+
+        await Producto.findByIdAndUpdate({_id: element.producto},{
+            stock: new_stock,
+            nventas: new_ventas
+        });
+
+        await Variedad.findByIdAndUpdate({_id: element.variedad},{
+            stock: new_stock_variedad,
+        });
+    }
+
+    enviar_orden_compra(venta._id);
+
+    res.status(200).send({venta:venta});
+}
+
+const enviar_orden_compra = async function(venta){
+    // try {
+    //     let readHTMLFile = function(path, callback) {
+    //         fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+    //             if (err) {
+    //                 console.log(err);
+    //                 callback(err);
+    //                 throw err;
+    //             }
+    //             else {
+    //                 callback(null, html);
+    //             }
+    //         });
+    //     };
+    
+    //     let transporter = nodemailer.createTransport(({
+    //         service: 'gmail',
+    //         host: 'smtp.gmail.com',
+    //         auth: {
+    //             user: 'renzo.carrascom@gmail.com',
+    //             pass: 'mjqzblcffaegvdzm'
+    //         }
+    //     }));
+    
+     
+    //     let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
+    //     let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
+    
+    
+    //     readHTMLFile(process.cwd() + '/mails/email_compra.html', (err, html)=>{
+                                
+    //         let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
+    
+    //         let template = handlebars.compile(rest_html);
+    //         let htmlToSend = template({op:true});
+    
+    //         let mailOptions = {
+    //             from: 'renzo.carrascom@gmail.com',
+    //             to: orden.cliente.email,
+    //             subject: 'Confirmación de compra ' + orden._id,
+    //             html: htmlToSend
+    //         };
+          
+    //         transporter.sendMail(mailOptions, function(error, info){
+    //             if (!error) {
+    //                 console.log('Email sent: ' + info.response);
+    //             }
+    //         });
+        
+    //     });
+    // } catch (error) {
+    //     console.log(error);
+    // }
+}
+
+const pedido_compra_cliente = async function(req,res){
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
+    try {
         let data = req.body;
         let detalles = data.detalles;
+        let access = false;
+        let producto_sl = '';
 
-        data.estado = 'Procesando';
+        for(let item of detalles){
+            let variedad = await Variedad.findById({_id:item.variedad}).populate('producto');
+            if(variedad.stock < item.cantidad){
+                access = true;
+                producto_sl = variedad.producto.titulo;
+            }
+        }
+
+        if(access) {return res.status(200).send({venta:undefined,message:'Stock insuficiente para ' + producto_sl});}
         
-        console.log(data);
-
+        data.estado = 'En espera';
         let venta = await Venta.create(data);
 
         for(let element of detalles){
             element.venta = venta._id;
-            element.cliente = venta.cliente;
             await Dventa.create(element);
-
-            let element_producto = await Producto.findById({_id:element.producto});
-            let new_stock = element_producto.stock - element.cantidad;
-            let new_ventas = element_producto.nventas + 1;
-
-            let element_variedad = await Variedad.findById({_id:element.variedad});
-            let new_stock_variedad = element_variedad.stock - element.cantidad;
-
-            await Producto.findByIdAndUpdate({_id: element.producto},{
-                stock: new_stock,
-                nventas: new_ventas
-            });
-
-            await Variedad.findByIdAndUpdate({_id: element.variedad},{
-                stock: new_stock_variedad,
-            });
+            await Carrito.remove({cliente:data.cliente});
         }
-
-        enviar_orden_compra(venta._id);
-
+        
+        enviar_email_pedido_compra(venta._id);
+        
         res.status(200).send({venta:venta});
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    }
-}
-const enviar_orden_compra = async function(venta){
-    try {
-        let readHTMLFile = function(path, callback) {
-            fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                if (err) {
-                    console.log(err);
-                    callback(err);
-                    throw err;
-                }
-                else {
-                    callback(null, html);
-                }
-            });
-        };
-    
-        let transporter = nodemailer.createTransport(({
-            service: 'gmail',
-            host: 'smtp.gmail.com',
-            auth: {
-                user: 'renzo.carrascom@gmail.com',
-                pass: 'mjqzblcffaegvdzm'
-            }
-        }));
-    
-     
-        let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
-        let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
-    
-    
-        readHTMLFile(process.cwd() + '/mails/email_compra.html', (err, html)=>{
-                                
-            let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
-    
-            let template = handlebars.compile(rest_html);
-            let htmlToSend = template({op:true});
-    
-            let mailOptions = {
-                from: 'renzo.carrascom@gmail.com',
-                to: orden.cliente.email,
-                subject: 'Confirmación de compra ' + orden._id,
-                html: htmlToSend
-            };
-          
-            transporter.sendMail(mailOptions, function(error, info){
-                if (!error) {
-                    console.log('Email sent: ' + info.response);
-                }
-            });
-        
-        });
     } catch (error) {
-        console.log(error);
+        res.status(200).send({message:'Error server', data:undefined});
     }
 }
-const pedido_compra_cliente = async function(req,res){
-    if(req.user){
-        try {
-            let data = req.body;
-            let detalles = data.detalles;
-            let access = false;
-            let producto_sl = '';
 
-            for(let item of detalles){
-                let variedad = await Variedad.findById({_id:item.variedad}).populate('producto');
-                if(variedad.stock < item.cantidad){
-                    access = true;
-                    producto_sl = variedad.producto.titulo;
-                }
-            }
-
-            if(!access){
-                data.estado = 'En espera';
-                let venta = await Venta.create(data);
-        
-                for(let element of detalles){
-                    element.venta = venta._id;
-                    await Dventa.create(element);
-                    await Carrito.remove({cliente:data.cliente});
-                }
-                enviar_email_pedido_compra(venta._id);
-                res.status(200).send({venta:venta});
-            }else{
-                res.status(200).send({venta:undefined,message:'Stock insuficiente para ' + producto_sl});
-            }
-        } catch (error) {
-            console.log(error);
-        }
-
-        
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    }
-}
 const cambiar_vs_producto_admin = async function(req,res){
-    if(req.user){
-        let id = req.params['id'];
-        let estado = req.params['estado'];
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
 
-        try {
-            if(estado == 'Edicion'){
+    let id = req.params['id'];
+    let estado = req.params['estado'];
+
+    try {
+        switch(estado){
+            case 'Edicion':
                 await Producto.findByIdAndUpdate({_id:id},{estado:'Publicado'});
-                res.status(200).send({data:true});
-            }else if(estado == 'Publicado'){
+            break;
+            case 'Publicado':
                 await Producto.findByIdAndUpdate({_id:id},{estado:'Edicion'});
-                res.status(200).send({data:true});
-            }
-        } catch (error) {
-            res.status(200).send({data:undefined});
+            break;
         }
-        
-     }else{
-         res.status(500).send({message: 'NoAccess'});
-     }
+        res.status(200).send({data:true});
+    } catch (error) {
+        res.status(200).send({data:undefined});
+    }
 }
+
 module.exports ={
     registro_admin,
     login_admin,
@@ -491,5 +431,4 @@ module.exports ={
     actualizar_producto_variedades_admin,
     pedido_compra_cliente,
     cambiar_vs_producto_admin
-
 }

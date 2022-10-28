@@ -2,45 +2,43 @@ let Carrito = require('../models/carrito');
 let Variedad = require('../models/Variedad');
 
 const agregar_carrito_cliente = async function(req,res){
-    if(!req.user) {res.status(500).send({message: 'NoAccess'}); return;}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
     let data = req.body;
 
-    let carrito_cliente = await Carrito.find({
+    let existe_en_carrito = await Carrito.exists({
         cliente:data.cliente,
         producto:data.producto
     });
-    
-    if(carrito_cliente.length == 0){
-        let reg = await Carrito.create(data);
-        res.status(200).send({data:reg});
-        return;
+
+    if(existe_en_carrito){
+        return res.status(200).send({message: 'Producto agregado anteriormente', data:undefined});
     }
-    
-    if(carrito_cliente.length >= 1){
-        res.status(200).send({data:undefined}); 
-        return;
-    }
+
+    let reg = await Carrito.create(data);
+
+    return res.status(200).send({data:reg});
 }
 
 const comprobar_carrito_cliente = async function(req,res){
     if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
     try {
-        let data = req.body;
-        let detalles = data.detalles;
+        let detalles = req.body.detalles;
         let access = false;
         let producto_sl = '';
+
         for(let item of detalles){
-            let variedad = await Variedad.find({producto: item.producto, valor: item.variedad}).populate('producto');
-            console.log(variedad);
+            let variedad = await Variedad.findOne({producto: item.producto, valor: item.variedad}).populate('producto');
             if(variedad.stock < item.cantidad){
                 access = true;
                 producto_sl = variedad.producto.titulo;
             }
         }
 
-        if(access){return res.status(200).send({venta:false,message:'Stock insuficiente para ' + producto_sl});}
+        if(access){
+            return res.status(200).send({venta:false,message:'Stock insuficiente para ' + producto_sl});
+        }
 
         return res.status(200).send({venta:true});
     } catch (error) {
@@ -54,6 +52,7 @@ const obtener_carrito_cliente = async function(req,res){
     let id = req.params['id'];
 
     let carrito_cliente = await Carrito.find({cliente:id}).populate('variedad').populate('producto');
+    
     res.status(200).send({data:carrito_cliente});
 }
 
