@@ -67,13 +67,13 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  registrarProductos(cliente: any, productos: any, token: any){
+  registrarProductos(cliente: any, productos: any, token: any){ 
     productos.map((producto: any) => {
       let data = {
         producto: producto.producto._id,
         cliente:  cliente, 
         cantidad: producto.cantidad,
-        variedad: producto.variedad.variedad,
+        variedad: producto.variedad.id,
       }
 
       this._clienteService.agregar_carrito_cliente(data, token).subscribe(
