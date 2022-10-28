@@ -1,7 +1,7 @@
 import { MessageBox } from '../utils/MessageBox';
 
 export class ValidatonsCliente {
-    static verificarCliente(form: any) {      
+    static verificarCliente(form: any) {
         let numerico = /^[0-9]+$/;
         const fecha = new Date();
         const añoActual =fecha.getFullYear();
@@ -16,7 +16,34 @@ export class ValidatonsCliente {
             MessageBox.messageError('El campo nombres debe ser alfabetico');
             return false;
         }
-        
+        if(!form.apellidos) {
+          MessageBox.messageError('El campo apellidos es obligatorio');
+          return false;
+        }
+        if(!form.email) {
+          MessageBox.messageError('El campo correo electronico es obligatorio');
+          return false;
+        }
+        if(!form.telefono) {
+          MessageBox.messageError('El campo telefono es obligatorio');
+          return false;
+        }
+        if(!form.f_nacimiento) {
+          MessageBox.messageError('El campo fecha de nacimiento es obligatorio');
+          return false;
+        }
+        if(!form.tipoDocumento) {
+          MessageBox.messageError('El campo tipo de documento es obligatorio');
+          return false;
+        }
+        if(!form.numeroDocumento) {
+          MessageBox.messageError('El campo numero de documento es obligatorio');
+          return false;
+        }
+        if(!form.genero) {
+          MessageBox.messageError('El campo genero es obligatorio');
+          return false;
+        }
         if(form.telefono && !form.telefono.match(numerico)) {
             MessageBox.messageError('El campo telefono debe ser numerico');
             return false;
@@ -42,23 +69,11 @@ export class ValidatonsCliente {
             MessageBox.messageError('Número de pasaporte Inválido');
             return false;
         }
-        console.log(añoActual-18);
-        //Se puede mejorar ;)
-        if(+(form.f_nacimiento.split("-")[0])> (añoActual-18)){
-            MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
-            return false;
-        }
-        console.log("Pasó año");
-        if(+(form.f_nacimiento.split("-")[1]) > mesActual){
-            MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
-            return false;
-        }
-        console.log("Pasó mes");
-        if(+(form.f_nacimiento.split("-")[2])> diaActual){
-            MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
-            return false;
-        }
-        console.log("Pasó día");
+        var myAge = ~~((Date.now() - Date.parse(form.f_nacimiento)) / (31557600000));
+        if(myAge<18){
+          MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
+            return false;}
+        console.log(fecha);
         return true;
     }
 }

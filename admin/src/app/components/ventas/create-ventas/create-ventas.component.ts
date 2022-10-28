@@ -159,31 +159,27 @@ export class CreateVentasComponent implements OnInit {
   }
 
   addProducto(){
-    if(this.producto_select != undefined){
-      if(this.cantidad >= 1){
-        if(this.cantidad <= this.producto_select.cantidad){
-          this.dventa.push({
-            titulo_producto: this.producto_select.producto,
-            precio_und: this.producto_select.precio_soles,
-            titulo_variedad: this.producto_select.variedad,
-            producto: this.producto_select.idproducto,
-            subtotal: this.producto_select.precio_soles * this.cantidad,
-            variedad: this.producto_select.idvariedad,
-            cantidad: this.cantidad
-          });
-          console.log( this.dventa);
-          this.total_pagar = this.total_pagar + (this.producto_select.precio_soles * this.cantidad);
-          this.neto_pagar = this.neto_pagar + (this.producto_select.precio_soles * this.cantidad);
-        }else{
-          MessageBox.messageError('La cantidad sobrepasa el stock');
-
-        }
+    if(this.producto_select == undefined) {return  MessageBox.messageError('Seleccione el producto'); }
+    if(this.cantidad >= 1){
+      if(this.cantidad <= this.producto_select.cantidad){
+        this.dventa.push({
+          titulo_producto: this.producto_select.producto,
+          precio_und: this.producto_select.precio_soles,
+          titulo_variedad: this.producto_select.variedad,
+          producto: this.producto_select.idproducto,
+          subtotal: this.producto_select.precio_soles * this.cantidad,
+          variedad: this.producto_select.idvariedad,
+          cantidad: this.cantidad
+        });
+        console.log( this.dventa);
+        this.total_pagar = this.total_pagar + (this.producto_select.precio_soles * this.cantidad);
+        this.neto_pagar = this.neto_pagar + (this.producto_select.precio_soles * this.cantidad);
       }else{
-        MessageBox.messageError('Ingrese un valor valido en la cantidad');
+        MessageBox.messageError('La cantidad sobrepasa el stock');
 
       }
     }else{
-      MessageBox.messageError('Seleccione el producto');
+      MessageBox.messageError('Ingrese un valor valido en la cantidad');
 
     }
   }

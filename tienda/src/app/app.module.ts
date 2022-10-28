@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from "@angular/forms";
-import { HttpClient, HttpClientModule }  from "@angular/common/http"; 
+import { HttpClient, HttpClientModule }  from "@angular/common/http";
 import { NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap"
 
 import { routing } from './app.routing';
@@ -21,7 +21,6 @@ import { DireccionesComponent } from './components/usuario/direcciones/direccion
 import { IndexPedidosComponent } from './components/usuario/pedidos/index-pedidos/index-pedidos.component';
 import { PedidosDetallesComponent } from './components/usuario/pedidos/pedidos-detalles/pedidos-detalles.component';
 import { VerificarPagoComponent } from './components/verificar-pago/verificar-pago.component';
-import { ContactoComponent } from './components/contacto/contacto.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +38,6 @@ import { ContactoComponent } from './components/contacto/contacto.component';
     IndexPedidosComponent,
     PedidosDetallesComponent,
     VerificarPagoComponent,
-    ContactoComponent,
   ],
   imports: [
     BrowserModule,

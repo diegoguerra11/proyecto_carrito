@@ -13,14 +13,16 @@ var Producto = require("../models/producto");
 const registro_cliente = async function(req,res){
     try {
         var data = req.body;
+        
+        
 
-        /*Validaciones*/
-        if(!data.password){return res.status(200).send({message: 'El campo contraseña es obligatorio', data: undefined});}
+        /*Validaciones*/ 
+       if(!data.password){return res.status(200).send({message: 'El campo contraseña es obligatorio', data: undefined});}
 
         var existe_correo = await Cliente.findOne({email: data.email});
         
         console.log(data.email);
-        if(existe_correo){return res.status(200).send({message: 'El correo ya existe en la base de datos', data: undefined});}
+       
         /*Termina validaciones*/
 
         bcrypt.hash(data.password, null, null, async function(err, hash) {
@@ -96,8 +98,15 @@ const registro_cliente_admin = async function(req,res){
     bcrypt.hash('123456789',null,null, async function(err,hash){
         if(hash){
             data.password = hash;
+            let existeNdoc = await Cliente.find({numeroDocumento: data.numeroDocumento});
+        console.log(existeNdoc);   
+        if(existeNdoc){
+            res.status(200).send({data: undefined});
+        }else{
             let reg = await Cliente.create(data);
             res.status(200).send({data:reg});
+        }
+            
         }else{
             res.status(200).send({message:'Hubo un error en el servidor',data:undefined});
         }

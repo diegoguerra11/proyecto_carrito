@@ -5,9 +5,18 @@ const registro_cupon_admin = async function (req,res){
                 if (req.user.role == 'admin') {
 
                     let data = req.body;
+                    let existeCupon = await Cupon.find({codigo:data.codigo.trim()});
+                   
+                    if(existeCupon){
+                        console.log(existeCupon);
+                        res.status(200).send({data: undefined});
+                        
+                    }else{
+                        let reg = await Cupon.create(data);
+                        res.status(200).send({data:reg});
+                    }
 
-                    let reg = await Cupon.create(data);
-                    res.status(200).send({data:reg});
+                   
                     
                 }else{
                     res.status(500).send({message: 'NoAcceess'});
