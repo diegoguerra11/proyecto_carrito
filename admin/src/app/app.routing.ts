@@ -47,6 +47,7 @@ const appRoute : Routes = [
 
         {path: 'ventas', component: IndexVentasComponent, canActivate:[AdminGuard]},
         {path: 'ventas/create', component: CreateVentasComponent, canActivate:[AdminGuard]},
+        {path: 'ventas/:id', component: ShowVentasComponent, canActivate:[AdminGuard]},
 
     
         {path: 'configuraciones', component: ConfigComponent, canActivate: [AdminGuard]},
