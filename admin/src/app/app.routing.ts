@@ -40,18 +40,18 @@ const appRoute : Routes = [
         {path: 'productos/variedades/:id', component: VariedadProductoComponent, canActivate: [AdminGuard]},
         {path: 'productos/galeria/:id', component: GaleriaProductoComponent, canActivate: [AdminGuard]},
 
-
         {path: 'cupones/registro', component: CreateCuponComponent,canActivate: [AdminGuard]},
         {path: 'cupones', component: IndexCuponComponent,canActivate: [AdminGuard]},
         {path: 'cupones/:id', component: UpdateCuponComponent, canActivate: [AdminGuard]},
 
 
         {path: 'ventas', component: IndexVentasComponent, canActivate:[AdminGuard]},
-         {path: 'ventas/create', component: CreateVentasComponent, canActivate:[AdminGuard]},
-         {path: 'ventas/:id', component: ShowVentasComponent, canActivate:[AdminGuard]},
+        {path: 'ventas/create', component: CreateVentasComponent, canActivate:[AdminGuard]},
+        {path: 'ventas/:id', component: ShowVentasComponent, canActivate:[AdminGuard]},
 
     
         {path: 'configuraciones', component: ConfigComponent, canActivate: [AdminGuard]},
+
     ]},
 
     {path: 'login',component: LoginComponent}

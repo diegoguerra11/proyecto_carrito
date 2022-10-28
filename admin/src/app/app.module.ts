@@ -50,7 +50,7 @@ import { ShowVentasComponent } from './components/ventas/show-ventas/show-ventas
     GaleriaProductoComponent,
     CreateVentasComponent,
     IndexVentasComponent,
-    ShowVentasComponent
+    ShowVentasComponent,
   ],
   imports: [
     BrowserModule,

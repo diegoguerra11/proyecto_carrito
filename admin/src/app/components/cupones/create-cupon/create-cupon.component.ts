@@ -37,7 +37,8 @@ export class CreateCuponComponent implements OnInit {
       this.load_btn = true;
       this._cuponService.registro_cupon_admin(this.cupon,this.token).subscribe(
         response=>{
-        console.log(response);
+          if(!response.data){return MessageBox.messageError("El codigo del cupon ya existe");}
+
         MessageBox.messageSuccess("Cupón registrado correctamente");
         this.cupon ={
           codigo: '',

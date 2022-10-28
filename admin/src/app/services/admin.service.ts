@@ -114,9 +114,9 @@ export class AdminService {
   
 
     //venta
-    obtener_ventas_admin(token:any):Observable<any>{
+    obtener_ventas_admin(desde,hasta,token):Observable<any>{
       let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
-      return this._http.get(this.url+'obtener_ventas_admin',{headers:headers});
+      return this._http.get(this.url+'obtener_ventas_admin/'+desde+'/'+hasta,{headers:headers});
     }
 
     obtener_detalles_ordenes_cliente(id:any,token:any):Observable<any>{

@@ -24,7 +24,7 @@ export class IndexVentasComponent implements OnInit {
 
   ngOnInit(): void { 
     this.load = true;
-    this._adminService.obtener_ventas_admin(this.token).subscribe(
+    this._adminService.obtener_ventas_admin(this.desde, this.hasta, this.token).subscribe(
       response=>{
         this.ventas = response.data;
         this.const_ventas = this.ventas;

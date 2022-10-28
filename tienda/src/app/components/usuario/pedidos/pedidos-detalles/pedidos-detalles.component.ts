@@ -17,6 +17,8 @@ export class PedidosDetallesComponent implements OnInit {
   public detalles: Array<any> = [];
   public load_data = true;
   public id: any;
+  public totalstar=5;
+  public review : any={};
 
   constructor(
     private _clienteService: ClienteService,

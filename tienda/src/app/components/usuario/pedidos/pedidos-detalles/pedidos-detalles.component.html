@@ -30,7 +30,7 @@
         <div class="col ml-auto" *ngIf="orden">
             <div class="d-flex align-items-center justify-content-between mb-4 pb-sm-2">
               <h1 class="h2 mb-0">Mi Orden #{{ id.toUpperCase() }}</h1>
-              
+
             </div>
 
             <div class="row">
@@ -52,14 +52,14 @@
                             <th class="border-0 py-2 pl-0">Fecha de compra</th>
                             <td class="border-0 py-2 px-0 text-muted">{{ orden.createdAt | date }}</td>
                           </tr>
-                         
+
                         </tbody>
                       </table>
                     </div>
                     <div class="col-lg-6">
                       <table class="table mb-0">
                         <tbody>
-                        
+
                           <tr>
                             <th class="border-0 py-2 pl-0">Transaccion:</th>
                             <td class="border-0 py-2 px-0 text-muted">{{ orden.transaccion }}</td>
@@ -76,7 +76,7 @@
                       </table>
                     </div>
                   </div>
-                  
+
                 </div>
               </div>
               <div class="col-12">
@@ -88,9 +88,9 @@
                           <h3 class="mb-2 font-size-lg">
                             {{ orden.direccion.destinatario }}
                           </h3>
-                              
+
                           <span class="d-block mb-3 font-size-sm text-muted">{{ orden.direccion.zip }}</span>
-                           
+
                           <a  class="badge badge-primary">Dirección de envio</a>
 
                         </div>
@@ -112,12 +112,17 @@
                 </ng-container>
               </div>
             </div>
-            
+
             <div class="card border-bottom">
               <div id="order-1" class="collapse show" data-parent="#orders">
                 <div class="bg-secondary rounded mb-4">
                   <div class="table-responsive">
                     <table class="table mb-0">
+                      <thead>
+                        <th>
+                          <tr>Pedidos Detalles</tr>
+                        </th>
+                      </thead>
                       <tbody>
                         <tr *ngFor="let item of detalles">
                           <td class="border-top-0">
@@ -186,7 +191,7 @@
                 </div>
               </div>
             </div>
-           
+
         </div>
 
         <div class="col ml-auto" *ngIf="!orden">
@@ -195,7 +200,7 @@
             <h2 class="h1 pb-lg-3">Es posible que sea un error</h2>
           </div>
         </div>
-          
+
       </div>
     </div>
   </section>

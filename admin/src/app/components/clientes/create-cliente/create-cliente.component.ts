@@ -23,7 +23,7 @@ export class CreateClienteComponent implements OnInit {
     private _clienteService: ClienteService,
     private _adminService: AdminService,
     private _router: Router
-  ) { 
+  ) {
     this.token = this._adminService.getToken();
   }
 
@@ -31,15 +31,19 @@ export class CreateClienteComponent implements OnInit {
   }
 
   registro(registroForm){
-    if(registroForm.valid){
+
       if(!ValidatonsCliente.verificarCliente(registroForm.form.value)){return;}
+
       console.log(this.cliente);
-      this.load_btn = true;
+
       this._clienteService.registro_cliente_admin(this.cliente,this.token).subscribe(
         response =>{
+          if(!response.data){
+            this.load_btn = false;
+            return MessageBox.messageError("El numero documento ya existe");}
           console.log(response);
           MessageBox.messageSuccess("Cliente registrado satisfactoriamente");
-      
+
           this.cliente ={
             genero: '',
             nombres: '',
@@ -59,10 +63,7 @@ export class CreateClienteComponent implements OnInit {
         }
       );
 
-    }else{
-      MessageBox.messageError("Debe completar todos los campos");
-      
-    }
+
   }
 
 }
