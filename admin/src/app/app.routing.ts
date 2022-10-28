@@ -20,7 +20,6 @@ import { GaleriaProductoComponent } from './components/productos/galeria-product
 import { IndexVentasComponent } from "./components/ventas/index-ventas/index-ventas.component";
 import { CreateVentasComponent } from "./components/ventas/create-ventas/create-ventas.component";
 import { ShowVentasComponent } from "./components/ventas/show-ventas/show-ventas.component";
-import { DetalleVentasComponent } from "./components/ventas/detalle-ventas/detalle-ventas.component";
 
 
 const appRoute : Routes = [
@@ -47,8 +46,7 @@ const appRoute : Routes = [
 
 
         {path: 'ventas', component: IndexVentasComponent, canActivate:[AdminGuard]},
-         //{path: 'ventas/create', component: CreateVentasComponent, canActivate:[AdminGuard]},
-         {path: 'ventas/:id', component: DetalleVentasComponent, canActivate:[AdminGuard]},
+        {path: 'ventas/create', component: CreateVentasComponent, canActivate:[AdminGuard]},
 
     
         {path: 'configuraciones', component: ConfigComponent, canActivate: [AdminGuard]},
