@@ -91,7 +91,7 @@ export class ShowVentasComponent implements OnInit {
             position: 'topRight',
             message: 'La venta fue cerrada correctamente.'
         });
-        $('#openConfirmarPago').modal('hide');
+        $('#openConfVenta').modal('hide');
         $('.modal-backdrop').remove();
         this.load_final = false;
         this.init_data();

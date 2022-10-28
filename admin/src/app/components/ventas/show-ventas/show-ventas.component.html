@@ -11,14 +11,9 @@
                 <div class="row align-items-center">
                   <div class="col">
 
-                    <!-- Pretitle -->
-                    <h6 class="header-pretitle">
-                      Módulo
-                    </h6>
-
                     <!-- Title -->
-                    <h1 class="header-title">
-                        Ventas
+                    <h1 class="header-title mt-3">
+                      Ventas
                     </h1>
 
                   </div>
@@ -47,6 +42,7 @@
                     <div class="row">
                         <div class="col-lg-6">
                           <table class="table mb-0">
+                            <caption>Datos de la venta</caption>
                             <tbody>
                               <tr *ngIf="venta.cliente">
                                   <th class="border-0 py-2 pl-0">Cliente:</th>
@@ -75,6 +71,9 @@
                         </div>
                         <div class="col-lg-6">
                           <table class="table mb-0">
+                            <caption>
+                              Datos de la venta
+                            </caption>
                             <tbody>
                               <tr>
                                   <th class="border-0 py-2 pl-0">Precio envio:</th>
@@ -178,6 +177,7 @@
                             </div>
                             <div class="modal-body" *ngIf="venta.transaccion != 'VENTAMANUAL'">
                               <table class="table mb-0">
+                                <caption>Detalles de la venta</caption>
                                 <tbody>
                                   <tr>
                                     <th class="border-0 py-2 ps-0">Estado:</th>
@@ -287,6 +287,12 @@
                 <div class="card-body">
                   <div class="table-responsive">
                     <table class="table mb-0">
+                      <caption>Productos comprados</caption>
+                      <thead>
+                        <th>
+                          Productos comprados
+                        </th>
+                      </thead>
                       <tbody>
                         <tr *ngFor="let item of detalles">
                           <td class="border-top-0">
