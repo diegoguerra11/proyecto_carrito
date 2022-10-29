@@ -32,6 +32,7 @@ export class CarritoComponent implements OnInit {
   public venta : any = {};
   public dventa : Array<any> = [];
   public card_data : any = {};
+  public envio_titulo:any = 'Recojo en Tienda';
   public descuento_activo : any = undefined;
   public tipo_descuento = undefined;
   public valor_descuento = 0;
@@ -63,9 +64,7 @@ export class CarritoComponent implements OnInit {
     this.venta.cliente = this.idcliente;
     this.url =GLOBAL.url;
     this._guestService.get_Envios().subscribe(
-      response=>{
-        this.envios = response;
-      }
+      response => {this.envios = response;}
     );
 
     if(this.token){
@@ -73,6 +72,7 @@ export class CarritoComponent implements OnInit {
       this.user_lc = JSON.parse(obj_lc);
       this.obtener_carrito();
     }
+
 
     if(this.user_lc == undefined){
       let ls_cart = localStorage.getItem('cart');
@@ -87,7 +87,6 @@ export class CarritoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this._guestService.obtener_descuento_activo().subscribe(
       response=>{
         this.descuento_activo = response.data != undefined ? response.data[0] : undefined;
@@ -97,16 +96,14 @@ export class CarritoComponent implements OnInit {
     this.init_Data();
     
     this.get_direccion_principal(); 
- 
   }
 
   init_Data(){
-   
     this.carrito_load = false;
-    this.cacular_total('Recojo en tienda');
+    this.calcular_total();
   }
 
-  obtener_carrito(){
+  async obtener_carrito(){
     this._clienteService.obtener_carrito_cliente(this.user_lc._id,this.token).subscribe(
       response=>{
         this.carrito_arr = response.data;
@@ -120,8 +117,9 @@ export class CarritoComponent implements OnInit {
               cliente: localStorage.getItem('_id')
             });
           }  
+          this.calcular_carrito();
+          this.calcular_total();
         });
-        this.calcular_carrito();
       }
     );
   }
@@ -273,26 +271,27 @@ export class CarritoComponent implements OnInit {
       }
     }
     this.subtotal_const = this.subtotal;
-    this.totalAPagarMovible = this.subtotal_const + this.envio;
+    this.totalAPagarMovible = this.subtotal_const;
   }
 
-  cacular_total(envio_titulo:any){
+  calcular_total(){
     let descuentoActual = 0;
     if(this.valor_descuento != 0){
       this.descuento = this.valor_descuento;
       descuentoActual = this.valor_descuento;
     }
 
-    if(envio_titulo == 'Recojo en Tienda'){
+    if(this.envio_titulo == 'Recojo en Tienda'){
       this.envio = 0;
     } else {
       this.select_direccion_envio(this.direccion_principal);
     }
-    this.totalAPagarMovible = parseInt(this.subtotal.toString()) + this.envio - parseInt(descuentoActual.toString()); 
+
+    this.totalAPagarMovible = this.subtotal + this.envio - descuentoActual; 
     this.venta.subtotal = this.totalAPagarMovible;
     this.venta.envio_precio = this.envio;
-    this.venta.envio_titulo = envio_titulo;
-
+    this.venta.envio_titulo = this.envio_titulo;
+    
     this.totalAPagarEstatico = this.totalAPagarMovible;
   }
 
@@ -338,20 +337,13 @@ export class CarritoComponent implements OnInit {
 
   select_direccion_envio(item:any){
     this.envio_gratis = false;
-    var direccion = item;
+    let direccion = item;
     if(direccion.pais == 'Perú'){
       if(direccion.region == 'Lima'){
         this.envio = 10;
       }else if(direccion.region != 'Lima'){
         this.envio = 15;
       }
-    }
-    this.totalAPagarEstatico = this.totalAPagarMovible;
-    
-    if(this.venta.cupon != undefined){
-      this.totalAPagarMovible = (this.totalAPagarEstatico -this.descuento)+this.envio;
-    }else{
-      this.totalAPagarMovible = this.totalAPagarEstatico + this.envio;
     }
   }
 
@@ -362,7 +354,7 @@ export class CarritoComponent implements OnInit {
 
     this._clienteService.validar_cupon_admin(this.venta.cupon,this.token).subscribe(
       response=>{
-        if(!response.data){return MessageBox.messageError( response.message);}
+        if(!response.data){return MessageBox.messageError(response.message);}
         this.totalAPagarEstatico = this.totalAPagarMovible;
         this.tipo_descuento =  response.data.tipo;
 
@@ -370,7 +362,7 @@ export class CarritoComponent implements OnInit {
           this.descuento = response.data.valor;
           let descuentoLocal = 0;
           this.valor_descuento = this.descuento;
-          this.totalAPagarMovible = (this.totalAPagarEstatico - descuentoLocal) + this.envio;
+          this.totalAPagarMovible = (this.totalAPagarEstatico - descuentoLocal);
 
         }
         
@@ -379,10 +371,11 @@ export class CarritoComponent implements OnInit {
           this.descuento =Math.round((this.totalAPagarEstatico * response.data.valor)/100);
           let descuentoLocal = 0;
           this.valor_descuento = this.descuento;
-          this.totalAPagarMovible = (this.totalAPagarEstatico - descuentoLocal) + this.envio;
+          this.totalAPagarMovible = (this.totalAPagarEstatico - descuentoLocal);
         }
 
         this.cuponTemporal = this.venta.cupon;
+        this.calcular_total();
       }
     );
   }

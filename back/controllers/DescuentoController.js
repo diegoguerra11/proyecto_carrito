@@ -1,147 +1,108 @@
 let Descuento = require('../models/descuento');
 let fs = require('fs');
 let path = require('path');
+
 const registro_descuento_admin = async function(req,res){
-    if(req.user){
-        if(req.user.role == 'admin'){
-            let data = req.body;
+    if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
+
+    let data = req.body;
             
-            let img_path = req.files.banner.path;
-            let name = img_path.split('\\');
-            let banner_name = name[2];
+    let img_path = req.files.banner.path;
+    let name = img_path.split('\\');
+    let banner_name = name[2];
 
-            data.banner = banner_name;
-            let reg = await Descuento.create(data);
+    data.banner = banner_name;
+    let reg = await Descuento.create(data);
 
-            res.status(200).send({data:reg});
-
-        }else{
-            res.status(500).send({message: 'NoAccess'});
-        }
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    }
+    res.status(200).send({data:reg});
 }
 
 const listar_descuentos_admin = async function(req,res){
-    if(req.user){
-        if(req.user.role == 'admin'){
-            
-            let filtro = req.params['filtro'];
+    if(!req.user || req.user.role != 'admin') {return   res.status(500).send({message: 'NoAccess'});}
+     
+    let filtro = req.params['filtro'];
 
-            let reg = await Descuento.find({titulo: new RegExp(filtro, 'i')}).sort({createdAt:-1});
-            res.status(200).send({data: reg});
-
-        }else{
-            res.status(500).send({message: 'NoAccess'});
-        }
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    }
+    let reg = await Descuento.find({titulo: new RegExp(filtro, 'i')}).sort({createdAt:-1});
+    res.status(200).send({data: reg});
 }
 
 const obtener_banner_descuento = async function(req,res){
     let img = req.params['img'];
-
+    let path_img;
 
     fs.stat('./uploads/descuentos/'+img, function(err){
         if(!err){
-            let path_img = './uploads/descuentos/'+img;
-            res.status(200).sendFile(path.resolve(path_img));
+            path_img = './uploads/descuentos/'+img;
         }else{
-            let path_img = './uploads/default.jpg';
-            res.status(200).sendFile(path.resolve(path_img));
+            path_img = './uploads/default.jpg';
         }
+
+        res.status(200).sendFile(path.resolve(path_img));
     })
 }
 
 const obtener_descuento_admin = async function(req,res){
-    if(req.user){
-        if(req.user.role =='admin'){
-            
-            let id = req.params['id'];
+    if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
+    
+    let id = req.params['id'];
 
-            try {
-                let reg = await Descuento.findById({_id:id});
-
-                res.status(200).send({data:reg});
-            } catch (error) {
-                res.status(200).send({data:undefined});
-            }
-
-        }else{
-            res.status(500).send({message: 'NoAccess'});
-        }
-    }else{
-        res.status(500).send({message: 'NoAccess'});
+    try {
+        let reg = await Descuento.findById({_id:id});
+        res.status(200).send({data:reg});
+    } catch (error) {
+        res.status(200).send({data:undefined});
     }
 }
 
 
 const actualizar_descuento_admin = async function(req,res){
-    if(req.user){
-        if(req.user.role == 'admin'){
-            let id = req.params['id'];
-            let data = req.body;
+    if(!req.user || req.user.role != 'admin'){return  res.status(500).send({message: 'NoAccess'});}
+    let id = req.params['id'];
+    let data = req.body;
+    let reg;
 
-            if(req.files){
-                //SI HAY IMAGEN
-                let img_path = req.files.banner.path;
-                let name = img_path.split('\\');
-                let banner_name = name[2];
+    if(req.files){
+        //SI HAY IMAGEN
+        let img_path = req.files.banner.path;
+        let name = img_path.split('\\');
+        let banner_name = name[2];
 
-                
-                let reg = await Descuento.findByIdAndUpdate({_id:id},{
-                    titulo: data.titulo,
-                    descuento: data.descuento,
-                    fecha_inicio: data.fecha_inicio,
-                    fecha_fin: data.fecha_fin,
-                    banner: banner_name
+        reg = await Descuento.findByIdAndUpdate({_id:id},{
+            titulo: data.titulo,
+            descuento: data.descuento,
+            fecha_inicio: data.fecha_inicio,
+            fecha_fin: data.fecha_fin,
+            banner: banner_name
+        });
+
+        fs.stat('./uploads/descuentos/'+reg.banner, function(err){
+            if(!err){
+                fs.unlink('./uploads/descuentos/'+reg.banner, (err)=>{
+                    if(err) throw err;
                 });
-
-                fs.stat('./uploads/descuentos/'+reg.banner, function(err){
-                    if(!err){
-                        fs.unlink('./uploads/descuentos/'+reg.banner, (err)=>{
-                            if(err) throw err;
-                        });
-                    }
-                })
-
-                res.status(200).send({data:reg});
-            }else{
-                //NO HAY IMAGEN
-               let reg = await Descuento.findByIdAndUpdate({_id:id},{
-                    titulo: data.titulo,
-                    descuento: data.descuento,
-                    fecha_inicio: data.fecha_inicio,
-                    fecha_fin: data.fecha_fin,
-               });
-               res.status(200).send({data:reg});
             }
-            
-        }else{
-            res.status(500).send({message: 'NoAccess'});
-        }
+        })
+
+        res.status(200).send({data:reg});
     }else{
-        res.status(500).send({message: 'NoAccess'});
+        //NO HAY IMAGEN
+        reg = await Descuento.findByIdAndUpdate({_id:id},{
+            titulo: data.titulo,
+            descuento: data.descuento,
+            fecha_inicio: data.fecha_inicio,
+            fecha_fin: data.fecha_fin,
+        });
     }
+
+    res.status(200).send({data:reg});
 }
 
 const eliminar_descuento_admin = async function(req,res){
-    if(req.user){
-        if(req.user.role =='admin'){
-            
-            let id = req.params['id'];
+    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    let id = req.params['id'];
 
-            let reg = await Descuento.findByIdAndRemove({_id:id});
-            res.status(200).send({data:reg});
-            
-        }else{
-            res.status(500).send({message: 'NoAccess'});
-        }
-    }else{
-        res.status(500).send({message: 'NoAccess'});
-    }
+    let reg = await Descuento.findByIdAndRemove({_id:id});
+    res.status(200).send({data:reg});
 }
 
 const obtener_descuento_activo = async function(req,res){
@@ -158,12 +119,9 @@ const obtener_descuento_activo = async function(req,res){
         }
     });
 
-    if(arr_descuentos.length >= 1){
-        res.status(200).send({data:arr_descuentos});
-    }else{
-        res.status(200).send({data:undefined});
-    }
-
+    if(arr_descuentos.length < 1) {return res.status(200).send({data:undefined});}
+    
+    res.status(200).send({data:arr_descuentos});
 }
 
 module.exports = {

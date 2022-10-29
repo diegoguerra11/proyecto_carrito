@@ -62,7 +62,6 @@
                     <div class="d-flex pr-sm-3">
                       <input type="number" class="form-control form-control-sm bg-light mr-3" readonly style="width: 4.5rem;" value="{{item.cantidad}}">
                     <div class="text-nowrap pt-2">
-                      <!-- <strong class="text-danger">$15.00</strong> -->
                       <span style="font-size: 1.2rem !important;" class="font-size-xs text-muted">S/.{{item.producto.precio}}</span>
                     </div>
                     </div>
@@ -86,7 +85,6 @@
                       <div class="row " *ngIf="direccion_principal == undefined">
                         <div class="col-12 text-center">
                           <h3 style="color: #565656;    margin-bottom: 0px;">No tiene una dirección principal</h3>
-                          <img src="assets/img/1652734.png" style="width: 80px;">
                         </div>
                         
                       </div>
@@ -117,7 +115,7 @@
             <!-- Shipping -->
             <h2 class="h4 mb-4">3. Metodos de envio</h2>
             <div class="custom-control custom-radio mb-3" *ngFor="let item of envios">
-              <input (change)="cacular_total(item.titulo)" type="radio" class="custom-control-input" id="courier" name="shipping" name="titulo_envio">
+              <input (change)="calcular_total()" type="radio" class="custom-control-input" id="courier" name="shipping" name="titulo_envio" value="{{item.titulo}}" [(ngModel)]="envio_titulo">
               <label for="courier" class="custom-control-label d-flex align-items-center">
                 <span>
                   <strong class="d-block">{{item.titulo}}</strong>
@@ -126,8 +124,6 @@
               </label>
             </div>
           
-            <!-- <hr class="border-top-0 border-bottom pt-4 mb-4"> -->
-
             <!-- Payment -->
             <h2 class="h4 pt-2 mb-4">4. Metodos de pago</h2>
             <div class="row pb-4">

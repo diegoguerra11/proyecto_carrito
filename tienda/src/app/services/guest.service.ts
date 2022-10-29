@@ -28,7 +28,6 @@ export class GuestService {
   }
 
   comprobar_carrito_cliente(data:any,token:any):Observable<any>{
-    
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.post(this.url+'comprobar_carrito_cliente',data,{headers:headers});
   }

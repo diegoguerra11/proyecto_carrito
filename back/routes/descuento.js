@@ -1,13 +1,12 @@
 'use strict'
 
-var express = require ('express');
-var DescuentoController = require('../controllers/DescuentoController');
+let express = require ('express');
+let DescuentoController = require('../controllers/DescuentoController');
 
-var api = express.Router();
-var auth = require('../middlewares/authenticate');
-var multiParty = require("connect-multiparty");
-var path = multiParty({uploadDir: "./uploads/descuentos"});
-
+let api = express.Router();
+let auth = require('../middlewares/authenticate');
+let multiParty = require("connect-multiparty");
+let path = multiParty({uploadDir: "./uploads/descuentos"});
 
 api.post("/registro_descuento_admin", [auth.auth, path], DescuentoController.registro_descuento_admin);
 api.get("/listar_descuentos_admin/:filtro?",auth.auth,DescuentoController.listar_descuentos_admin);

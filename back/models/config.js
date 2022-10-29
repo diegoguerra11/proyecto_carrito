@@ -1,9 +1,9 @@
 'use strict'
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var ConfigSchema = Schema({
+let ConfigSchema = Schema({
     categorias: [{type: Object, required: true}],
     titulo: {type: String, required: true},
     logo: {type: String, required: true},

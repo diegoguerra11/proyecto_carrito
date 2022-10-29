@@ -29,16 +29,14 @@ const comprobar_carrito_cliente = async function(req,res){
         let producto_sl = '';
 
         for(let item of detalles){
-            let variedad = await Variedad.findOne({producto: item.producto, valor: item.variedad}).populate('producto');
+            let variedad = await Variedad.findById({_id: item.variedad}).populate('producto');
             if(variedad.stock < item.cantidad){
                 access = true;
                 producto_sl = variedad.producto.titulo;
             }
         }
 
-        if(access){
-            return res.status(200).send({venta:false,message:'Stock insuficiente para ' + producto_sl});
-        }
+        if(access){return res.status(200).send({venta:false,message:'Stock insuficiente para ' + producto_sl});}
 
         return res.status(200).send({venta:true});
     } catch (error) {

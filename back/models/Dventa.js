@@ -1,9 +1,9 @@
 'use strict'
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var DventaSchema = Schema({
+let DventaSchema = Schema({
     producto: {type: Schema.ObjectId, ref: 'producto', required: true},
     venta: {type: Schema.ObjectId, ref: 'venta', require: true},
     subtotal: {type: Number, require: true}, 

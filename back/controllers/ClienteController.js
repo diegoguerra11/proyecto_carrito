@@ -10,10 +10,10 @@ let crypt = require('../helpers/bcrypt');
 let Variedad = require('../models/Variedad');
 let Direccion = require("../models/direccion");
 let Producto = require("../models/producto");
-// let nodemailer = require("nodemailer");
-// let fs = require('fs');
-// let ejs = require('ejs');
-// let handlebars = require('handlebars');
+let nodemailer = require("nodemailer");
+let fs = require('fs');
+let ejs = require('ejs');
+let handlebars = require('handlebars');
 
 const registro_cliente = async function(req,res){
     try {
@@ -385,57 +385,57 @@ const registro_compra_cliente = async function(req,res){
 
 }
 const enviar_orden_compra = async function(venta){
-//     try {
-        // let readHTMLFile = function(path, callback) {
-        //     fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-        //         if (err) {
-        //             callback(err);
-        //             throw err;
-        //         }
-        //         else {
-        //             callback(null, html);
-        //         }
-        //     });
-        // };
+    try {
+        let readHTMLFile = function(path, callback) {
+            fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                if (err) {
+                    callback(err);
+                    throw err;
+                }
+                else {
+                    callback(null, html);
+                }
+            });
+        };
     
-        // let transporter = nodemailer.createTransport(({
-        //     service: 'gmail',
-        //     host: 'smtp.gmail.com',
-        //     auth: {
-        //         user: 'renzo.carrascom@gmail.com',
-        //         pass: 'mjqzblcffaegvdzm'
-        //     }
-        // }));
+        let transporter = nodemailer.createTransport(({
+            service: 'gmail',
+            host: 'smtp.gmail.com',
+            auth: {
+                user: 'renzo.carrascom@gmail.com',
+                pass: 'mjqzblcffaegvdzm'
+            }
+        }));
     
      
-//         let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
-//         let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
+        let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
+        let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
     
     
-//         readHTMLFile(process.cwd() + '/mails/email_compra.html', (err, html)=>{
+        readHTMLFile(process.cwd() + '/mails/email_compra.html', (err, html)=>{
                                 
-//             let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
+            let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
     
-//             let template = handlebars.compile(rest_html);
-//             let htmlToSend = template({op:true});
+            let template = handlebars.compile(rest_html);
+            let htmlToSend = template({op:true});
     
-//             let mailOptions = {
-//                 from: 'renzo.carrascom@gmail.com',
-//                 to: orden.cliente.email,
-//                 subject: 'Confirmación de compra ' + orden._id,
-//                 html: htmlToSend
-//             };
+            let mailOptions = {
+                from: 'renzo.carrascom@gmail.com',
+                to: orden.cliente.email,
+                subject: 'Confirmación de compra ' + orden._id,
+                html: htmlToSend
+            };
           
-//             transporter.sendMail(mailOptions, function(error, info){
-//                 if (!error) {
-//                     console.log('Email sent: ' + info.response);
-//                 }
-//             });
+            transporter.sendMail(mailOptions, function(error, info){
+                if (!error) {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
         
-//         });
-//     } catch (error) {
-//         console.log(error);
-//     }
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const consultarIDPago = async function(req,res){

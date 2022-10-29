@@ -1,12 +1,12 @@
 'use strict'
 
-var express = require ('express');
-var configController = require('../controllers/ConfigController');
+let express = require ('express');
+let configController = require('../controllers/ConfigController');
 
-var api = express.Router();
-var auth = require('../middlewares/authenticate');
-var multiparty = require('connect-multiparty');
-var path = multiparty({uploadDir: './uploads/configuraciones'});
+let api = express.Router();
+let auth = require('../middlewares/authenticate');
+let multiparty = require('connect-multiparty');
+let path = multiparty({uploadDir: './uploads/configuraciones'});
 
 //Configs de la tienda
 api.put('/actualizar_config_admin/:id',[auth.auth,path],configController.actualizar_config_admin);

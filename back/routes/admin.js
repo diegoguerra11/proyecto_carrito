@@ -1,19 +1,17 @@
 'use strict'
 
-var express = require ('express');
-var adminController = require('../controllers/AdminController');
-var auth = require('../middlewares/authenticate');
-var api = express.Router();
+let express = require ('express');
+let adminController = require('../controllers/AdminController');
+let auth = require('../middlewares/authenticate');
+let api = express.Router();
 
 //Registro de Admin
 api.post('/registro_admin',adminController.registro_admin);
 api.post('/login_admin',adminController.login_admin);
 
-
 //Variedades
 api.get('/listar_variedades_admin/:id',auth.auth,adminController.listar_variedades_admin);
 api.get('/listar_variedades_productos_admin',auth.auth,adminController.listar_variedades_productos_admin);
-
 
 //Pedidos
 api.get('/obtener_ventas_admin/:desde?/:hasta?',auth.auth,adminController.obtener_ventas_admin);
@@ -28,13 +26,9 @@ api.get('/cambiar_vs_producto_admin/:id/:estado',auth.auth,adminController.cambi
 api.post('/registro_compra_manual_cliente',auth.auth,adminController.registro_compra_manual_cliente);
 api.post('/pedido_compra_cliente',auth.auth,adminController.pedido_compra_cliente);
 
-
 //variedades
 api.put('/actualizar_producto_variedades_admin/:id',auth.auth,adminController.actualizar_producto_variedades_admin);
 api.delete('/eliminar_variedad_admin/:id',auth.auth,adminController.eliminar_variedad_admin);
 api.post('/agregar_nueva_variedad_admin',auth.auth,adminController.agregar_nueva_variedad_admin);
-
-
-
 
 module.exports = api;

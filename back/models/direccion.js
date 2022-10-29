@@ -1,9 +1,9 @@
 'use strict'
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var DireccionSchema = Schema({
+let DireccionSchema = Schema({
     cliente: {type: Schema.ObjectId, ref: 'cliente', required: true},
     destinatario: {type: String, required: true},
     numeroDocumento: {type: String, required: true},

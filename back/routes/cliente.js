@@ -1,11 +1,10 @@
 'use strict'
 
-var express = require ('express');
-var clienteController = require('../controllers/ClienteController');
+let express = require ('express');
+let clienteController = require('../controllers/ClienteController');
 
-var api = express.Router();
-var auth = require('../middlewares/authenticate');
-
+let api = express.Router();
+let auth = require('../middlewares/authenticate');
 
 //Admin
 api.post('/registro_cliente_admin',auth.auth, clienteController.registro_cliente_admin);
@@ -26,7 +25,6 @@ api.get('/obtener_variedades_productos_cliente/:id',clienteController.obtener_va
 api.get('/obtener_productos_slug_publico/:slug',clienteController.obtener_productos_slug_publico);
 api.get('/listar_productos_recomendados_publico/:categoria',clienteController.listar_productos_recomendados_publico);
 
-
 ///DIRECCION
 api.post('/registro_direccion_cliente',auth.auth,clienteController.registro_direccion_cliente);
 api.get('/obtener_direccion_todos_cliente/:id',auth.auth,clienteController.obtener_direccion_todos_cliente);
@@ -40,6 +38,5 @@ api.get('/obtener_ordenes_cliente/:id', auth.auth, clienteController.obtener_ord
 api.get('/obtener_detalles_ordenes_cliente/:id', auth.auth, clienteController.obtener_detalles_ordenes_cliente);
 api.get('/consultarIDPago/:id',auth.auth,clienteController.consultarIDPago);
 api.post('/registro_compra_cliente',auth.auth,clienteController.registro_compra_cliente);
-
 
 module.exports = api;

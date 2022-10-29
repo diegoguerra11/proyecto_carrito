@@ -1,9 +1,9 @@
 'use strict'
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var CuponSchema = Schema({
+let CuponSchema = Schema({
     codigo: {type: String, required: true},
     tipo: {type: String, required: true}, //Porcentaje | Precio fijo
     valor: {type: Number, required: true},
