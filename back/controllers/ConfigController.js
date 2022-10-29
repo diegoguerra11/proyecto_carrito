@@ -18,7 +18,6 @@ const actualizar_config_admin = async function(req,res){
     let data = req.body;
 
     if (req.files) {
-        console.log('Si hay img');
         let img_path = req.files.logo.path;
         let name = img_path.split('\\');
         let logo_name = name [2];
@@ -42,7 +41,6 @@ const actualizar_config_admin = async function(req,res){
         res.status(200).send({data:reg});
 
     } else {
-        console.log('No hay img');
         let reg = await Config.findByIdAndUpdate({_id: config.config_id},{
             categorias: data.categorias,
             titulo: data.titulo,
@@ -57,8 +55,6 @@ const actualizar_config_admin = async function(req,res){
 
 const obtener_logo = async function(req,res){
     let img = req.params['img'];
-
-    console.log(img);
     fs.stat('./uploads/configuraciones/'+img, function(err){
         if (!err) {
             let path_img = './uploads/configuraciones/'+ img;

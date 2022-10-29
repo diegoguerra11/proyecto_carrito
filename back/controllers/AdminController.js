@@ -130,7 +130,6 @@ const obtener_detalles_ordenes_cliente  = async function(req,res){
             res.status(200).send({data:venta,detalles:detalles});
 
         } catch (error) {
-            console.log(error);
             res.status(200).send({data:undefined});
         }
         
@@ -294,7 +293,6 @@ const agregar_nueva_variedad_admin = async function(req,res){
     if(req.user){
         let data = req.body;
 
-        console.log(data);
         let reg = await Variedad.create(data);
 
         res.status(200).send({data:reg});
@@ -308,7 +306,6 @@ const actualizar_producto_variedades_admin = async function(req,res){
         let id = req.params['id'];
         let data = req.body;
 
-        console.log(data.titulo_variedad);
         let reg = await Producto.findByIdAndUpdate({_id:id},{
             titulo_variedad: data.titulo_variedad,
         });
@@ -325,8 +322,6 @@ const registro_compra_manual_cliente = async function(req,res){
         let detalles = data.detalles;
 
         data.estado = 'Procesando';
-        
-        console.log(data);
 
         let venta = await Venta.create(data);
 
@@ -364,7 +359,6 @@ const enviar_orden_compra = async function(venta){
         let readHTMLFile = function(path, callback) {
             fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
                 if (err) {
-                    console.log(err);
                     callback(err);
                     throw err;
                 }
@@ -404,13 +398,11 @@ const enviar_orden_compra = async function(venta){
           
             transporter.sendMail(mailOptions, function(error, info){
                 if (!error) {
-                    console.log('Email sent: ' + info.response);
                 }
             });
         
         });
     } catch (error) {
-        console.log(error);
     }
 }
 const pedido_compra_cliente = async function(req,res){
@@ -444,7 +436,6 @@ const pedido_compra_cliente = async function(req,res){
                 res.status(200).send({venta:undefined,message:'Stock insuficiente para ' + producto_sl});
             }
         } catch (error) {
-            console.log(error);
         }
 
         

@@ -121,7 +121,6 @@ export class ShowProductoComponent implements OnInit {
     this._guestService.obtener_variedades_productos_cliente(this.producto["_id"]).subscribe(
       response=>{
         this.variedades = response.data;
-        console.log(this.variedades);
       }
     );
   }
@@ -131,8 +130,6 @@ export class ShowProductoComponent implements OnInit {
     this.obj_variedad_select.id = arr_variedad[0];
     this.obj_variedad_select.variedad = arr_variedad[1];
     this.obj_variedad_select.stock = arr_variedad[2];
-
-    console.log(arr_variedad);
   }
 
   SumCant(){

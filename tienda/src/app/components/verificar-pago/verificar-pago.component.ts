@@ -60,16 +60,12 @@ export class VerificarPagoComponent implements OnInit {
           this._route.queryParams.subscribe(
             (params: Params)=>{
               this.payment_id = params["payment_id"];
-              console.log(this.payment_id);
               this._clienteService.consultarIDPago(this.payment_id,this.token).subscribe(
                 response=>{
-                  console.log(response);
                     if(response.data.length == 0){
                       this._clienteService.obtener_carrito_cliente(this.idcliente,this.token).subscribe(
                         response=>{
                           this.carrito_arr = response.data;
-                          console.log(this.carrito_arr);
-
                           this.carrito_arr.forEach(element => {  
                             this.dventa.push({
                               producto: element.producto._id,
@@ -79,7 +75,6 @@ export class VerificarPagoComponent implements OnInit {
                               cliente: localStorage.getItem('_id')
                             });
                           });
-
                           this.venta.tipo_descuento = this.tipo_descuento;
                           this.venta.valor_descuento = this.valor_descuento;
                           this.venta.direccion = this.direccion;
@@ -92,26 +87,14 @@ export class VerificarPagoComponent implements OnInit {
                           this.venta.detalles = this.dventa;
                           this.venta.metodo_pago = 'Tarjeta de crédito';
 
-                          this._clienteService.disminuir_cupon(this.venta.cupon, this.token).subscribe(
-                            response=>{
-                              console.log("miau");
-                              console.log(response);
-                            }
-                          );
+                          this._clienteService.disminuir_cupon(this.venta.cupon, this.token).subscribe();
                           this._clienteService.registro_compra_cliente(this.venta,this.token).subscribe(
                             response=>{
-                              console.log(response);
-                              
-                              
                               this._router.navigate(['/cuenta/pedidos',response.data._id]);
                             }
                           );
-
                         }
                       );
-
-                      
-                      
                     }
                     else{
                       this.tipo = 'failure';
@@ -127,5 +110,4 @@ export class VerificarPagoComponent implements OnInit {
       }
     );
   }
-
 }

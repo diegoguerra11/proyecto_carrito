@@ -55,8 +55,6 @@ const listar_productos_admin = async function(req,res){
 
 const obtener_portada = async function(req,res){
     let img = req.params['img'];
-
-    console.log(img);
     fs.stat('./uploads/productos/'+img, function(err){
         if (!err) {
             let path_img = './uploads/productos/'+ img;
