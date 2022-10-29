@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from 'src/app/services/admin.service';
 import { MessageBox} from "../../../utils/MessageBox";
-declare var $:any;
+declare let $:any;
 @Component({
   selector: 'app-create-ventas',
   templateUrl: './create-ventas.component.html',
@@ -11,37 +11,30 @@ declare var $:any;
 export class CreateVentasComponent implements OnInit {
 
   public load_btn = false;
-
   public clientes_const:Array<any> = [];
   public load_data = false;
   public token = localStorage.getItem('token');
-
   public filtro_cliente = '';
   public clientes:Array<any> = [];
   public pageCliente = 1;
   public pageSizeCliente = 20;
   public load_clientes = false;
-
   public direcciones:Array<any> = [];
   public pageDireccion = 1;
   public pageSizeDireccion = 20;
   public load_direcciones = false;
   public direccion_select : any = {};
-
-  
   public variedades:Array<any> = [];
   public variedades_const:Array<any> = [];
   public pageVariedad = 1;
   public pageSizeVariedad = 20;
   public load_variedades= false;
   public producto_select :any= undefined;
-
   public cantidad = 1;
   public venta :any = {
     metodo_pago: ''
   };
   public dventa:Array<any> = [];
-
   public total_pagar = 0;
   public envio_input = 0;
   public neto_pagar = 0;
@@ -51,7 +44,7 @@ export class CreateVentasComponent implements OnInit {
   constructor(
     private _adminService:AdminService,
     private _router:Router
-  ) { 
+  ) {
 
   }
 
@@ -64,23 +57,16 @@ export class CreateVentasComponent implements OnInit {
     this.load_clientes = true;
     this._adminService.listar_clientes_tienda(this.token).subscribe(
       response=>{
-        
         this.clientes = response.data;
         this.clientes_const = this.clientes;
-
         this.load_clientes = false;
-        
       },
-      error=>{
-        console.log(error);
-        
-      }
     );
   }
 
   func_filtro_cliente(){
     if(this.filtro_cliente){
-      var term = new RegExp(this.filtro_cliente.toString().trim() , 'i');
+      let term = new RegExp(this.filtro_cliente.toString().trim() , 'i');
       this.clientes = this.clientes_const.filter(item=>term.test(item.nombres)||term.test(item.apellidos)||term.test(item.email)||term.test(item.dni));
     }else{
       this.clientes = this.clientes_const;
@@ -88,9 +74,8 @@ export class CreateVentasComponent implements OnInit {
   }
 
   func_filtro_producto(){
-    
     if(this.filtro_producto){
-      var term = new RegExp(this.filtro_producto.toString().trim() , 'i');
+      let term = new RegExp(this.filtro_producto.toString().trim() , 'i');
       this.variedades = this.variedades_const.filter(item=>term.test(item.producto));
     }else{
       this.variedades = this.variedades_const;
@@ -110,7 +95,6 @@ export class CreateVentasComponent implements OnInit {
       response=>{
         this.direcciones = response.data;
         this.load_direcciones = false;
-        console.log(this.direcciones);
       }
     );
   }
@@ -127,7 +111,6 @@ export class CreateVentasComponent implements OnInit {
     this.load_variedades = true;
     this._adminService.listar_variedades_productos_admin(this.token).subscribe(
       response=>{
-          
           response.data.forEach((element:any) => {
               this.variedades.push({
                 idvariedad: element._id,
@@ -140,20 +123,15 @@ export class CreateVentasComponent implements OnInit {
                 precio_dolar: element.producto.precio_dolar,
                 nventas : element.producto.nventas,
               })
-          });     
+          });
           this.variedades_const = this.variedades;
-          this.load_variedades = false;    
+          this.load_variedades = false;
       },
-      error=>{
-        console.log(error);
-        
-      }
     )
   }
 
   select_producto(item:any){
     this.producto_select = item;
-  
     $('#modalProducto').modal('hide');
     $('#input-producto').val(item.producto);
   }
@@ -171,20 +149,16 @@ export class CreateVentasComponent implements OnInit {
             variedad: this.producto_select.idvariedad,
             cantidad: this.cantidad
           });
-          console.log( this.dventa);
           this.total_pagar = this.total_pagar + (this.producto_select.precio_soles * this.cantidad);
           this.neto_pagar = this.neto_pagar + (this.producto_select.precio_soles * this.cantidad);
         }else{
           MessageBox.messageError('La cantidad sobrepasa el stock');
-          
         }
       }else{
         MessageBox.messageError('Ingrese un valor valido en la cantidad');
-        
       }
     }else{
       MessageBox.messageError('Seleccione el producto');
-     
     }
   }
 
@@ -231,20 +205,19 @@ export class CreateVentasComponent implements OnInit {
     }else{
       this.venta.tipo_descuento = '';
     }
-    
     if(!this.venta.cliente){
       MessageBox.messageError('Debe seleccionar al cliente.');
-      
+
     }else if(!this.venta.direccion){
       MessageBox.messageError('Debe seleccionar la dirección.');
-      
+
     }else if(!this.venta.metodo_pago){
       MessageBox.messageError('Debe seleccionar el metodo de pago.');
-      
+
     }
     else if(this.dventa.length == 0){
       MessageBox.messageError('Debe agregar al menos un producto a la venta.');
-      
+
     }else{
       this.load_btn = true;
       this._adminService.registro_compra_manual_cliente(this.venta,this.token).subscribe(
@@ -253,7 +226,7 @@ export class CreateVentasComponent implements OnInit {
           this._router.navigate(['/ventas']);
         }
       );
-      
+
     }
 
   }
@@ -264,7 +237,6 @@ export class CreateVentasComponent implements OnInit {
         this.neto_pagar = this.neto_pagar - this.descuento;
       }else{
         MessageBox.messageError('El descuento no debe superar el monto total.');
-        
       }
     }
   }

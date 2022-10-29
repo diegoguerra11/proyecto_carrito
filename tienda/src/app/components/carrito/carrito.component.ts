@@ -12,12 +12,10 @@ import { MessageBox } from '../../Utils/MessageBox';
   styleUrls: ['./carrito.component.css']
 })
 export class CarritoComponent implements OnInit {
-  
   public idcliente;
   public token;
   public user : any = undefined;
-  public user_lc : any = undefined;  
-
+  public user_lc : any = undefined;
   public carrito_arr : Array<any> = [];
   public carrito_logout :Array<any> = [];
   public url;
@@ -26,7 +24,6 @@ export class CarritoComponent implements OnInit {
   public currency = 'PEN';
   public subtotal_const = 0;
   public carrito_load = true;
-
   public direccion_principal : any = {};
   public envios : Array<any>=[];
   public venta : any = {};
@@ -41,11 +38,7 @@ export class CarritoComponent implements OnInit {
   public descuento = 0;
   public envio = 0;
   public nota = '';
-
-
   public cuponTemporal = "";
-
-
   public totalAPagarEstatico = 0;
   public totalAPagarMovible = 0;
 
@@ -53,13 +46,10 @@ export class CarritoComponent implements OnInit {
     private _clienteService: ClienteService,
     private _guestService:GuestService,
     private _router:Router
-  ) { 
+  ) {
     this.token = localStorage.getItem('token');
-    
     if(!this.token){_router.navigate(['/login']);}
-
     this.idcliente = localStorage.getItem('_id');
-
     this.venta.cliente = this.idcliente;
     this.url =GLOBAL.url;
     this._guestService.get_Envios().subscribe(
@@ -76,32 +66,27 @@ export class CarritoComponent implements OnInit {
 
     if(this.user_lc == undefined){
       let ls_cart = localStorage.getItem('cart');
-
       if(ls_cart != null){
         this.carrito_logout = JSON.parse(ls_cart);
         this.calcular_carrito();
       }else{
         this.carrito_logout = [];
       }
-    } 
+    }
   }
 
   ngOnInit(): void {
-
     this._guestService.obtener_descuento_activo().subscribe(
       response=>{
         this.descuento_activo = response.data != undefined ? response.data[0] : undefined;
       }
     );
-
     this.init_Data();
-    
-    this.get_direccion_principal(); 
- 
+    this.get_direccion_principal();
+
   }
 
   init_Data(){
-   
     this.carrito_load = false;
     this.cacular_total('Recojo en tienda');
   }
@@ -110,7 +95,7 @@ export class CarritoComponent implements OnInit {
     this._clienteService.obtener_carrito_cliente(this.user_lc._id,this.token).subscribe(
       response=>{
         this.carrito_arr = response.data;
-        this.carrito_arr.forEach(element => { 
+        this.carrito_arr.forEach(element => {
           if(this.currency == 'PEN'){
             this.dventa.push({
               producto: element.producto._id,
@@ -119,7 +104,7 @@ export class CarritoComponent implements OnInit {
               cantidad: element.cantidad,
               cliente: localStorage.getItem('_id')
             });
-          }  
+          }
         });
         this.calcular_carrito();
       }
@@ -129,13 +114,11 @@ export class CarritoComponent implements OnInit {
 
   generar_pedido(){
     this.venta.transaccion = 'Venta pedido';
-    
     if(this.currency != 'PEN'){
       this.venta.currency = 'USD';
     }else{
       this.venta.currency = 'PEN';
     }
-
     this.venta.subtotal = this.subtotal;
     this.venta.total_pagar = this.totalAPagarEstatico;
     this.venta.envio_precio = this.envio;
@@ -147,14 +130,11 @@ export class CarritoComponent implements OnInit {
     this.venta.valor_descuento = this.valor_descuento;
     let idcliente = localStorage.getItem('_id');
     this.venta.cliente = idcliente;
-
     this.btn_load = true;
     this._guestService.registro_pedido_compra_cliente(this.venta,this.token).subscribe(
       response=>{
         this.btn_load = false;
-
         if(!response.data){return MessageBox.messageError(response.data.message);}
-  
         this._router.navigate(['/cuenta/pedidos/',response.data._id]);
       }
     );
@@ -181,9 +161,7 @@ export class CarritoComponent implements OnInit {
           this.btn_load = false;
           return MessageBox.messageError(response.message);
         }
-
         let items = [];
-          
         this.carrito_arr.forEach(element => {
           items.push({
             title: element.producto.titulo,
@@ -222,7 +200,6 @@ export class CarritoComponent implements OnInit {
           },
           auto_return: "approved"
         }
-
         this._guestService.createToken(data).subscribe(
           response=>{
             window.location.href = response.sandbox_init_point;
@@ -236,11 +213,11 @@ export class CarritoComponent implements OnInit {
     this._clienteService.obtener_direccion_principal_cliente(localStorage.getItem('_id'),this.token).subscribe(
       response=>{
         if(response.data == undefined){
-          this.direccion_principal = undefined; 
+          this.direccion_principal = undefined;
         }else{
           this.direccion_principal = response.data;
           this.venta.direccion = this.direccion_principal._id;
-        }  
+        }
       }
     );
   }
@@ -288,11 +265,10 @@ export class CarritoComponent implements OnInit {
     } else {
       this.select_direccion_envio(this.direccion_principal);
     }
-    this.totalAPagarMovible = parseInt(this.subtotal.toString()) + this.envio - parseInt(descuentoActual.toString()); 
+    this.totalAPagarMovible = parseInt(this.subtotal.toString()) + this.envio - parseInt(descuentoActual.toString());
     this.venta.subtotal = this.totalAPagarMovible;
     this.venta.envio_precio = this.envio;
     this.venta.envio_titulo = envio_titulo;
-
     this.totalAPagarEstatico = this.totalAPagarMovible;
   }
 
@@ -300,16 +276,14 @@ export class CarritoComponent implements OnInit {
     this.totalAPagarMovible  = 0;
     this.carrito_logout.splice(item._id,1);
     localStorage.removeItem('cart');
-
     MessageBox.messageSuccess('Se eliminó el producto correctamente.');
-  
     if(this.carrito_logout.length >= 1){
       localStorage.setItem('cart',JSON.stringify(this.carrito_logout));
     }
     if(this.currency == 'PEN'){
       let monto = item.producto.precio*item.cantidad;
       this.subtotal = this.subtotal -monto;
-   
+
     } else if(this.currency != 'PEN'){
       let monto = item.producto.precio_dolar*item.cantidad;
       this.subtotal = this.subtotal -monto;
@@ -323,22 +297,21 @@ export class CarritoComponent implements OnInit {
     this._clienteService.eliminar_carrito_cliente(id,this.token).subscribe(
       response=>{
         MessageBox.messageSuccess('Se eliminó el producto correctamente.');
-      
         this.socket.emit('delete-carrito',{data:response.data});
         this._clienteService.obtener_carrito_cliente(this.idcliente,this.token).subscribe(
           response=>{
             this.carrito_arr = response.data;
-            this.calcular_carrito();       
+            this.calcular_carrito();
           }
         );
-        
+
       }
     );
   }
 
   select_direccion_envio(item:any){
     this.envio_gratis = false;
-    var direccion = item;
+    let direccion = item;
     if(direccion.pais == 'Perú'){
       if(direccion.region == 'Lima'){
         this.envio = 10;
@@ -347,7 +320,6 @@ export class CarritoComponent implements OnInit {
       }
     }
     this.totalAPagarEstatico = this.totalAPagarMovible;
-    
     if(this.venta.cupon != undefined){
       this.totalAPagarMovible = (this.totalAPagarEstatico -this.descuento)+this.envio;
     }else{
@@ -359,29 +331,23 @@ export class CarritoComponent implements OnInit {
     if(this.cuponTemporal != "") {return MessageBox.messageError("Solo se puede canejar un cupón por compra");}
     if(!this.venta.cupon) {return MessageBox.messageError('El cupon no es valido.');}
     if(this.venta.cupon.toString().length > 25) {return MessageBox.messageError('El cupon debe ser menos de 25 caracteres.');}
-
     this._clienteService.validar_cupon_admin(this.venta.cupon,this.token).subscribe(
       response=>{
         if(!response.data){return MessageBox.messageError( response.message);}
         this.totalAPagarEstatico = this.totalAPagarMovible;
         this.tipo_descuento =  response.data.tipo;
-
         if(response.data.tipo == 'Valor Fijo'){
           this.descuento = response.data.valor;
           let descuentoLocal = 0;
           this.valor_descuento = this.descuento;
           this.totalAPagarMovible = (this.totalAPagarEstatico - descuentoLocal) + this.envio;
-
         }
-        
         if(response.data.tipo == 'Porcentaje'){
-        
           this.descuento =Math.round((this.totalAPagarEstatico * response.data.valor)/100);
           let descuentoLocal = 0;
           this.valor_descuento = this.descuento;
           this.totalAPagarMovible = (this.totalAPagarEstatico - descuentoLocal) + this.envio;
         }
-
         this.cuponTemporal = this.venta.cupon;
       }
     );

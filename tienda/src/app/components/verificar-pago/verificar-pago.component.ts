@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ClienteService } from 'src/app/services/cliente.service';
-import { GuestService } from 'src/app/services/guest.service';
 
 @Component({
   selector: 'app-verificar-pago',
@@ -10,21 +9,17 @@ import { GuestService } from 'src/app/services/guest.service';
 })
 export class VerificarPagoComponent implements OnInit {
 
-  
   public country = '';
   public currency = 'PEN';
-
   public tipo = '';
   public cupon = '';
   public load = true;
-
   public venta : any = {};
   public dventa : Array<any> = [];
   public carrito_arr:Array<any> = [];
   public payment_id = '';
   public subtotal = 0;
   public total_pagar = 0;
- 
   public idcliente :any = '';
   public token :any  = '';
   public direccion_principal : any = {};
@@ -38,7 +33,7 @@ export class VerificarPagoComponent implements OnInit {
     private _router:Router,
     private _clienteService:ClienteService,
   ) {
-  
+
     this.idcliente = localStorage.getItem('_id');
     this.venta.cliente = this.idcliente;
     this.token = localStorage.getItem('token');
@@ -55,22 +50,18 @@ export class VerificarPagoComponent implements OnInit {
         this.valor_descuento = parseInt(params['valor_descuento']);
         this.total_pagar = parseInt(params['total_pagar']);
         this.subtotal = parseInt(params['subtotal']);
-        
+
         if(this.tipo == 'success'){
           this._route.queryParams.subscribe(
             (params: Params)=>{
               this.payment_id = params["payment_id"];
-              console.log(this.payment_id);
               this._clienteService.consultarIDPago(this.payment_id,this.token).subscribe(
                 response=>{
-                  console.log(response);
                     if(response.data.length == 0){
                       this._clienteService.obtener_carrito_cliente(this.idcliente,this.token).subscribe(
                         response=>{
                           this.carrito_arr = response.data;
-                          console.log(this.carrito_arr);
-
-                          this.carrito_arr.forEach(element => {  
+                          this.carrito_arr.forEach(element => {
                             this.dventa.push({
                               producto: element.producto._id,
                               subtotal: element.producto.precio,
@@ -91,27 +82,14 @@ export class VerificarPagoComponent implements OnInit {
                           this.venta.envio_precio = this.envio;
                           this.venta.detalles = this.dventa;
                           this.venta.metodo_pago = 'Tarjeta de crédito';
-
-                          this._clienteService.disminuir_cupon(this.venta.cupon, this.token).subscribe(
-                            response=>{
-                              console.log("miau");
-                              console.log(response);
-                            }
-                          );
                           this._clienteService.registro_compra_cliente(this.venta,this.token).subscribe(
                             response=>{
-                              console.log(response);
-                              
-                              
                               this._router.navigate(['/cuenta/pedidos',response.data._id]);
                             }
                           );
 
                         }
                       );
-
-                      
-                      
                     }
                     else{
                       this.tipo = 'failure';

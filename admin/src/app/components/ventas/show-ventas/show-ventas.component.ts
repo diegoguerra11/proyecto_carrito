@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from 'src/app/services/admin.service';
 import { GLOBAL } from 'src/app/services/GLOBAL';
-declare var iziToast:any;
-declare var $:any;
+declare let iziToast:any;
+declare let $:any;
 
 @Component({
   selector: 'app-show-ventas',
@@ -11,18 +11,14 @@ declare var $:any;
   styleUrls: ['./show-ventas.component.css']
 })
 export class ShowVentasComponent implements OnInit {
-
   public venta : any={};
   public id = '';
   public token = localStorage.getItem('token');
   public load = false;
-
   public url = GLOBAL.url;
   public detalles : Array<any> = [];
   public load_data = true;
-
   public totalstar = 5;
-
   public review : any = {};
   public load_send = false;
   public load_conf_pago = false;
@@ -35,10 +31,10 @@ export class ShowVentasComponent implements OnInit {
     private _route:ActivatedRoute,
     private _adminService:AdminService,
     private _router:Router
-    ) { 
+    ) {
     this.token = localStorage.getItem('token');
     this.url = GLOBAL.url;
-    
+
   }
 
 
@@ -46,7 +42,6 @@ export class ShowVentasComponent implements OnInit {
     this._route.params.subscribe(
       params=>{
         this.id = params['id'];
-
         this.init_data();
       }
     );
@@ -55,10 +50,8 @@ export class ShowVentasComponent implements OnInit {
   init_data(){
     this._adminService.obtener_detalles_ordenes_cliente(this.id,this.token).subscribe(
       response=>{
-        console.log(response);
         if(response.data != undefined){
           this.venta = response.data;
-          console.log(this.venta);
           if(this.venta.metodo_pago=='Tarjeta de crédito'){
             this._adminService.obtenerPago(this.venta.transaccion).subscribe(
               response=>{
@@ -66,19 +59,17 @@ export class ShowVentasComponent implements OnInit {
               }
             );
           }
-      
+
           this.detalles = response.detalles;
           this.load_data = false;
         }else{
           this.venta = undefined;
           this.load_data = false;
         }
-       
-        console.log(this.detalles);
       }
     );
   }
-  
+
   finalzar(id:any){
     this.load_final = true;
     this._adminService.marcar_finalizado_orden(id,{data:''},this.token).subscribe(
