@@ -3,7 +3,7 @@ import { MessageBox } from '../../../../../../admin/src/app/utils/MessageBox';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { GuestService } from 'src/app/services/guest.service';
 import { ValidationsDireccion } from 'src/app/validations/validationsDireccion';
-declare var $:any;
+declare let $:any;
 
 @Component({
   selector: 'app-direcciones',
@@ -36,7 +36,7 @@ export class DireccionesComponent implements OnInit {
   constructor(
     private _guestService:GuestService,
     private _clienteService:ClienteService
-  ) {
+  ){
     this.token = localStorage.getItem('token');
 
     this._guestService.get_Regiones().subscribe(
@@ -56,7 +56,7 @@ export class DireccionesComponent implements OnInit {
         this.distritos_arr = response;
       }
     );
-   }
+  }
 
   ngOnInit(): void {
     this.obtener_direccion();
@@ -110,14 +110,10 @@ export class DireccionesComponent implements OnInit {
       response=>{
         response.forEach((element:any) => {
             if(element.department_id == this.direccion.region){
-              this.provincias.push(
-                element
-              );
+              this.provincias.push(element);
             }
         });
         console.log(this.provincias);
-
-
       }
     );
   }
@@ -130,13 +126,10 @@ export class DireccionesComponent implements OnInit {
       response=>{
         response.forEach((element:any) => {
           if(element.province_id == this.direccion.provincia){
-            this.distritos.push(
-              element
-            );
+            this.distritos.push(element);
           }
       });
       console.log(this.distritos);
-
       }
     );
   }
@@ -161,8 +154,6 @@ export class DireccionesComponent implements OnInit {
           this.direccion.distrito = element.name;
         }
       });
-
-
 
       let data = {
         destinatario: this.direccion.destinatario,

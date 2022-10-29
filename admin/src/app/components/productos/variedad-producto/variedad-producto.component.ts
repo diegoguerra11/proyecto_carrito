@@ -4,8 +4,8 @@ import { ProductoService } from '../../../services/producto.service';
 import { GLOBAL } from '../../../services/GLOBAL';
 import { AdminService } from 'src/app/services/admin.service';
 import { MessageBox } from '../../../utils/MessageBox';
-declare var iziToast;
-declare var $:any;
+declare let iziToast;
+declare let $:any;
 @Component({
   selector: 'app-variedad-producto',
   templateUrl: './variedad-producto.component.html',
@@ -28,11 +28,11 @@ export class VariedadProductoComponent implements OnInit {
     private _route : ActivatedRoute,
     private _productoService : ProductoService,
     private _adminService : AdminService
-  ) { 
+  ){ 
     this.token = localStorage.getItem('token');
     this.url = GLOBAL.url;
     this._route.params.subscribe(
-      params=>{
+      params => {
         this.id = params['id'];
  
         this._productoService.obtener_producto_admin(this.id,this.token).subscribe(
@@ -41,16 +41,11 @@ export class VariedadProductoComponent implements OnInit {
               this.producto = undefined;
             }else{
               this.producto = response.data;        
-              
             }
 
             console.log(this.producto);
-            
-            
           },
-          error=>{
-
-          }
+          error=>{}
         );
       
       }
@@ -59,7 +54,7 @@ export class VariedadProductoComponent implements OnInit {
 
   ngOnInit(): void {
     this._route.params.subscribe(
-      params=>{
+      params => {
         this.id = params['id'];
         this.load_data = true;
         this.listar_variedades();
@@ -78,7 +73,9 @@ export class VariedadProductoComponent implements OnInit {
   }
 
   agregar_variedad(){
-    if(!this.nueva_variedad) { return MessageBox.messageError('El campo de la variedad debe ser completada');}
+    if(!this.nueva_variedad){
+      return MessageBox.messageError('El campo de la variedad debe ser completado');
+    }
 
     let data = {
       producto: this.id,
@@ -90,7 +87,7 @@ export class VariedadProductoComponent implements OnInit {
     this._adminService.agregar_nueva_variedad_admin(data,this.token).subscribe(
       response=>{
         console.log(data);
-        MessageBox.messageSuccess('Se agrego la nueva variedad.');
+        MessageBox.messageSuccess('Se agregó la nueva variedad');
         this.load_agregar = false;
         this.listar_variedades();
       }
@@ -104,12 +101,12 @@ export class VariedadProductoComponent implements OnInit {
     this._adminService.eliminar_variedad_admin(id,this.token).subscribe(
       response=>{
         iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Se eliminó correctamente la variedad.'
+          title: 'SUCCESS',
+          titleColor: '#1DC74C',
+          color: '#FFF',
+          class: 'text-success',
+          position: 'topRight',
+          message: 'Se eliminó correctamente la variedad'
         });
 
         $('#delete-'+id).modal('hide');
@@ -120,12 +117,12 @@ export class VariedadProductoComponent implements OnInit {
       },
       error=>{
         iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Ocurrió un error en el servidor.'
+          title: 'SUCCESS',
+          titleColor: '#1DC74C',
+          color: '#FFF',
+          class: 'text-success',
+          position: 'topRight',
+          message: 'Ocurrió un error en el servidor'
         });
         console.log(error);
         this.load_btn = false;
@@ -139,27 +136,28 @@ export class VariedadProductoComponent implements OnInit {
       this.load_btn = true;
       this._adminService.actualizar_producto_variedades_admin({
         titulo_variedad: this.producto.titulo_variedad
-      },this.id,this.token).subscribe(
+      },
+      this.id,this.token).subscribe(
         response=>{
           iziToast.show({
-              title: 'SUCCESS',
-              titleColor: '#1DC74C',
-              color: '#FFF',
-              class: 'text-success',
-              position: 'topRight',
-              message: 'Se actualizó correctamente las variedades.'
+            title: 'SUCCESS',
+            titleColor: '#1DC74C',
+            color: '#FFF',
+            class: 'text-success',
+            position: 'topRight',
+            message: 'Se actualizó correctamente las variedades'
           });
           this.load_btn = false;
         }
       );
     }else{
       iziToast.show({
-          title: 'ERROR',
-          titleColor: '#FF0000',
-          color: '#FFF',
-          class: 'text-danger',
-          position: 'topRight',
-          message: 'Debe completar el titulo de la variedad'
+        title: 'ERROR',
+        titleColor: '#FF0000',
+        color: '#FFF',
+        class: 'text-danger',
+        position: 'topRight',
+        message: 'Debe completar el título de la variedad'
       });
       this.load_btn = false;
     }

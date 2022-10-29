@@ -11,6 +11,7 @@ import { MessageBox } from 'src/app/utils/MessageBox';
   templateUrl: './create-cliente.component.html',
   styleUrls: ['./create-cliente.component.css']
 })
+
 export class CreateClienteComponent implements OnInit {
 
   public cliente: any = {
@@ -23,47 +24,45 @@ export class CreateClienteComponent implements OnInit {
     private _clienteService: ClienteService,
     private _adminService: AdminService,
     private _router: Router
-  ) {
+  ){
     this.token = this._adminService.getToken();
   }
 
   ngOnInit(): void {
+    // TODO document why this method 'ngOnInit' is empty
+    // TODO document why this method 'ngOnInit' is empty
   }
 
   registro(registroForm){
+    if(!ValidatonsCliente.verificarCliente(registroForm.form.value)){
+      return;
+    }
+    console.log(this.cliente);
 
-      if(!ValidatonsCliente.verificarCliente(registroForm.form.value)){return;}
-
-      console.log(this.cliente);
-
-      this._clienteService.registro_cliente_admin(this.cliente,this.token).subscribe(
-        response =>{
-          if(!response.data){
-            this.load_btn = false;
-            return MessageBox.messageError("El numero documento ya existe");}
-          console.log(response);
-          MessageBox.messageSuccess("Cliente registrado satisfactoriamente");
-
-          this.cliente ={
-            genero: '',
-            nombres: '',
-            apellidos: '',
-            f_nacimiento: '',
-            telefono: '',
-            dni: '',
-            email: ''
-          }
-
+    this._clienteService.registro_cliente_admin(this.cliente,this.token).subscribe(
+      response =>{
+        if(!response.data){
           this.load_btn = false;
-
-          this._router.navigate(['/panel/clientes']);
-        },
-        error=>{
-          console.log(error);
+          return MessageBox.messageError("El numero documento ya existe");
         }
-      );
+        console.log(response);
+        MessageBox.messageSuccess("Cliente registrado satisfactoriamente");
 
-
+        this.cliente ={
+          genero: '',
+          nombres: '',
+          apellidos: '',
+          f_nacimiento: '',
+          telefono: '',
+          dni: '',
+          email: ''
+        }
+        this.load_btn = false;
+        this._router.navigate(['/panel/clientes']);
+      },
+      error=>{
+        console.log(error);
+      }
+    );
   }
-
 }

@@ -1,10 +1,10 @@
 'use strict'
 
-var express = require ('express');
-var clienteController = require('../controllers/ClienteController');
+let express = require ('express');
+let clienteController = require('../controllers/ClienteController');
 
-var api = express.Router();
-var auth = require('../middlewares/authenticate');
+let api = express.Router();
+let auth = require('../middlewares/authenticate');
 
 
 //Admin

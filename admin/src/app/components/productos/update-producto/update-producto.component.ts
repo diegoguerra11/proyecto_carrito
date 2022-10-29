@@ -4,9 +4,9 @@ import { ProductoService } from '../../../services/producto.service';
 import { GLOBAL } from '../../../services/GLOBAL';
 import { AdminService } from '../../../services/admin.service';
 
-declare var iziToast;
-declare var jQuery:any;
-declare var $:any;
+declare let iziToast;
+declare let jQuery:any;
+declare let $:any;
 
 @Component({
   selector: 'app-update-producto',
@@ -30,14 +30,14 @@ export class UpdateProductoComponent implements OnInit {
     private _productoService: ProductoService,
     private _adminService: AdminService,
     private _router : Router
-  ) { 
+  ){ 
     this.config = {
       height: 500
     }
     this.token = localStorage.getItem('token') || [];
     this.url = GLOBAL.url;
     this._adminService.obtener_config_publico().subscribe(
-      response=>{
+      response => {
         this.config_global = response.data;
         console.log(this.config_global);
         
@@ -51,12 +51,12 @@ export class UpdateProductoComponent implements OnInit {
         this.id = params ['id'];
         console.log(this.id);
         this._productoService.obtener_producto_admin(this.id,this.token).subscribe(
-          response =>{
-            if (response.data == undefined) {
+          response => {
+            if(response.data == undefined){
               this.producto = undefined;
-            } else {
+            }else{
               this.producto = response.data;
-              this.imgSelect = this.url +'obtener_portada/'+ this.producto.portada;
+              this.imgSelect = this.url + 'obtener_portada/' + this.producto.portada;
             }
           },
           error => {
@@ -69,13 +69,12 @@ export class UpdateProductoComponent implements OnInit {
     );
   }
 
-
   actualizar(actualizarForm){
-    if (actualizarForm.valid) {
+    if(actualizarForm.valid){
       
       let data : any = {};
 
-      if (this.file != undefined) {
+      if(this.file != undefined){
         data.portada = this.file;
       }
 
@@ -96,37 +95,37 @@ export class UpdateProductoComponent implements OnInit {
             color: '#FFF',
             class: 'text-success',
             position: 'topRight',
-            message: 'Se actualizo correctamente el nuevo producto.'
+            message: 'Se actualizó correctamente el nuevo producto'
           });
 
           this.load_btn = false;
           this._router.navigate(['/panel/productos']);
         },
-        error =>{
+        error => {
           console.log(error);
           this.load_btn = false;
           
         }
       )
-    } else {
+
+    }else{
       iziToast.show({
         title:'ERROR',
         titleColor: '#FF0000',
         color: '#FFF',
         class: 'text-danger',
         position: 'topRight',
-        message: 'Los datos del formulario no son validos'
+        message: 'Los datos del formulario no son válidos'
       });
       this.load_btn = false;
     }
   }
 
   fileChangeEvent(event:any):void{
-    var file;
+    let file;
     if(event.target.files && event.target.files[0]){
       file = <File>event.target.files[0];
-      
-      
+
     }else{
       iziToast.show({
           title: 'ERROR',
@@ -134,22 +133,23 @@ export class UpdateProductoComponent implements OnInit {
           color: '#FFF',
           class: 'text-danger',
           position: 'topRight',
-          message: 'No hay un imagen de envio'
+          message: 'No hay un imagen de envío'
       });
     }
-    if (file.size <= 4000000) {
-       if (file.type == 'image/png' || file.type == 'image/webp'|| file.type == 'image/jpg' || file.type == 'image/gif' || file.type == 'image/jpeg') {
 
-          const reader = new FileReader();
-          reader.onload = e => this.imgSelect = reader.result!;
-          console.log(this.imgSelect);
+    if(file.size <= 4000000){
+      if(file.type == 'image/png' || file.type == 'image/webp'|| file.type == 'image/jpg' || file.type == 'image/gif' || file.type == 'image/jpeg'){
 
-          reader.readAsDataURL(file);
+        const reader = new FileReader();
+        reader.onload = e => this.imgSelect = reader.result!;
+        console.log(this.imgSelect);
+
+        reader.readAsDataURL(file);
           
-          $('#input-portada').text(file.name);
-          this.file = file;
+        $('#input-portada').text(file.name);
+        this.file = file;
         
-       }else{
+      }else{
         iziToast.show({
           title:'ERROR',
           titleColor: '#FF0000',
@@ -162,14 +162,15 @@ export class UpdateProductoComponent implements OnInit {
         this.imgSelect ='assets/img/01.jpg';
         this.file = undefined!;
        }
-    } else {
+
+    }else{
       iziToast.show({
         title:'ERROR',
         titleColor: '#FF0000',
         color: '#FFF',
         class: 'text-danger',
         position: 'topRight',
-        message: 'La imagen no puede superar los 4MB'
+        message: 'La imagen no puede superar los 4 MB'
       });
       $('#input-portada').text('Seleccionar imagen');
       this.imgSelect ='assets/img/01.jpg';
