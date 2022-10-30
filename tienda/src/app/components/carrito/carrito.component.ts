@@ -199,7 +199,17 @@ export class CarritoComponent implements OnInit {
             pending: "http://localhost:4200/verificar-pago/pending/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.totalAPagarMovible+'/'+this.subtotal,
             success: "http://localhost:4200/verificar-pago/success/"+this.direccion_principal._id+'/'+this.venta.cupon+'/'+this.envio+'/'+this.tipo_descuento+'/'+this.valor_descuento+'/'+this.totalAPagarMovible+'/'+this.subtotal,
           },
-          auto_return: "approved"
+          auto_return: "approved",
+          payment_methods: {
+            excluded_payment_types: [
+                {
+                  id: "ticket"
+                },
+                {
+                  id: "atm"
+                }
+            ],
+          },
         }
         this._guestService.createToken(data).subscribe(
           response=>{
