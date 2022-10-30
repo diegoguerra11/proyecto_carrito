@@ -92,7 +92,6 @@ const registro_cliente_admin = async function(req,res){
 }
    
 
-
 const obtener_cliente_admin = async function (req,res){
     if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
      
