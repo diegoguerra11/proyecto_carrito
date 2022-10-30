@@ -36,10 +36,27 @@ const obtener_cupon_admin = async function (req,res){
     }
 }
 
+const obtener_cupon_cliente = async function (req,res){
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
+    
+    let cupon = req.params['cupon'];
+
+    if(cupon == undefined){return;}
+
+    try {
+        let reg = await Cupon.findOne({codigo:cupon});
+
+        res.status(200).send({data:reg});
+    } catch (error) {
+        res.status(200).send({message:'Error en el servidor', data:undefined});
+    }
+}
+
 const actualizar_cupon_admin = async function (req,res){
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
     
     let data = req.body;
+    
     let id = req.params['id'];
 
     let reg = await Cupon.findByIdAndUpdate({_id:id,},{
@@ -102,5 +119,6 @@ module.exports = {
     actualizar_cupon_admin,
     eliminar_cupon_admin,
     validar_cupon_admin,
-    disminuir_cupon
+    disminuir_cupon,
+    obtener_cupon_cliente
 }

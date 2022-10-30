@@ -19,7 +19,8 @@ export class PedidosDetallesComponent implements OnInit {
   public id: any;
   public totalstar=5;
   public review : any={};
-
+  public hayCupon = false;
+  public valorCupon = 0;
   constructor(
     private _clienteService: ClienteService,
     private _route: ActivatedRoute
@@ -29,22 +30,45 @@ export class PedidosDetallesComponent implements OnInit {
     this._route.params.subscribe(
       params => {
         this.id = params['id'];
-
+        
         this._clienteService.obtener_detalles_ordenes_cliente(this.id, this.token).subscribe(
           response => {
+            this.orden = response.data;
+            this.detalles = response.detalles;
+            this.load_data = false;
             if(!response.data){
               this.orden = undefined;
             } else {
-              this.orden = response.data;
-              this.detalles = response.detalles;
-              this.load_data = false;
+              this._clienteService.obtener_cupon_cliente(this.orden["cupon"],this.token).subscribe(
+                response=>{
+                  console.log(response.data);
+                  if (response.data == undefined) {
+                    this.hayCupon = false;
+                  }else{
+                    this.hayCupon = true;
+                    this.valorCupon = this.getValorCupon(response.data["tipo"], response.data["valor"], this.orden.subtotal);
+                    
+                  }
+      
+                }
+              );
+              
             }
           }
         ); 
       }
     )
   }
-
+  getValorCupon(cupon:any, valorCupon:any, subtotal:any){
+    let descuento = 0;
+    if(cupon == 'Valor Fijo'){
+      descuento =valorCupon;
+    }
+    if (cupon == 'Porcentaje'){
+      descuento =Math.round((subtotal *valorCupon)/100);
+    }
+    return descuento;
+  }
   ngOnInit(): void {
     //TODO NO HACE FALTA MÉTODO
   }
