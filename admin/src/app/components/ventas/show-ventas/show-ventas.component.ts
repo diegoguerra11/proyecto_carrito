@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from 'src/app/services/admin.service';
 import { GLOBAL } from 'src/app/services/GLOBAL';
-declare let iziToast:any;
+import { MessageBox } from 'src/app/utils/MessageBox';
+
 declare let $:any;
 
 @Component({
@@ -74,14 +75,7 @@ export class ShowVentasComponent implements OnInit {
     this.load_final = true;
     this._adminService.marcar_finalizado_orden(id,{data:''},this.token).subscribe(
       response=>{
-        iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'La venta fue cerrada correctamente.'
-        });
+        MessageBox.messageSuccess('La venta fue cerrada correctamente.');
         $('#openConfVenta').modal('hide');
         $('.modal-backdrop').remove();
         this.load_final = false;
@@ -95,14 +89,7 @@ export class ShowVentasComponent implements OnInit {
       this.load_send = true;
       this._adminService.marcar_envio_orden(id,{tracking:this.tracking},this.token).subscribe(
         response=>{
-          iziToast.show({
-              title: 'SUCCESS',
-              titleColor: '#1DC74C',
-              color: '#FFF',
-              class: 'text-success',
-              position: 'topRight',
-              message: 'La orden fue marcada como enviada.'
-          });
+         MessageBox.messageSuccess('La orden fue marcada como enviada.');
           $('#openEnviado').modal('hide');
           $('.modal-backdrop').remove();
           this.load_send = false;
@@ -110,14 +97,7 @@ export class ShowVentasComponent implements OnInit {
         }
       );
     }else{
-      iziToast.show({
-        title: 'DANGER',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-success',
-        position: 'topRight',
-        message: 'Ingrese el numero de seguimiento.'
-    });
+      MessageBox.messageError('Ingrese el numero de seguimiento.');
     }
   }
 
@@ -125,14 +105,7 @@ export class ShowVentasComponent implements OnInit {
     this.load_del = true;
     this._adminService.eliminar_orden_admin(id,this.token).subscribe(
       response=>{
-        iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'El pedido fue eliminada correctamente.'
-        });
+        MessageBox.messageSuccess('El pedido fue eliminada correctamente.');
         $('#openEliminar').modal('hide');
         $('.modal-backdrop').remove();
         this._router.navigate(['/panel/ventas']);
@@ -145,14 +118,7 @@ export class ShowVentasComponent implements OnInit {
     this.load_conf_pago = true;
     this._adminService.confirmar_pago_orden(id,{data:''},this.token).subscribe(
       response=>{
-        iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'El pago fue confirmado correctamente.'
-        });
+       MessageBox.messageSuccess('El pago fue confirmado correctamente.');
         $('#openConfirmarPago').modal('hide');
         $('.modal-backdrop').remove();
         this.load_conf_pago = false;

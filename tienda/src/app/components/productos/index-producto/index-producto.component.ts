@@ -3,11 +3,11 @@ import { ClienteService } from '../../../services/cliente.service';
 import { GLOBAL } from '../../../../../../admin/src/app/services/GLOBAL';
 import { ActivatedRoute } from '@angular/router';
 import { io } from "socket.io-client";
+import { MessageBox } from 'src/app/Utils/MessageBox';
 
 
 declare let noUiSlider:any;
 declare let $:any;
-declare let iziToast:any;
 
 @Component({
   selector: 'app-index-producto',
@@ -159,71 +159,80 @@ reset_productos(){
 }
 
 orden_por(){
-  if (this.sort_by == 'Defecto') {
-    this._clienteService.listar_productos_publico('').subscribe(
-      response=>{
-        this.productos = response.data;
-        this.load_data = false;
-      }
-    );
-  } else if (this.sort_by == 'Popularidad') {
-    this.productos.sort(function (a, b) {
+  switch (this.sort_by) {
+    case 'Defecto':
+      this._clienteService.listar_productos_publico('').subscribe(
+        response=>{
+          this.productos = response.data;
+          this.load_data = false;
+        }
+      );
+      break;
+    case 'Popularidad':
+      this.productos.sort(function (a, b) {
 
-      if (a.nventas < b.nventas) {
-        return 1;
-      }
-      if (a.nventas > b.nventas) {
-        return -1;
-      }
+        if (a.nventas < b.nventas) {
+          return 1;
+        }
+        if (a.nventas > b.nventas) {
+          return -1;
+        }
+  
+        return 0;
+      });
+      break;
+    case '+-Precio':
+      this.productos.sort(function (a, b) {
 
-      return 0;
-    });
-  }else if(this.sort_by == '+-Precio'){
-    this.productos.sort(function (a, b) {
+        if (a.precio < b.precio) {
+          return 1;
+        }
+        if (a.precio > b.precio) {
+          return -1;
+        }
+  
+        return 0;
+      });
+      break;
+    case '-+Precio':
+      this.productos.sort(function (a, b) {
 
-      if (a.precio < b.precio) {
-        return 1;
-      }
-      if (a.precio > b.precio) {
-        return -1;
-      }
+        if (a.precio > b.precio) {
+          return 1;
+        }
+        if (a.precio < b.precio) {
+          return -1;
+        }
+        return 0;
+      });
+      break;
+    case 'azTitulo':
+      this.productos.sort(function (a, b) {
 
-      return 0;
-    });
-  } else if(this.sort_by == '-+Precio'){
-    this.productos.sort(function (a, b) {
+        if (a.titulo > b.titulo) {
+          return 1;
+        }
+        if (a.titulo < b.titulo) {
+          return -1;
+        }
+        return 0;
+      });
+      break;
+    case 'zaTitulo':
+      this.productos.sort(function (a, b) {
 
-      if (a.precio > b.precio) {
-        return 1;
-      }
-      if (a.precio < b.precio) {
-        return -1;
-      }
-      return 0;
-    });
-  }else if(this.sort_by == 'azTitulo'){
-    this.productos.sort(function (a, b) {
-
-      if (a.titulo > b.titulo) {
-        return 1;
-      }
-      if (a.titulo < b.titulo) {
-        return -1;
-      }
-      return 0;
-    });
-  }else if(this.sort_by == 'zaTitulo'){
-    this.productos.sort(function (a, b) {
-
-      if (a.titulo < b.titulo) {
-        return 1;
-      }
-      if (a.titulo > b.titulo) {
-        return -1;
-      }
-      return 0;
-    });
-}
+        if (a.titulo < b.titulo) {
+          return 1;
+        }
+        if (a.titulo > b.titulo) {
+          return -1;
+        }
+        return 0;
+      });
+      break;
+  }
+ 
+  
 }
 
 agregar_producto(producto:any){
@@ -237,24 +246,10 @@ agregar_producto(producto:any){
   this._clienteService.agregar_carrito_cliente(data,this.token).subscribe(
     response=>{
       if(response.data == undefined){
-        iziToast.show({
-            title: 'ERROR',
-            titleColor: '#FF0000',
-            color: '#FFF',
-            class: 'text-danger',
-            position: 'topRight',
-            message: 'El producto ya existe en el carrito'
-        });
+        MessageBox.messageError('El producto ya existe en el carrito');
         this.btn_cart =false;
       }else{
-        iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Se agregó el producto al carrito.'
-        });
+        MessageBox.messageSuccess('Se agregó el producto al carrito.');
         this.socket.emit('add-carrito-add',{data: true});
         this.btn_cart =false;
       }

@@ -131,7 +131,7 @@ export class ShowProductoComponent implements OnInit {
   }
 
   agregar_producto(){
-    if(!ValidationsProducto.agregarAcarrito(this.carrito_data, this.obj_variedad_select)) {return;};
+    if(!ValidationsProducto.agregarAcarrito(this.carrito_data, this.obj_variedad_select)) {return;}
     let data = {
       producto: this.producto._id,
       cliente: localStorage.getItem('_id'),
@@ -152,7 +152,7 @@ export class ShowProductoComponent implements OnInit {
   }
 
   agregar_producto_guest(){
-    if(!ValidationsProducto.agregarAcarrito(this.carrito_data, this.obj_variedad_select)) {return;};
+    if(!ValidationsProducto.agregarAcarrito(this.carrito_data, this.obj_variedad_select)) {return;}
     let data = {
       producto: this.producto,
       variedad: this.obj_variedad_select,

@@ -66,5 +66,4 @@ export class IndexVentasComponent implements OnInit {
     this.ventas = this.const_ventas;
   }
 
-  eliminar(id:any){}
 }
