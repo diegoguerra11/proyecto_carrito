@@ -5,6 +5,7 @@ let cuponController = require('../controllers/cuponController');
 
 let api = express.Router();
 let auth = require('../middlewares/authenticate');
+const cupon = require('../models/cupon');
 
 //Crud cupón
 api.post('/registro_cupon_admin', auth.auth, cuponController.registro_cupon_admin);
@@ -14,5 +15,5 @@ api.put('/actualizar_cupon_admin/:id', auth.auth, cuponController.actualizar_cup
 api.get('/validar_cupon_admin/:cupon', auth.auth, cuponController.validar_cupon_admin);
 api.get('/disminuir_cupon/:cupon', auth.auth, cuponController.disminuir_cupon);
 api.delete('/eliminar_cupon_admin/:id',auth.auth, cuponController.eliminar_cupon_admin);
-
+api.get('/obtener_cupon_cliente/:cupon', auth.auth, cuponController.obtener_cupon_cliente);
 module.exports = api;
