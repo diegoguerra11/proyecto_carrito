@@ -3,7 +3,7 @@ import { MessageBox } from '../../../../../../admin/src/app/utils/MessageBox';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { GuestService } from 'src/app/services/guest.service';
 import { ValidationsDireccion } from 'src/app/validations/validationsDireccion';
-declare var $:any;
+declare let $:any;
 
 @Component({
   selector: 'app-direcciones',

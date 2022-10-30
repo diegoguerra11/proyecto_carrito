@@ -6,7 +6,6 @@ let Venta = require('../models/Venta');
 let Dventa = require('../models/Dventa');
 let bcrypt = require('bcrypt-nodejs');
 let jwt = require('../helpers/jwt');
-let crypt = require('../helpers/bcrypt');
 let Variedad = require('../models/Variedad');
 let Direccion = require("../models/direccion");
 let Producto = require("../models/producto");
@@ -69,21 +68,29 @@ const listar_clientes_filtro_admin = async function (req,res){
     res.status(200).send({data:reg});
 }
 
+
 const registro_cliente_admin = async function(req,res){
     if(!req.user || req.user.role !='admin'){return res.status(500).send({message: 'NoAccess'}); }
     
     let data = req.body;
+    
+    bcrypt.hash('123456789',null,null, async function(err,hash){
+        if(!hash){
+            res.status(200).send({message:'Hubo un error en el servidor',data:undefined});
+        }
+        data.password = hash;
+        let existeNdoc = await Cliente.findOne({numeroDocumento: data.numeroDocumento});
 
-    data.password = crypt.encrypt('123456789', res);
-
-    let existeNdoc = await Cliente.findOne({numeroDocumento: data.numeroDocumento});
-
-    if(existeNdoc){return res.status(200).send({data: undefined});}
-
-    let reg = await Cliente.create(data);
-
-    res.status(200).send({data:reg});
+        if(existeNdoc){
+            return res.status(200).send({data: undefined});
+        }
+        
+        let reg = await Cliente.create(data);
+        res.status(200).send({data:reg});
+        
+    });
 }
+   
 
 
 const obtener_cliente_admin = async function (req,res){
@@ -149,8 +156,24 @@ const actualizar_perfil_cliente_guest = async function(req,res){
     let data = req.body;
     let reg;
 
-    if (!data.password) {
-        reg = await Cliente.findByIdAndUpdate({_id:id},{
+    if (data.password) {
+        bcrypt.hash(data.password,null,null, async function(err,hash){
+             reg = await Cliente.findByIdAndUpdate({_id:id},{
+                nombres: data.nombres,
+                apellidos: data.apellidos,
+                telefono: data.telefono,
+                f_nacimiento: data.f_nacimiento,
+                numeroDocumento: data.numeroDocumento,
+                tipoDocumento: data.tipoDocumento,
+                genero: data.genero,
+                pais: data.pais,
+                password: hash,
+            }); 
+            res.status(200).send({data:reg});
+        });
+
+    } else {
+         reg = await Cliente.findByIdAndUpdate({_id:id},{
             nombres: data.nombres,
             apellidos: data.apellidos,
             telefono: data.telefono,
@@ -160,24 +183,11 @@ const actualizar_perfil_cliente_guest = async function(req,res){
             genero: data.genero,
             pais: data.pais,
         });
+        res.status(200).send({data:reg});
+    }
 
-        return res.status(200).send({data:reg});
-    } 
+    }
 
-    reg = await Cliente.findByIdAndUpdate({_id:id},{
-        nombres: data.nombres,
-        apellidos: data.apellidos,
-        telefono: data.telefono,
-        f_nacimiento: data.f_nacimiento,
-        numeroDocumento: data.numeroDocumento,
-        tipoDocumento: data.tipoDocumento,
-        genero: data.genero,
-        pais: data.pais,
-        password: crypt.encrypt(data.password, res),
-    }); 
-
-    res.status(200).send({data:reg});
-}
 
 /*********************************************************ORDENES********************************************/
 
@@ -263,7 +273,7 @@ const registro_direccion_cliente  = async function(req,res){
 }
 
 const eliminar_direccion_cliente = async function(req,res){
-    if(req.user){return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
     let id = req.params['id'];
     let reg = await Direccion.findByIdAndRemove({_id:id});
@@ -346,7 +356,7 @@ const listar_productos_recomendados_publico = async function(req,res){
     res.status(200).send({data: reg});
 }
 const registro_compra_cliente = async function(req,res){
-    if(req.user){return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
     let data = req.body;
     let detalles = data.detalles;
