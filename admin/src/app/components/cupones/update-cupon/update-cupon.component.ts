@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CuponService } from 'src/app/services/cupon.service';
+import { MessageBox } from 'src/app/utils/MessageBox';
 import { ValidatonsCupon } from 'src/app/validations/validationsCupon';
 
-declare var iziToast;
 
 @Component({
   selector: 'app-update-cupon',
@@ -34,7 +34,6 @@ export class UpdateCuponComponent implements OnInit {
     this._route.params.subscribe(
       params => {
         this.id = params['id'];
-        console.log(this.id);
 
         this._cuponService.obtener_cupon_admin(this.id,this.token).subscribe(
           response=>{
@@ -45,7 +44,6 @@ export class UpdateCuponComponent implements OnInit {
               this.cupon = response.data;
               this.load_data = false;
             }
-            console.log(this.cupon);
 
           }
         )
@@ -59,14 +57,7 @@ export class UpdateCuponComponent implements OnInit {
     this.load_btn = true;
     this._cuponService.actualizar_cupon_admin(this.id,this.cupon,  this.token).subscribe(
       response =>{
-        iziToast.show({
-          title:'SUCCESS',
-          titleColor: '#1DC74C',
-          color: '#FFF',
-          class: 'text-success',
-          position: 'topRight',
-          message: 'Se actualizo correctamente el cupon'
-        });
+       MessageBox.messageSuccess('Se actualizo correctamente el cupon');
         this.load_btn = false;
 
         this._router.navigate(['/panel/cupones']);

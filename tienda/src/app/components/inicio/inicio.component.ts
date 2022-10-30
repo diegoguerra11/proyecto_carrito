@@ -7,9 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InicioComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+    //TODO INICIO
+   }
 
   ngOnInit(): void {
+    //TODO INICIO
   }
 
 }

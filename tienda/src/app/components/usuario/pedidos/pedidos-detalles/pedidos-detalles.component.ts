@@ -39,7 +39,6 @@ export class PedidosDetallesComponent implements OnInit {
               this.detalles = response.detalles;
               this.load_data = false;
             }
-            console.log(this.detalles);
           }
         ); 
       }
@@ -47,6 +46,7 @@ export class PedidosDetallesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //TODO NO HACE FALTA MÉTODO
   }
 
 }

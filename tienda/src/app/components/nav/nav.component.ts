@@ -3,9 +3,10 @@ import { ClienteService } from '../../services/cliente.service';
 import { Router } from '@angular/router';
 import { GLOBAL } from '../../../../../admin/src/app/services/GLOBAL';
 import { io } from "socket.io-client";
-declare var iziToast:any;
+import { MessageBox } from 'src/app/Utils/MessageBox';
 
-declare var $:any;
+
+declare let $:any;
 
 @Component({
   selector: 'app-nav',
@@ -50,7 +51,7 @@ export class NavComponent implements OnInit {
         this.carrito_logout = [];
       }
     } 
-    console.log(this.carrito_logout);
+    
 
    if (this.token) {
     this._clienteService.obtener_cliente_guest(this.id,this.token).subscribe(
@@ -66,6 +67,7 @@ export class NavComponent implements OnInit {
         }
       },
       error=>{
+        console.log(error);
         this.user = undefined;
       }
     );
@@ -106,7 +108,7 @@ export class NavComponent implements OnInit {
    
   }
   openMenu(){
-    var clase = $('#modalMenu').attr('class');
+    let clase = $('#modalMenu').attr('class');
     console.log(clase);
     if(clase == 'ps-panel--sidebar'){
       $('#modalMenu').addClass('active');
@@ -115,7 +117,7 @@ export class NavComponent implements OnInit {
     }
   }
   openCart(){
-    var clase = $('#modalCarrito').attr('class');
+    let clase = $('#modalCarrito').attr('class');
     console.log(clase);
     if(clase == 'ps-panel--sidebar'){
       $('#modalCarrito').addClass('active');
@@ -171,14 +173,7 @@ export class NavComponent implements OnInit {
   eliminar_item(id:any){
     this._clienteService.eliminar_carrito_cliente(id,this.token).subscribe(
       response=>{
-          iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Se eliminó el producto correctamente.'
-        });
+         MessageBox.messageError('Se eliminó el producto correctamente.');
         this.socket.emit('delete-carrito',{data:response.data});
         console.log(response);
         

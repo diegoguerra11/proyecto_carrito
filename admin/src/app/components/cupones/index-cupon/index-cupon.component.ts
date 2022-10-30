@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { MessageBox } from 'src/app/utils/MessageBox';
 import { CuponService } from '../../../services/cupon.service';
 
-declare var iziToast;
-declare var jQuery:any;
-declare var $:any;
+declare let $:any;
 
 @Component({
   selector: 'app-index-cupon',
@@ -28,12 +27,7 @@ export class IndexCuponComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._cuponService.listar_cupones_admin(this.filtro,this.token).subscribe(
-      response=>{
-        this.cupones = response.data;
-        this.load_data = false;
-      }
-    )
+   this.filtrar();
   }
 
   filtrar(){
@@ -48,14 +42,7 @@ export class IndexCuponComponent implements OnInit {
   eliminar(id){
     this._cuponService.eliminar_cupon_admin(id,this.token).subscribe(
       response=>{
-        iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Se eliminó correctamente el cliente.'
-        });
+        MessageBox.messageSuccess('Se eliminó correctamente el cliente.');
 
         $('#delete-'+id).modal('hide');
         $('.modal-backdrop').removeClass('show');

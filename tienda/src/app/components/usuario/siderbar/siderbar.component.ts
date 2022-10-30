@@ -42,6 +42,7 @@ export class SiderbarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //TODO SIDEBAR
   }
 
 }

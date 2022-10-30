@@ -3,8 +3,6 @@ import { Router } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { MessageBox } from '../../utils/MessageBox';
 
-declare var jQuery:any;
-declare var $:any;
 
 @Component({
   selector: 'app-login',
@@ -25,8 +23,7 @@ export class LoginComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    console.log(this.token);
-    
+   
     if(this.token){
       this._router.navigate(['/']); 
       return;
@@ -37,8 +34,6 @@ export class LoginComponent implements OnInit {
   login(loginForm){
     if(!loginForm.valid){MessageBox.messageError('Los datos del formulario no son validos'); return;}
 
-    //console.log(this.user)
-    
     let data={
       email: this.user.email,
       password: this.user.password
@@ -55,7 +50,6 @@ export class LoginComponent implements OnInit {
 
         this._router.navigate(['/inicio']);
 
-        //console.log(response);
       },
       error=>{
         console.log(error);

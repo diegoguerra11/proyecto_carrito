@@ -5,10 +5,7 @@ import { GLOBAL } from 'src/app/services/GLOBAL';
 import { MessageBox } from '../../utils/MessageBox';
 import { validationsConfig } from '../../validations/validationsConfig';
 
-declare var iziToast;
-
-declare var jQuery:any;
-declare var $:any;
+declare let $:any;
 
 
 @Component({
@@ -45,6 +42,7 @@ export class ConfigComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //TODO VACIO
   }
 
   agregar_cat(){
@@ -82,7 +80,7 @@ export class ConfigComponent implements OnInit {
   fileChangeEvent(event){
     if(!event.target.files || !event.target.files[0]) {return MessageBox.messageError('No hay una imagen de envio');}
   
-    var file = <File>event.target.files[0];
+    let file = <File>event.target.files[0];
 
     if(!validationsConfig.verificarImagen(file)) {
       $('#input-portada').text('Seleccionar imagen');

@@ -8,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 
 export class SidebarComponent implements OnInit {
 
-  constructor() { }
+constructor() { /* TODO document why this constructor is empty*/   }
 
   ngOnInit(): void {
+    //TODO SOLO ES SIDERBAR
   }
 
 }

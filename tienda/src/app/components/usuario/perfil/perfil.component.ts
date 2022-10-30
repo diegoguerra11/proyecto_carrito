@@ -3,7 +3,6 @@ import { ClienteService } from 'src/app/services/cliente.service';
 import { MessageBox } from '../../../../../../admin/src/app/utils/MessageBox';
 import { ValidatonsCliente } from '../../../validations/validationsCliente';
 
-declare var iziToast:any;
 declare var $:any;
 
 
@@ -35,6 +34,7 @@ export class PerfilComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //TODO INNECESARIO
   }
 
   actualizar(actualizarForm:any){ 

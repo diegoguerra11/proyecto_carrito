@@ -22,12 +22,13 @@ export class CreateCuponComponent implements OnInit {
 
   constructor(
     private _cuponService : CuponService,
-    private _router: Router
+
   ) {
     this.token = localStorage.getItem('token');
   }
 
   ngOnInit(): void {
+    //TODO NO HACE FALTA MÉTODO
   }
 
   registro(registroForm){
