@@ -14,14 +14,10 @@ let io = require('socket.io')(server,{
 io.on('connection', function(socket){
     socket.on('delete-carrito',function(data){
         io.emit('new-carrito',data);
-        console.log(data);
-        console.log("socket");
     });
 
     socket.on('add-carrito-add',function(data){
         io.emit('new-carrito-add',data);
-        console.log(data);
-        console.log("socket-add");
     });
 });
 

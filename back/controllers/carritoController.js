@@ -45,7 +45,7 @@ const comprobar_carrito_cliente = async function(req,res){
 }
 
 const obtener_carrito_cliente = async function(req,res){
-    if(!req.user){res.status(500).send({message: 'NoAccess'}); return;}
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
     let id = req.params['id'];
 
@@ -55,7 +55,7 @@ const obtener_carrito_cliente = async function(req,res){
 }
 
 const actualizar_cantidad_carrito_cliente = async function(req, res) {
-    if(!req.user){res.status(500).send({message: 'NoAccess'}); return;}
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
     let id = req.param['id'];
     let cantidad = req.param['cantidad'];
@@ -69,7 +69,7 @@ const actualizar_cantidad_carrito_cliente = async function(req, res) {
 }
 
 const eliminar_carrito_cliente = async function(req,res){
-    if(!req.user){res.status(500).send({message: 'NoAccess'}); return;}
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
     let id = req.params['id'];
 
