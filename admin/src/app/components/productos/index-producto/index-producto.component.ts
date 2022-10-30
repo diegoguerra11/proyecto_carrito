@@ -6,8 +6,6 @@ import * as fs from 'file-saver';
 import { AdminService } from 'src/app/services/admin.service';
 import { MessageBox } from 'src/app/utils/MessageBox';
 
-declare let iziToast;
-declare let jQuery:any;
 declare let $:any;
 
 @Component({
@@ -45,7 +43,6 @@ export class IndexProductoComponent implements OnInit {
   init_data(){
     this._productoService.listar_productos_admin(this.filtro,this.token).subscribe(
       response =>{
-        console.log(response);
         this.productos = response.data;
         this.productos.forEach(element =>{
           this.arr_productos.push({
@@ -55,8 +52,7 @@ export class IndexProductoComponent implements OnInit {
             categoria:element.categoria,
             nventas: element.nventas
           });
-        });
-        console.log(this.arr_productos);          
+        });     
 
         this.load_data = false;
       },
@@ -70,7 +66,6 @@ export class IndexProductoComponent implements OnInit {
     if(this.filtro){
       this._productoService.listar_productos_admin(this.filtro,this.token).subscribe(
         response=>{
-          console.log(response);
           this.productos = response.data;
           this.load_data = false;
         },
@@ -79,14 +74,8 @@ export class IndexProductoComponent implements OnInit {
         }
       )
     }else{
-      iziToast.show({
-        title: 'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'Ingrese un filtro para buscar.'
-      });
+      MessageBox.messageError('Ingrese un filtro para buscar.');
+      
     }
   }
 
@@ -99,14 +88,7 @@ export class IndexProductoComponent implements OnInit {
     this.load_btn = true;
     this._productoService.eliminar_producto_admin(id,this.token).subscribe(
       response=>{
-        iziToast.show({
-          title: 'SUCCESS',
-          titleColor: '#1DC74C',
-          color: '#FFF',
-          class: 'text-success',
-          position: 'topRight',
-          message: 'Se eliminó correctamente el producto.'
-        });
+       MessageBox.messageSuccess( 'Se eliminó correctamente el producto.');
 
         $('#delete-'+id).modal('hide');
         $('.modal-backdrop').removeClass('show');
@@ -116,14 +98,7 @@ export class IndexProductoComponent implements OnInit {
         this.init_data();
       },
       error=>{
-        iziToast.show({
-          title: 'SUCCESS',
-          titleColor: '#1DC74C',
-          color: '#FFF',
-          class: 'text-success',
-          position: 'topRight',
-          message: 'Ocurrió un error en el servidor.'
-        });
+       MessageBox.messageError('Ocurrió un error en el servidor.');
         console.log(error);
         this.load_btn = false;
       }

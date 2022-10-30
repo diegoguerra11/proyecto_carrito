@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ClienteService } from '../../../services/cliente.service';
 import { AdminService } from '../../../services/admin.service';
+import { MessageBox } from 'src/app/utils/MessageBox';
 
-declare var iziToast;
-declare var jQuery:any;
-declare var $:any;
+declare let $:any;
 
 @Component({
   selector: 'app-index-cliente',
@@ -39,9 +38,6 @@ export class IndexClienteComponent implements OnInit {
         
         this.clientes = response.data;
         this.load_data =false;
-        /*setTimeout(()=>{
-          
-        },3000)*/
       },
       error=>{
         console.log(error);
@@ -91,14 +87,8 @@ export class IndexClienteComponent implements OnInit {
   eliminar(id){
     this._clienteService.eliminar_cliente_admin(id,this.token).subscribe(
       response=>{
-        iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Se eliminó correctamente el cliente.'
-        });
+        MessageBox.messageSuccess('Se eliminó correctamente el cliente.')
+        
 
         $('#delete-'+id).modal('hide');
         $('.modal-backdrop').removeClass('show');

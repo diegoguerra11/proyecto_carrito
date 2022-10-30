@@ -5,8 +5,6 @@ import { AdminService } from '../../../services/admin.service';
 import { ValidatonsCliente } from 'src/app/validations/validationsCliente';
 import { MessageBox } from 'src/app/utils/MessageBox';
 
-declare var iziToast;
-
 @Component({
   selector: 'app-edit-cliente',
   templateUrl: './edit-cliente.component.html',
@@ -36,7 +34,6 @@ export class EditClienteComponent implements OnInit {
         
         this._clienteService.obtener_cliente_admin(this.id,this.token).subscribe(
           response =>{
-            console.log(response);
             if (response.data == undefined) {
               this.cliente = undefined;
               this.load_data = false;
@@ -46,7 +43,7 @@ export class EditClienteComponent implements OnInit {
             }
           },
           error => {
-
+              console.log(error);
           }
         );
       }
@@ -58,11 +55,9 @@ export class EditClienteComponent implements OnInit {
       if(!ValidatonsCliente.verificarCliente(updateForm.form.value)){return;}
       this.load_btn = true;
       this._clienteService.actualizar_cliente_admin(this.id,this.cliente,this.token).subscribe(
-        response => {
-          console.log(response);   
+        response => {  
           MessageBox.messageSuccess("Cliente Actualizado correctamente");       
-         
-
+    
           this.load_btn = false;
 
           this._router.navigate(['/panel/clientes']);

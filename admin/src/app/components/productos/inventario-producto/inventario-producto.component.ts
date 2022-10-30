@@ -3,10 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { ProductoService } from '../../../services/producto.service';
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
+import { MessageBox } from 'src/app/utils/MessageBox';
 
-declare var iziToast;
-declare var jQuery:any;
-declare var $:any;
+declare let $:any;
 
 @Component({
   selector: 'app-inventario-producto',
@@ -31,7 +30,6 @@ export class InventarioProductoComponent implements OnInit {
   ) { 
     this.token = localStorage.getItem('token');
     this._iduser = localStorage.getItem('_id');
-    console.log(this._iduser);
     
   }
 
@@ -60,7 +58,7 @@ export class InventarioProductoComponent implements OnInit {
                   
                 },
                 error=>{
-
+                  console.log(error);
                 }
                 
               )
@@ -69,7 +67,7 @@ export class InventarioProductoComponent implements OnInit {
             
           },
           error=>{
-
+            console.log(error);
           }
         );
       
@@ -81,14 +79,7 @@ export class InventarioProductoComponent implements OnInit {
     this.load_btn = true;
     this._productoService.eliminar_inventario_producto_admin(id,this.token).subscribe(
       response=>{
-        iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Se eliminó correctamente el producto.'
-        });
+        MessageBox.messageSuccess('Se eliminó correctamente el producto.');
 
         $('#delete-'+id).modal('hide');
         $('.modal-backdrop').removeClass('show');
@@ -98,7 +89,6 @@ export class InventarioProductoComponent implements OnInit {
         this._productoService.listar_inventario_producto_admin(this.producto._id, this.token).subscribe(
           response=>{
             this.inventarios = response.data;
-            console.log(this.inventarios);
             
             
           },
@@ -112,14 +102,7 @@ export class InventarioProductoComponent implements OnInit {
         
       },
       error=>{
-        iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Ocurrió un error en el servidor.'
-        });
+        MessageBox.messageError('Ocurrió un error en el servidor.');
         console.log(error);
         this.load_btn = false;
     }
@@ -136,19 +119,10 @@ export class InventarioProductoComponent implements OnInit {
         proveedor: inventarioForm.value.proveedor
       }
 
-      console.log(data);
       
-
       this._productoService.registro_inventario_producto_admin(data,this.token).subscribe(
         response=>{
-          iziToast.show({
-              title:'SUCCESS',
-              titleColor: '#1DC74C',
-              color: '#FFF',
-              class: 'text-success',
-              position: 'topRight',
-              message: 'Se agrego el nuevo stock al producto'
-            });
+          MessageBox.messageSuccess('Se agrego el nuevo stock al producto');
 
             this._productoService.listar_inventario_producto_admin(this.producto._id, this.token).subscribe(
               response=>{
@@ -157,7 +131,7 @@ export class InventarioProductoComponent implements OnInit {
                 
               },
               error=>{
-
+                console.log(error);
               }
               
             )
@@ -170,14 +144,7 @@ export class InventarioProductoComponent implements OnInit {
       )
 
     } else {
-      iziToast.show({
-        title:'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'Los datos del formulario no son validos'
-      });
+     MessageBox.messageError('Los datos del formulario no son validos');
     }
    }
 

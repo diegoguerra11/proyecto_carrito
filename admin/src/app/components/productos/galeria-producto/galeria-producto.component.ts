@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GLOBAL } from 'src/app/services/GLOBAL';
 import { ProductoService } from 'src/app/services/producto.service';
+import { MessageBox } from 'src/app/utils/MessageBox';
 import { v4 as uuidv4 } from 'uuid';
 
-declare var iziToast;
-declare var $;
+
+declare let $;
 
 @Component({
   selector: 'app-galeria-producto',
@@ -49,12 +50,9 @@ export class GaleriaProductoComponent implements OnInit {
           
         }
 
-        console.log(this.producto);
-        
-        
       },
       error=>{
-
+        console.log(error);
       }
     );
   }
@@ -69,14 +67,8 @@ export class GaleriaProductoComponent implements OnInit {
       
       
     }else{
-      iziToast.show({
-          title: 'ERROR',
-          titleColor: '#FF0000',
-          color: '#FFF',
-          class: 'text-danger',
-          position: 'topRight',
-          message: 'No hay un imagen de envio'
-      });
+     MessageBox.messageError('No hay un imagen de envio');
+      
     }
     if (file.size <= 4000000) {
        if (file.type == 'image/png' || file.type == 'image/webp'|| file.type == 'image/jpg' || file.type == 'image/gif' || file.type == 'image/jpeg') {
@@ -85,31 +77,16 @@ export class GaleriaProductoComponent implements OnInit {
           this.file = file;
         
        }else{
-        iziToast.show({
-          title:'ERROR',
-          titleColor: '#FF0000',
-          color: '#FFF',
-          class: 'text-danger',
-          position: 'topRight',
-          message: 'El archivo debe ser una imagen'
-        });
+        MessageBox.messageError('El archivo debe ser una imagen');
+        
         $('#input-img').val('');
         this.file = undefined;
        }
     } else {
-      iziToast.show({
-        title:'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'La imagen no puede superar los 4MB'
-      });
+      MessageBox.messageError('La imagen no puede superar los 4MB');
       $('#input-img').val('');
       this.file = undefined;
     } 
-    
-    console.log(this.file);
     
   }
 
@@ -119,7 +96,6 @@ export class GaleriaProductoComponent implements OnInit {
         imagen: this.file,
         _id: uuidv4()
       }
-      console.log(data);
       this._productoService.agregar_imagen_galeria_admin(this.id,data,this.token).subscribe(
         response=>{
           this.init_data();
@@ -128,14 +104,7 @@ export class GaleriaProductoComponent implements OnInit {
       );
       
     } else {
-      iziToast.show({
-        title:'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'Debe seleccionar una imagen para subir'
-      });
+      MessageBox.messageError('Debe seleccionar una imagen para subir');
     }
   }
 
@@ -143,14 +112,7 @@ export class GaleriaProductoComponent implements OnInit {
     this.load_btn_eliminar = true;
       this._productoService.eliminar_imagen_galeria_admin(this.id,{_id:id},this.token).subscribe(
         response=>{
-          iziToast.show({
-              title: 'SUCCESS',
-              titleColor: '#1DC74C',
-              color: '#FFF',
-              class: 'text-success',
-              position: 'topRight',
-              message: 'Se eliminó correctamente la imagen.'
-          });
+          MessageBox.messageSuccess('Se eliminó correctamente la imagen.');
   
           $('#delete-'+id).modal('hide');
           $('.modal-backdrop').removeClass('show');
@@ -162,14 +124,7 @@ export class GaleriaProductoComponent implements OnInit {
           
         },
         error=>{
-          iziToast.show({
-              title: 'ERROR',
-              titleColor: '#FF0000',
-              color: '#FFF',
-              class: 'text-danger',
-              position: 'topRight',
-              message: 'Ocurrió un error en el servidor.'
-          });
+          MessageBox.messageError('Ocurrió un error en el servidor.')
           console.log(error);
           this.load_btn = false;
       }

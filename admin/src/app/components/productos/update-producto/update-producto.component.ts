@@ -3,9 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProductoService } from '../../../services/producto.service';
 import { GLOBAL } from '../../../services/GLOBAL';
 import { AdminService } from '../../../services/admin.service';
+import { MessageBox } from 'src/app/utils/MessageBox';
 
-declare let iziToast;
-declare let jQuery:any;
 declare let $:any;
 
 @Component({
@@ -39,7 +38,7 @@ export class UpdateProductoComponent implements OnInit {
     this._adminService.obtener_config_publico().subscribe(
       response => {
         this.config_global = response.data;
-        console.log(this.config_global);
+      
         
       }
     )
@@ -49,7 +48,7 @@ export class UpdateProductoComponent implements OnInit {
     this._route.params.subscribe(
       params=>{
         this.id = params ['id'];
-        console.log(this.id);
+       
         this._productoService.obtener_producto_admin(this.id,this.token).subscribe(
           response => {
             if(response.data == undefined){
@@ -88,15 +87,8 @@ export class UpdateProductoComponent implements OnInit {
       this.load_btn = true;
       this._productoService.actualizar_producto_admin(data, this.id, this.token).subscribe(
         response => {
-          console.log(response);
-            iziToast.show({
-            title:'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Se actualizó correctamente el nuevo producto'
-          });
+          
+          MessageBox.messageSuccess('Se actualizó correctamente el nuevo producto');
 
           this.load_btn = false;
           this._router.navigate(['/panel/productos']);
@@ -109,14 +101,7 @@ export class UpdateProductoComponent implements OnInit {
       )
 
     }else{
-      iziToast.show({
-        title:'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'Los datos del formulario no son válidos'
-      });
+      MessageBox.messageError('Los datos del formulario no son válidos');
       this.load_btn = false;
     }
   }
@@ -127,14 +112,7 @@ export class UpdateProductoComponent implements OnInit {
       file = <File>event.target.files[0];
 
     }else{
-      iziToast.show({
-          title: 'ERROR',
-          titleColor: '#FF0000',
-          color: '#FFF',
-          class: 'text-danger',
-          position: 'topRight',
-          message: 'No hay un imagen de envío'
-      });
+      MessageBox.messageError('No hay un imagen de envío');
     }
 
     if(file.size <= 4000000){
@@ -142,7 +120,7 @@ export class UpdateProductoComponent implements OnInit {
 
         const reader = new FileReader();
         reader.onload = e => this.imgSelect = reader.result!;
-        console.log(this.imgSelect);
+       
 
         reader.readAsDataURL(file);
           
@@ -150,34 +128,19 @@ export class UpdateProductoComponent implements OnInit {
         this.file = file;
         
       }else{
-        iziToast.show({
-          title:'ERROR',
-          titleColor: '#FF0000',
-          color: '#FFF',
-          class: 'text-danger',
-          position: 'topRight',
-          message: 'El archivo debe ser una imagen'
-        });
+        MessageBox.messageError('El archivo debe ser una imagen');
         $('#input-portada').text('Seleccionar imagen');
         this.imgSelect ='assets/img/01.jpg';
         this.file = undefined!;
        }
 
     }else{
-      iziToast.show({
-        title:'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'La imagen no puede superar los 4 MB'
-      });
+      MessageBox.messageError('La imagen no puede superar los 4 MB');
       $('#input-portada').text('Seleccionar imagen');
       this.imgSelect ='assets/img/01.jpg';
       this.file = undefined!;
     } 
     
-    console.log(this.file);
     
   }
 }

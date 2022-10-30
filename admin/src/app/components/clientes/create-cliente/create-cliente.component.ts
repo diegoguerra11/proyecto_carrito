@@ -29,15 +29,14 @@ export class CreateClienteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // TODO document why this method 'ngOnInit' is empty
-    // TODO document why this method 'ngOnInit' is empty
+    
+    // TODO No hace falta iniciar con métodos 
   }
 
   registro(registroForm){
     if(!ValidatonsCliente.verificarCliente(registroForm.form.value)){
       return;
     }
-    console.log(this.cliente);
 
     this._clienteService.registro_cliente_admin(this.cliente,this.token).subscribe(
       response =>{
@@ -45,7 +44,6 @@ export class CreateClienteComponent implements OnInit {
           this.load_btn = false;
           return MessageBox.messageError("El numero documento ya existe");
         }
-        console.log(response);
         MessageBox.messageSuccess("Cliente registrado satisfactoriamente");
 
         this.cliente ={
