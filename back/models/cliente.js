@@ -4,7 +4,6 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let ClienteSchema = Schema({
-
     nombres: {type: String, required: true},
     apellidos: {type: String, required: true},
     pais: {type: String, required: false},

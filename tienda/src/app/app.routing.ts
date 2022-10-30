@@ -23,7 +23,6 @@ const appRoute : Routes = [
     {path: 'cuenta/pedidos/:id', component: PedidosDetallesComponent, canActivate: [AuthGuard]},
     {path: 'carrito', component: CarritoComponent, canActivate: [AuthGuard]},
 
-
     {path: 'verificar-pago/:tipo/:direccion/:cupon/:envio/:tipo_descuento/:valor_descuento/:total_pagar/:subtotal', component: VerificarPagoComponent},
 
     {path: 'productos', component: IndexProductoComponent},

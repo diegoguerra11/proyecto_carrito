@@ -47,7 +47,7 @@ export class ClienteService {
 
     try{
       const helper = new JwtHelperService();
-      var decodedToken = helper.decodeToken(token);
+      let decodedToken = helper.decodeToken(token);
 
       console.log(decodedToken);
       if (helper.isTokenExpired(token)) {
@@ -98,34 +98,33 @@ export class ClienteService {
   //Direcciones
   registro_direccion_cliente(data:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
-    return this._http.post(this.url+'registro_direccion_cliente',data,{headers:headers});
+    return this._http.post(this.url + 'registro_direccion_cliente',data,{headers:headers});
   }
 
   obtener_direccion_todos_cliente(id:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
-    return this._http.get(this.url+'obtener_direccion_todos_cliente/'+id,{headers:headers});
+    return this._http.get(this.url + 'obtener_direccion_todos_cliente/' + id,{headers:headers});
   }
 
   cambiar_direccion_principal_cliente(id:any,cliente:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
-    return this._http.put(this.url+'cambiar_direccion_principal_cliente/'+id+'/'+cliente,{data:true},{headers:headers});
+    return this._http.put(this.url + 'cambiar_direccion_principal_cliente/' + id + '/' + cliente,{data:true},{headers:headers});
   }
 
   eliminar_direccion_cliente(id:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
-    return this._http.delete(this.url+'eliminar_direccion_cliente/'+id,{headers:headers});
+    return this._http.delete(this.url + 'eliminar_direccion_cliente/' + id,{headers:headers});
   }
 
   registro_cliente(data:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json'});
-    return this._http.post(this.url+'registro_cliente',data,{headers:headers});
+    return this._http.post(this.url + 'registro_cliente',data,{headers:headers});
   }
 
   obtener_direccion_principal_cliente(id:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
-    return this._http.get(this.url+'obtener_direccion_principal_cliente/'+id,{headers:headers});
+    return this._http.get(this.url + 'obtener_direccion_principal_cliente/' + id,{headers:headers});
   }
-
 
   //compra
   registro_pedido_compra_cliente(data:any,token:any):Observable<any>{
@@ -171,6 +170,7 @@ export class ClienteService {
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.get(this.url+'consultarIDPago/'+id,{headers:headers});
   }
+
   validar_cupon_admin(cupon:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.get(this.url+'validar_cupon_admin/'+cupon,{headers:headers});
@@ -180,6 +180,7 @@ export class ClienteService {
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.get(this.url+'disminuir_cupon/'+cupon,{headers:headers});
   }
+
   listar_productos_nuevos_publico():Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
     return this._http.get(this.url + 'listar_productos_nuevos_publico',{headers:headers});

@@ -6,9 +6,9 @@ import * as fs from 'file-saver';
 import { AdminService } from 'src/app/services/admin.service';
 import { MessageBox } from 'src/app/utils/MessageBox';
 
-declare var iziToast;
-declare var jQuery:any;
-declare var $:any;
+declare let iziToast;
+declare let jQuery:any;
+declare let $:any;
 
 @Component({
   selector: 'app-index-producto',
@@ -30,11 +30,10 @@ export class IndexProductoComponent implements OnInit {
   public load_btn = false;
 
   constructor(
-      
     private _productoService : ProductoService,
     public _adminService : AdminService
 
-  ) { 
+  ){ 
     this.token = localStorage.getItem('token');
     this.url = GLOBAL.url;
   }
@@ -46,20 +45,20 @@ export class IndexProductoComponent implements OnInit {
   init_data(){
     this._productoService.listar_productos_admin(this.filtro,this.token).subscribe(
       response =>{
-          console.log(response);
-          this.productos = response.data;
-          this.productos.forEach(element =>{
-            this.arr_productos.push({
-              titulo: element.titulo,
-              stock: element.stock,
-              precio: element.precio,
-              categoria:element.categoria,
-              nventas: element.nventas
-            });
+        console.log(response);
+        this.productos = response.data;
+        this.productos.forEach(element =>{
+          this.arr_productos.push({
+            titulo: element.titulo,
+            stock: element.stock,
+            precio: element.precio,
+            categoria:element.categoria,
+            nventas: element.nventas
           });
-          console.log(this.arr_productos);          
+        });
+        console.log(this.arr_productos);          
 
-          this.load_data = false;
+        this.load_data = false;
       },
       error=>{
         console.log(error);
@@ -71,43 +70,42 @@ export class IndexProductoComponent implements OnInit {
     if(this.filtro){
       this._productoService.listar_productos_admin(this.filtro,this.token).subscribe(
         response=>{
-            console.log(response);
-            this.productos = response.data;
-            this.load_data = false;
+          console.log(response);
+          this.productos = response.data;
+          this.load_data = false;
         },
         error=>{
           console.log(error);
-          
         }
       )
     }else{
       iziToast.show({
-          title: 'ERROR',
-          titleColor: '#FF0000',
-          color: '#FFF',
-          class: 'text-danger',
-          position: 'topRight',
-          message: 'Ingrese un filtro para buscar'
+        title: 'ERROR',
+        titleColor: '#FF0000',
+        color: '#FFF',
+        class: 'text-danger',
+        position: 'topRight',
+        message: 'Ingrese un filtro para buscar.'
       });
     }
-}
+  }
 
-resetear(){
-  this.filtro = '';
-  this.init_data();
-}
+  resetear(){
+    this.filtro = '';
+    this.init_data();
+  }
 
-eliminar(id){
-  this.load_btn = true;
+  eliminar(id){
+    this.load_btn = true;
     this._productoService.eliminar_producto_admin(id,this.token).subscribe(
       response=>{
         iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Se eliminó correctamente el producto.'
+          title: 'SUCCESS',
+          titleColor: '#1DC74C',
+          color: '#FFF',
+          class: 'text-success',
+          position: 'topRight',
+          message: 'Se eliminó correctamente el producto.'
         });
 
         $('#delete-'+id).modal('hide');
@@ -116,73 +114,71 @@ eliminar(id){
         this.load_btn = false;
 
         this.init_data();
-
-        
       },
       error=>{
         iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Ocurrió un error en el servidor.'
+          title: 'SUCCESS',
+          titleColor: '#1DC74C',
+          color: '#FFF',
+          class: 'text-success',
+          position: 'topRight',
+          message: 'Ocurrió un error en el servidor.'
         });
         console.log(error);
         this.load_btn = false;
-    }
-  )
-}
-
-download_excel(){
-  let workbook = new Workbook();
-  let worksheet = workbook.addWorksheet("Reporte de productos");
-
-  worksheet.addRow(undefined);
-  for (let x1  of this.arr_productos){
-    let x2=Object.keys(x1);
-
-    let temp=[]
-    for(let y of x2){
-      temp.push(x1[y] as never)
-    }
-    worksheet.addRow(temp)
+      }
+    )
   }
 
-  let fname='REP01- ';
+  download_excel(){
+    let workbook = new Workbook();
+    let worksheet = workbook.addWorksheet("Reporte de productos");
 
-  worksheet.columns = [
-    { header: 'Producto', key: 'col1', width: 30},
-    { header: 'Stock', key: 'col2', width: 15},
-    { header: 'Precio', key: 'col3', width: 15},
-    { header: 'Categoria', key: 'col4', width: 25},
-    { header: 'N° ventas', key: 'col5', width: 15},
-  ]as any;
+    worksheet.addRow(undefined);
+    for (let x1  of this.arr_productos){
+      let x2=Object.keys(x1);
 
-  workbook.xlsx.writeBuffer().then((data) => {
-    let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');
-  });
-}
-
-cambiar_vs(id:any,vs:any){
-  this.load_estado = true;
-  this._adminService.cambiar_vs_producto_admin(id,vs,this.token).subscribe(
-    response=>{
-      MessageBox.messageSuccess('Se cambió el estado correctamente el producto.');
-
-      $('#vs-'+id).modal('hide');
-      $('.modal-backdrop').remove();
-      this.load_estado = false;
-      this.init_data();
-
-    },
-    error=>{
-      MessageBox.messageError( 'Ocurrió un error en el servidor.');
-      
-      console.log(error);
-      this.load_btn = false;
+      let temp=[]
+      for(let y of x2){
+        temp.push(x1[y] as never)
+      }
+      worksheet.addRow(temp)
     }
-  )
-}
+
+    let fname='REP01- ';
+
+    worksheet.columns = [
+      { header: 'Producto', key: 'col1', width: 30},
+      { header: 'Stock', key: 'col2', width: 15},
+      { header: 'Precio', key: 'col3', width: 15},
+      { header: 'Categoria', key: 'col4', width: 25},
+      { header: 'N° ventas', key: 'col5', width: 15},
+    ]as any;
+
+    workbook.xlsx.writeBuffer().then((data) => {
+      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');
+    });
+  }
+
+  cambiar_vs(id:any,vs:any){
+    this.load_estado = true;
+    this._adminService.cambiar_vs_producto_admin(id,vs,this.token).subscribe(
+      response=>{
+        MessageBox.messageSuccess('Se cambió correctamente el estado del producto.');
+
+        $('#vs-'+id).modal('hide');
+        $('.modal-backdrop').remove();
+        this.load_estado = false;
+        this.init_data();
+
+      },
+      error=>{
+        MessageBox.messageError( 'Ocurrió un error en el servidor.');
+      
+        console.log(error);
+        this.load_btn = false;
+      }
+    )
+  }
 }

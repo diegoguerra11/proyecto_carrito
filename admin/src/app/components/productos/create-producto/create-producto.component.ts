@@ -4,8 +4,8 @@ import { AdminService } from '../../../services/admin.service';
 import { Router } from '@angular/router';
 import { MessageBox } from 'src/app/utils/MessageBox';
 
-declare var jQuery:any;
-declare var $:any;
+declare let jQuery:any;
+declare let $:any;
 
 @Component({
   selector: 'app-create-producto',
@@ -40,6 +40,7 @@ export class CreateProductoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // TODO document why this method 'ngOnInit' is empty
   }
 
   registro(registroForm){
@@ -71,16 +72,16 @@ export class CreateProductoComponent implements OnInit {
   fileChangeEvent(event:any):void{
     if(!(event.target.files && event.target.files[0])){return MessageBox.messageError('No hay un imagen de envio');}
 
-    var file = <File>event.target.files[0]; 
+    let file = <File>event.target.files[0]; 
 
-    if(file.size > 4000000) { 
+    if(file.size > 4000000){ 
       $('#input-portada').text('Seleccionar imagen');
       this.imgSelect ='assets/img/01.jpg';
       this.file = undefined;
       return MessageBox.messageError('La imagen no puede superar los 4MB');
     }
 
-    if (file.type == 'image/png' || file.type == 'image/webp' || file.type == 'image/jpg' || file.type == 'image/gif' || file.type == 'image/jpeg') {
+    if(file.type == 'image/png' || file.type == 'image/webp' || file.type == 'image/jpg' || file.type == 'image/gif' || file.type == 'image/jpeg'){
 
       const reader = new FileReader();
       reader.onload = e => this.imgSelect = reader.result;
