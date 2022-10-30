@@ -246,7 +246,8 @@ const agregar_nueva_variedad_admin = async function(req,res){
     
     let data = req.body;
 
-    let reg = await Variedad.create(data);
+        console.log(data);
+        let reg = await Variedad.create(data);
 
     res.status(200).send({data:reg});
 }
@@ -270,9 +271,11 @@ const registro_compra_manual_cliente = async function(req,res){
     let data = req.body;
     let detalles = data.detalles;
 
-    data.estado = 'Procesando';
-    
-    let venta = await Venta.create(data);
+        data.estado = 'Procesando';
+        
+        console.log(data);
+
+        let venta = await Venta.create(data);
 
     for(let element of detalles){
         element.venta = venta._id;

@@ -70,7 +70,6 @@ export class VerificarPagoComponent implements OnInit {
                               cliente: localStorage.getItem('_id')
                             });
                           });
-
                           this.venta.tipo_descuento = this.tipo_descuento;
                           this.venta.valor_descuento = this.valor_descuento;
                           this.venta.direccion = this.direccion;
@@ -87,7 +86,6 @@ export class VerificarPagoComponent implements OnInit {
                               this._router.navigate(['/cuenta/pedidos',response.data._id]);
                             }
                           );
-
                         }
                       );
                     }
@@ -105,5 +103,4 @@ export class VerificarPagoComponent implements OnInit {
       }
     );
   }
-
 }

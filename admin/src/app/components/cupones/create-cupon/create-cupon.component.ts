@@ -13,7 +13,7 @@ import { ValidatonsCupon } from 'src/app/validations/validationsCupon';
 })
 export class CreateCuponComponent implements OnInit {
 
-   public token;
+  public token;
 
   public cupon : any = {
     tipo : ''
@@ -33,13 +33,9 @@ export class CreateCuponComponent implements OnInit {
   registro(registroForm){
 
     if(!ValidatonsCupon.verificarCupon(registroForm.form.value)){return;}
-    console.log(this.cupon);
-      this.load_btn = true;
       this._cuponService.registro_cupon_admin(this.cupon,this.token).subscribe(
         response=>{
-          console.log(response.data);
-          if(!response.data){this.load_btn = false; return MessageBox.messageError("El codigo del cupon ya existe");}
-
+          if(!response.data){return MessageBox.messageError("El codigo del cupon ya existe");}
         MessageBox.messageSuccess("Cupón registrado correctamente");
         this.cupon ={
           codigo: '',
@@ -47,25 +43,7 @@ export class CreateCuponComponent implements OnInit {
           valor: '',
           limite: '',
         }
-
-        this.load_btn = false;
-
-        this._router.navigate(['/panel/cupones']);
         },
-        error => {
-        this.load_btn = false;
-        console.log(error);
-        }
       );
-
-
-
-
-
-
-
-
-
   }
-
 }
