@@ -4,7 +4,6 @@ import { ProductoService } from '../../../services/producto.service';
 import { GLOBAL } from '../../../services/GLOBAL';
 import { AdminService } from 'src/app/services/admin.service';
 import { MessageBox } from '../../../utils/MessageBox';
-declare let iziToast;
 declare let $:any;
 @Component({
   selector: 'app-variedad-producto',
@@ -43,9 +42,9 @@ export class VariedadProductoComponent implements OnInit {
               this.producto = response.data;        
             }
 
-            console.log(this.producto);
+           
           },
-          error=>{}
+          error=>{console.log(error);}
         );
       
       }
@@ -86,7 +85,7 @@ export class VariedadProductoComponent implements OnInit {
     this.load_agregar = true;
     this._adminService.agregar_nueva_variedad_admin(data,this.token).subscribe(
       response=>{
-        console.log(data);
+       
         MessageBox.messageSuccess('Se agregó la nueva variedad');
         this.load_agregar = false;
         this.listar_variedades();
@@ -100,14 +99,7 @@ export class VariedadProductoComponent implements OnInit {
     this.load_del = true;
     this._adminService.eliminar_variedad_admin(id,this.token).subscribe(
       response=>{
-        iziToast.show({
-          title: 'SUCCESS',
-          titleColor: '#1DC74C',
-          color: '#FFF',
-          class: 'text-success',
-          position: 'topRight',
-          message: 'Se eliminó correctamente la variedad'
-        });
+        MessageBox.messageSuccess('Se eliminó correctamente la variedad');
 
         $('#delete-'+id).modal('hide');
         $('.modal-backdrop').remove();
@@ -116,14 +108,7 @@ export class VariedadProductoComponent implements OnInit {
 
       },
       error=>{
-        iziToast.show({
-          title: 'SUCCESS',
-          titleColor: '#1DC74C',
-          color: '#FFF',
-          class: 'text-success',
-          position: 'topRight',
-          message: 'Ocurrió un error en el servidor'
-        });
+        MessageBox.messageError('Ocurrió un error en el servidor');
         console.log(error);
         this.load_btn = false;
       }
@@ -139,26 +124,12 @@ export class VariedadProductoComponent implements OnInit {
       },
       this.id,this.token).subscribe(
         response=>{
-          iziToast.show({
-            title: 'SUCCESS',
-            titleColor: '#1DC74C',
-            color: '#FFF',
-            class: 'text-success',
-            position: 'topRight',
-            message: 'Se actualizó correctamente las variedades'
-          });
+          MessageBox.messageSuccess('Se actualizó correctamente las variedades');
           this.load_btn = false;
         }
       );
     }else{
-      iziToast.show({
-        title: 'ERROR',
-        titleColor: '#FF0000',
-        color: '#FFF',
-        class: 'text-danger',
-        position: 'topRight',
-        message: 'Debe completar el título de la variedad'
-      });
+      MessageBox.messageError('Debe completar el título de la variedad');
       this.load_btn = false;
     }
   }

@@ -76,7 +76,6 @@ export class DireccionesComponent implements OnInit {
       $('#sl-region').prop('disabled', false);
       this._guestService.get_Regiones().subscribe(
         response=>{
-          console.log(response);
           response.forEach((element:any) => {
             this.regiones.push({
               id: element.id,
@@ -113,7 +112,6 @@ export class DireccionesComponent implements OnInit {
               this.provincias.push(element);
             }
         });
-        console.log(this.provincias);
       }
     );
   }
@@ -129,7 +127,6 @@ export class DireccionesComponent implements OnInit {
             this.distritos.push(element);
           }
       });
-      console.log(this.distritos);
       }
     );
   }

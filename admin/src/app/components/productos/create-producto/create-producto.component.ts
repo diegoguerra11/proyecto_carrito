@@ -4,7 +4,6 @@ import { AdminService } from '../../../services/admin.service';
 import { Router } from '@angular/router';
 import { MessageBox } from 'src/app/utils/MessageBox';
 
-declare let jQuery:any;
 declare let $:any;
 
 @Component({
@@ -34,13 +33,12 @@ export class CreateProductoComponent implements OnInit {
     this._adminService.obtener_config_publico().subscribe(
       response=>{
         this.config_global = response.data;
-        console.log(this.config_global);
       }
     )
   }
 
   ngOnInit(): void {
-    // TODO document why this method 'ngOnInit' is empty
+    // TODO NO HACE FALTA MÉTODO DE INICIO
   }
 
   registro(registroForm){
@@ -52,9 +50,7 @@ export class CreateProductoComponent implements OnInit {
       return MessageBox.messageError('Los datos del formulario no son validos');
     }
     if (this.file == undefined) {return MessageBox.messageError('Debe subir una portada para registrar');}
-
-    console.log(this.producto);
-    console.log(this.file);      
+    
     this.load_btn = true;
     this._productoService.registro_producto_admin(this.producto,this.file,this.token).subscribe(
       response => {
@@ -85,7 +81,7 @@ export class CreateProductoComponent implements OnInit {
 
       const reader = new FileReader();
       reader.onload = e => this.imgSelect = reader.result;
-      console.log(this.imgSelect);
+
 
       reader.readAsDataURL(file);
       
@@ -99,6 +95,5 @@ export class CreateProductoComponent implements OnInit {
       this.file = undefined;
     }
     
-    console.log(this.file);
   }
 }
