@@ -16,7 +16,7 @@ export class UpdateProductoComponent implements OnInit {
 
   public producto:any = {};
   public config:any = {};
-  public imgSelect! : String | ArrayBuffer;
+  public imgSelect! : string | ArrayBuffer;
   public load_btn = false;
   public id;
   public token;

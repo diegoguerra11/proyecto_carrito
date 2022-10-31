@@ -5,7 +5,7 @@
         <div class="container">
           <ol class="breadcrumb breadcrumb-alt mb-0">
             <li class="breadcrumb-item">
-              <a [routerLink]="['/']"><i class="cxi-home"></i></a>
+              <a [routerLink]="['/']"><i class="cxi-home" aria-hidden="true"></i></a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">Todos los Productos</li>
           </ol>
@@ -19,12 +19,12 @@
 
             <!-- Show / hide filters on Desktop -->
             <div class="d-none d-lg-block">
-              <h3><i class="cxi-filter-1"></i> Filtros:</h3>
+              <h3><i class="cxi-filter-1" aria-hidden="true"></i> Filtros:</h3>
             </div>
 
             <!-- Show / hide filters (off-canvas) on Mobile -->
             <button type="button" class="btn btn-primary btn-block mt-0 d-lg-none" data-toggle="offcanvas" data-target="filtersOffcanvas">
-              <i class="cxi-filter-2 mr-1"></i>
+              <i class="cxi-filter-2 mr-1" aria-hidden="true"></i>
               Show filters
             </button>
           </div>
@@ -89,7 +89,7 @@
                       <div class="input-group-overlay d-lg-block d-none order-lg-3 mt-3">
                         <input class="form-control appended-form-control" type="text" placeholder="Buscar producto" name="filter_producto" [(ngModel)]="filter_producto">
                         <div class="input-group-append-overlay" style="cursor: pointer; color:white !important; background:#17696a !important;" (click)="buscar_producto()">
-                          <span class="input-group-text" style="color: white;"><i class="cxi-search lead align-middle"></i></span>
+                          <span class="input-group-text" style="color: white;"><i class="cxi-search lead align-middle" aria-hidden="true"></i></span>
                         </div>
                       </div>
                     </div>
@@ -113,7 +113,7 @@
                         name="filter_categoria" [(ngModel)]="filter_categoria" (keyup)="buscar_categorias()">
                         <div class="input-group-append-overlay">
                           <span class="input-group-text">
-                            <i class="cxi-search font-size-sm"></i>
+                            <i class="cxi-search font-size-sm" aria-hidden="true"></i>
                           </span>
                         </div>
                       </div>
@@ -214,11 +214,11 @@
                       </a>
                       <div class="card-product-widgets-top">
                         <div class="star-rating ml-auto">
-                          <i class="sr-star cxi-star-filled active"></i>
-                          <i class="sr-star cxi-star-filled active"></i>
-                          <i class="sr-star cxi-star-filled active"></i>
-                          <i class="sr-star cxi-star-filled active"></i>
-                          <i class="sr-star cxi-star-filled active"></i>
+                          <i class="sr-star cxi-star-filled active" aria-hidden="true"></i>
+                          <i class="sr-star cxi-star-filled active" aria-hidden="true"></i>
+                          <i class="sr-star cxi-star-filled active" aria-hidden="true"></i>
+                          <i class="sr-star cxi-star-filled active" aria-hidden="true"></i>
+                          <i class="sr-star cxi-star-filled active" aria-hidden="true"></i>
                         </div>
                       </div>
                       <div class="card-product-widgets-bottom">

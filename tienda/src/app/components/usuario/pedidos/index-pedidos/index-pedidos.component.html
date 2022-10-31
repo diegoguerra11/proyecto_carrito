@@ -6,7 +6,7 @@
     <div class="container">
       <ol class="breadcrumb breadcrumb-alt mb-0">
         <li class="breadcrumb-item">
-          <a [routerLink]="['/']"><i class="cxi-home"></i></a>
+          <a [routerLink]="['/']"><i class="cxi-home" aria-hidden="true"></i></a>
         </li>
 
         <li class="breadcrumb-item active" aria-current="page">Mis Ordenes</li>
@@ -29,16 +29,7 @@
         <div class="col ml-auto">
           <div class="d-flex align-items-center justify-content-between mb-4 pb-sm-2">
             <h1 class="h2 mb-0">Mis ordenes</h1>
-            <!-- <div class="form-inline">
-              <label for="sort-orders" class="d-none d-sm-block font-weight-bold mr-2 pr-1">Sort orders</label>
-              <select id="sort-orders" class="custom-select">
-                <option>All</option>
-                <option>Delivered</option>
-                <option>In Progress</option>
-                <option>Delayed</option>
-                <option>Canceled</option>
-              </select>
-            </div> -->
+            
           </div>
 
           <!-- Orders accordion -->
@@ -50,7 +41,7 @@
                   <a [routerLink]="['/cuenta/pedidos',item._id]"class="d-flex flex-wrap justify-content-between py-3" data-toggle="collapse" aria-expanded="false">
                     <span class="pr-2"># {{ item._id.toUpperCase() }}</span>
                     <span class="font-size-sm text-muted text-nowrap px-2">
-                      <i class="cxi-clock font-size-base align-middle mt-n1 mr-1"></i>
+                      <i class="cxi-clock font-size-base align-middle mt-n1 mr-1" aria-hidden="true"></i>
                       {{ item.createdAt | date }}
                     </span>
                     <span class="badge badge-info">{{ item.estado }}</span>

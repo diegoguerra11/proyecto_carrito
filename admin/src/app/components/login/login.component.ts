@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
    
     if(this.token){
       this._router.navigate(['/']); 
-      return;
+
     }
   }
 

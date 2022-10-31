@@ -2,16 +2,12 @@ import { MessageBox } from '../utils/MessageBox';
 
 export class ValidatonsCliente {
     static verificarCliente(form: any) {
-        let numerico = /^[0-9]+$/;
-        const fecha = new Date();
-        const añoActual =fecha.getFullYear();
-        const mesActual =fecha.getMonth()+1;
-        const diaActual =fecha.getDate();
+        let numerico = /^\d+$/;
+        
         if(!form.nombres) {
             MessageBox.messageError('El campo nombres es obligatorio');
             return false;
         }
-
         if(form.nombres.match(numerico)) {
             MessageBox.messageError('El campo nombres debe ser alfabetico');
             return false;
@@ -52,11 +48,6 @@ export class ValidatonsCliente {
             MessageBox.messageError('El campo Número de Documento debe ser numérico');
             return false;
         }
-
-        if(form.tipoDocumento == ""){
-            MessageBox.messageError('Debe seleccionar un tipo de documento');
-            return false;
-        }
         if(form.tipoDocumento == "dni" && form.numeroDocumento.length != 8){
             MessageBox.messageError('Número de DNI Inválido');
             return false;
@@ -69,11 +60,11 @@ export class ValidatonsCliente {
             MessageBox.messageError('Número de pasaporte Inválido');
             return false;
         }
-        var myAge = ~~((Date.now() - Date.parse(form.f_nacimiento)) / (31557600000));
+        let myAge = ~~((Date.now() - Date.parse(form.f_nacimiento)) / (31557600000));
         if(myAge<18){
           MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
             return false;}
-        console.log(fecha);
+
         return true;
     }
 }

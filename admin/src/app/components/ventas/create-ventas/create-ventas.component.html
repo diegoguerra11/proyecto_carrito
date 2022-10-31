@@ -44,7 +44,7 @@
                 <div class="card-body">
                     <div class="row form-group">
                         <div class="col-lg-6">
-                            <label for="validationCustom01" class="form-label"><b>Cliente</b></label> <br>
+                            <label for="validationCustom01" class="form-label"><strong>Cliente</strong></label> <br>
                             <div class="input-group">
                                 
                                 <input class="form-control" type="text" id="input-cliente" placeholder="Seleccionar cliente">
@@ -68,6 +68,7 @@
                                             <button class="btn btn-primary" type="button" (click)="func_filtro_cliente()">Buscar</button>
                                         </div>
                                       <table class="table">
+                                        <caption></caption>
                                             <thead>
                                                 <th>Cliente</th>
                                                 <th>Acción</th>
@@ -101,7 +102,7 @@
                             </div>
                         </div>
                         <div class="col-lg-6">
-                            <label for="validationCustom01" class="form-label"><b>Direccion</b></label> <br>
+                            <label for="validationCustom01" class="form-label"><strong>Direccion</strong></label> <br>
                             <div class="input-group">
                                 <input class="form-control" id="input-direccion" type="text" placeholder="Direccion del cliente">
                                 <button class="btn btn-primary" type="button" data-toggle="modal" [attr.data-target]="'#modalDireccion'">Go!</button>
@@ -121,6 +122,7 @@
                                     overflow-y: auto;">
                                        
                                       <table class="table">
+                                        <caption> </caption>
                                             <thead>
                                                 <th>Direccion</th>
                                                 <th>Acción</th>
@@ -150,7 +152,7 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-5">
-                            <label for="validationCustom01" class="form-label"><b>Metodo de pago</b></label> <br>
+                            <label for="validationCustom01" class="form-label"><strong>Metodo de pago</strong></label> <br>
                             <select class="form-control" id="select-input" name="metodo_pago" [(ngModel)]="venta.metodo_pago">
                                 <option selected disabled value="">Seleccionar</option>
                                 <option value="Tarjeta de crédito">Tarjeta de crédito</option>
@@ -164,7 +166,7 @@
                 <div class="card-body">
                     <div class="row form-group">
                         <div class="col-lg-6">
-                            <label for="validationCustom01" class="form-label"><b>Producto</b></label> <br>
+                            <label for="validationCustom01" class="form-label"><strong>Producto</strong></label> <br>
                             <div class="input-group">
                                 <input class="form-control" type="text" placeholder="Seleccionar el producto" id="input-producto">
                                 <button class="btn btn-primary" type="button" data-toggle="modal" [attr.data-target]="'#modalProducto'">Go!</button>
@@ -187,6 +189,7 @@
                                             <button class="btn btn-primary" type="button" (click)="func_filtro_producto()">Buscar</button>
                                         </div>
                                       <table class="table">
+                                        <caption></caption>
                                             <thead>
                                                 <th>Producto</th>
                                                 <th>Talla</th>
@@ -228,11 +231,11 @@
                             </div>
                         </div>
                         <div class="col-lg-4">
-                            <label for="validationCustom01" class="form-label"><b>Cantidad (*)</b></label>
+                            <label for="validationCustom01" class="form-label"><strong>Cantidad (*)</strong></label>
                             <input type="number" class="form-control" placeholder="1" name="cantidad" [(ngModel)]="cantidad">
                         </div>
                         <div class="col-lg-5">
-                            <label for="validationCustom01" class="form-label"><b>(*)</b></label>
+                            <label for="validationCustom01" class="form-label"><strong>(*)</strong></label>
                             <br>
                             <button class="btn btn-primary" (click)="addProducto()">Agregar</button>
                         </div>
@@ -242,14 +245,15 @@
                         <div class="col-12 form-group">
                             <div class="table-responsive">
                                 <table class="table table-striped">
+                                  <caption></caption>
                                   <thead>
                                     <tr>
-                                      <th>Producto</th>
-                                      <th>Talla</th>
-                                      <th>Precio</th>
-                                      <th>Cantidad</th>
-                                      <th>Subtotal</th>
-                                      <th>Eliminar</th>
+                                      <th scope = "row">Producto</th>
+                                      <th scope = "row">Talla</th>
+                                      <th scope = "row">Precio</th>
+                                      <th scope = "row">Cantidad</th>
+                                      <th scope = "row">Subtotal</th>
+                                      <th scope = "row">Eliminar</th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -266,7 +270,7 @@
                                   </tbody>
                                   <tfoot>
                                       <tr>
-                                          <td colspan="5"><b>Total</b></td>
+                                          <td colspan="5"><strong>Total</strong></td>
                                           <td>{{total_pagar|currency:'PEN'}}</td>
                                       </tr>
                                   </tfoot>
@@ -276,7 +280,7 @@
                         <div class="col-12">
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="validationCustom01" class="form-label"><b>Total a pagar: (*)</b></label>
+                                    <label for="validationCustom01" class="form-label"><strong>Total a pagar: (*)</strong></label>
                                     <h3>{{neto_pagar|currency:'PEN'}}</h3>
                                 </div>
                             </div>

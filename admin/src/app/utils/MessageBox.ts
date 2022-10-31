@@ -1,4 +1,4 @@
-declare var iziToast:any;
+declare let iziToast:any;
 
 export class MessageBox {
 

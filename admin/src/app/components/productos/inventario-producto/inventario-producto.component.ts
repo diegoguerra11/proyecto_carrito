@@ -21,6 +21,8 @@ export class InventarioProductoComponent implements OnInit {
     public inventarios: Array<any>=[];
     public arr_inventario : Array<any>=[];
     public inventario : any = {}
+    public page=1;
+    public pageSize = 20;
     
     public load_btn = false;
 

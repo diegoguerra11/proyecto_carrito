@@ -6,7 +6,7 @@
     <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
       <p class="text-muted">Este módulo lista todos los productos de la tienda.</p>
       <p class="font-size-sm font-weight-medium pl-md-4">
-        <a class="text-nowrap" [routerLink]="['/panel/productos']">Regresar<i class="cxi-angle-right font-size-base align-middle ml-1"></i></a></p>
+        <a class="text-nowrap" [routerLink]="['/panel/productos']">Regresar<i class="cxi-angle-right font-size-base align-middle ml-1" aria-hidden="true"></i></a></p>
     </div>
 </div>
 
@@ -45,6 +45,7 @@
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered">
+              <caption></caption>
               <thead class="thead-dark">
                 <tr>
                  
@@ -71,7 +72,7 @@
                     <td>{{item.proveedor}}</td>
                     <td>
                       <button class="btn btn-danger btn-sm"  data-toggle="modal" [attr.data-target]="'#delete-'+item._id">
-                        <i class="cxi-delete"></i>
+                        <i class="cxi-delete" aria-hidden="true"></i>
                       </button>
 
                       <div class="modal fade" id="delete-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
@@ -105,10 +106,10 @@
         </div>
     </div>
     <div class="card-footer">
-        <!-- <ngb-pagination
+         <ngb-pagination
           [(page)]="page"
           [pageSize]="pageSize"
-          [collectionSize]="productos.length"
-        ></ngb-pagination> -->
+          [collectionSize]="producto.length"
+        ></ngb-pagination> 
     </div>
 </div>  

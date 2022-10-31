@@ -5,7 +5,7 @@
         <div class="container">
           <ol class="breadcrumb breadcrumb-alt mb-0">
             <li class="breadcrumb-item">
-              <a [routerLink]="['/']" ><i class="cxi-home"></i></a>
+              <a [routerLink]="['/']" ><i class="cxi-home" aria-hidden="true"></i></a>
             </li>
             <li class="breadcrumb-item">
               <a *ngIf="producto.categoria" [routerLink]="['/productos/categoria',producto.categoria.toLowerCase()]" routerLinkActive="router-link-active" >{{producto.categoria}}</a>
@@ -80,7 +80,7 @@
               <div class="col-lg-6 order-lg-1 order-1">
                 <ng-container *ngIf="user_lc != undefined">
                   <button *ngIf="!btn_cart" class="btn btn-block btn-primary" (click)="agregar_producto()">
-                    <i class="cxi-cart mr-2"></i>
+                    <i class="cxi-cart mr-2" aria-hidden="true"></i>
                     Añadir al Carrito
                   </button>
                   <button *ngIf="btn_cart" type="button" class="btn btn-primary" disabled>
@@ -90,7 +90,7 @@
                 </ng-container>
                 <ng-container *ngIf="user_lc == undefined">
                   <button *ngIf="!btn_cart" class="btn btn-block btn-primary" (click)="agregar_producto_guest()">
-                    <i class="cxi-cart mr-2"></i>
+                    <i class="cxi-cart mr-2" aria-hidden="true"></i>
                     Añadir al Carrito
                   </button>
                 </ng-container>
@@ -99,7 +99,7 @@
               
               <div class="col-lg-4 col-8 order-lg-2 order-2">
                 <button class="btn btn-block btn-outline-primary px-lg-4">
-                  <i class="cxi-heart mr-2"></i>
+                  <i class="cxi-heart mr-2" aria-hidden="true"></i>
                   A deseos
                 </button>
               </div>
@@ -125,13 +125,13 @@
             <div class="mb-5 text-nowrap">
               <h6 class="d-inline-block align-middle mr-2 mb-0">Compartir:</h6>
               <a  class="social-btn sb-solid align-middle mr-2" data-toggle="tooltip" title="Facebook">
-                <i class="cxi-facebook"></i>
+                <i class="cxi-facebook" aria-hidden="true"></i>
               </a>
               <a  class="social-btn sb-solid align-middle mr-2" data-toggle="tooltip" title="Twitter">
-                <i class="cxi-twitter"></i>
+                <i class="cxi-twitter" aria-hidden="true"></i>
               </a>
               <a  class="social-btn sb-solid align-middle" data-toggle="tooltip" title="Pinterest">
-                <i class="cxi-pinterest"></i>
+                <i class="cxi-pinterest" aria-hidden="true"></i>
               </a>
             </div>
 
@@ -172,11 +172,11 @@
                   </div>
                   <div class="card-product-widgets-top">
                     <div class="ml-auto star-rating">
-                      <i class="sr-star cxi-star-filled active"></i>
-                      <i class="sr-star cxi-star-filled active"></i>
-                      <i class="sr-star cxi-star-filled active"></i>
-                      <i class="sr-star cxi-star-filled active"></i>
-                      <i class="sr-star cxi-star"></i>
+                      <i class="sr-star cxi-star-filled active" aria-hidden="true"></i>
+                      <i class="sr-star cxi-star-filled active" aria-hidden="true"></i>
+                      <i class="sr-star cxi-star-filled active" aria-hidden="true"></i>
+                      <i class="sr-star cxi-star-filled active" aria-hidden="true"></i>
+                      <i class="sr-star cxi-star" aria-hidden="true"></i>
                     </div>
                   </div>
                   <div class="card-product-widgets-bottom">
@@ -193,7 +193,7 @@
                   </div>
                 
                   <button type="button" class="btn btn-primary btn-block" style="margin-bottom: 1rem;"  (click)="agregar_producto_guest()">
-                    <i class="cxi-cart align-middle mt-n1 mr-2"></i>
+                    <i class="cxi-cart align-middle mt-n1 mr-2" aria-hidden="true"></i>
                     Añadir al Carrito
                   </button>
                 </div>
@@ -229,6 +229,7 @@
               <div class="table-responsive border rounded">
                 <h4 class="mb-0 py-3 font-size-lg text-center">Footwear</h4>
                 <table class="table table-striped mb-0">
+                  <caption></caption>
                   <tbody>
                     <tr>
                       <th scope="row" class="font-weight-normal">Europe</th>
@@ -325,6 +326,7 @@
               <div class="table-responsive border rounded mb-4">
                 <h4 class="mb-0 py-3 font-size-lg text-center">Equivalence in centimeters</h4>
                 <table class="table table-striped mb-0">
+                  <caption></caption>
                   <tbody>
                     <tr>
                       <th scope="row" class="font-weight-normal">Foot length</th>

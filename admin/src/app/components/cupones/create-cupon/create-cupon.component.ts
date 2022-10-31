@@ -1,7 +1,5 @@
-import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { CuponService } from '../../../services/cupon.service';
-import { Router } from '@angular/router';
 import { MessageBox } from 'src/app/utils/MessageBox';
 import { ValidatonsCupon } from 'src/app/validations/validationsCupon';
 

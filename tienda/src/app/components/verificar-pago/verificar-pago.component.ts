@@ -38,7 +38,7 @@ export class VerificarPagoComponent implements OnInit {
     this.venta.cliente = this.idcliente;
     this.token = localStorage.getItem('token');
    }
-
+   //Se realiza el pago de todo
   ngOnInit(): void {
     this._route.params.subscribe(
       params=>{

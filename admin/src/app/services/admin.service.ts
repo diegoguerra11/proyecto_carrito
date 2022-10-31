@@ -39,12 +39,10 @@ export class AdminService {
         return false;
       }
 
+      const helper = new JwtHelperService();
+      let decodedToken = helper.decodeToken(token);
       try{
-        const helper = new JwtHelperService();
-        var decodedToken = helper.decodeToken(token);
-
-        console.log(decodedToken);
-
+        
         if (helper.isTokenExpired(token)) {
           localStorage.clear();
           return false;

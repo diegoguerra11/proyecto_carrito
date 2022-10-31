@@ -1,13 +1,13 @@
 <app-nav></app-nav>
 <main class="cs-page-wrapper">
     <section class="container ps-form--404" action="404-page.html" method="get" *ngIf="!load">
-      <div class="ps-form__header"><i class="icon-heart"></i></div>
+      <div class="ps-form__header"><i class="icon-heart" aria-hidden="true"></i></div>
       <h3 *ngIf="tipo == 'failure'">La confirmación del pago no se pudo concretar.</h3>
       <p *ngIf="tipo == 'pending' || tipo == 'failure'">Esta es una ventana de confirmacion de pago, si deseas regresar al <a style="cursor: pointer;"
         [routerLink]="['/']"> Inicio</a></p>
     </section>
     <section class="container ps-form--404" action="404-page.html" method="get" *ngIf="load">
-        <div class="ps-form__header"><i class="icon-confused"></i></div>
+        <div class="ps-form__header"><i class="icon-confused" aria-hidden="true"></i></div>
         <h3 *ngIf="tipo == 'success'">SU PAGO SE CONCRETO CON EXITO
             <br>
             <a [routerLink]="['/']" class="btn btn-primary">Volver a la tienda</a>
