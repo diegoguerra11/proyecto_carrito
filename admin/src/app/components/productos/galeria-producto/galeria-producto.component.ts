@@ -58,10 +58,11 @@ export class GaleriaProductoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //TODO NO HACE FALTA MÉTODO
   }
 
   fileChangeEvent(event:any):void{
-    var file;
+    let file;
     if(event.target.files && event.target.files[0]){
       file = <File>event.target.files[0];
       

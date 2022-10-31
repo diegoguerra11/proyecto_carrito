@@ -1,0 +1,6 @@
+projectKey=carrrito
+serverUrl=http://localhost:9000
+serverVersion=9.7.0.61563
+dashboardUrl=http://localhost:9000/dashboard?id=carrrito
+ceTaskId=AYQqsIXz3mPjNk__b5aF
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AYQqsIXz3mPjNk__b5aF

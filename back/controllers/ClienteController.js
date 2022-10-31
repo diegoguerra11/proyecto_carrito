@@ -224,6 +224,7 @@ const registro_pedido_compra_cliente = async function(req, res) {
         await Carrito.deleteMany({cliente:data.cliente});
     }
 
+    enviar_orden_pedido(venta._id);
     res.status(200).send({data:venta});
 }
 
@@ -424,7 +425,7 @@ const enviar_orden_compra = async function(venta){
         readHTMLFile(process.cwd() + '/mails/email_compra.html', (err, html)=>{
                                 
             let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
-    
+            console.log(orden);
             let template = handlebars.compile(rest_html);
             let htmlToSend = template({op:true});
     
@@ -446,7 +447,60 @@ const enviar_orden_compra = async function(venta){
         console.log(error);
     }
 }
-
+const enviar_orden_pedido = async function(venta){
+    try {
+        let readHTMLFile = function(path, callback) {
+            fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                if (err) {
+                    console.log("Error");
+                    callback(err);
+                    throw err;
+                }
+                else {
+                    callback(null, html);
+                }
+            });
+        };
+        
+        let transporter = nodemailer.createTransport(({
+            service: 'gmail',
+            host: 'smtp.gmail.com',
+            auth: {
+                user: 'renzo.carrascom@gmail.com',
+                pass: 'mjqzblcffaegvdzm'
+            }
+        }));
+    
+     
+        let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
+        let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
+    
+    
+        readHTMLFile(process.cwd() + '/mails/email_pedido.html', (err, html)=>{
+                                
+            let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
+            console.log(orden);
+            let template = handlebars.compile(rest_html);
+            let htmlToSend = template({op:true});
+    
+            let mailOptions = {
+                from: 'renzo.carrascom@gmail.com',
+                to: orden.cliente.email,
+                subject: 'Gracias por tu Orden ',
+                html: htmlToSend
+            };
+          
+            transporter.sendMail(mailOptions, function(error, info){
+                if (!error) {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+        
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
 const consultarIDPago = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
