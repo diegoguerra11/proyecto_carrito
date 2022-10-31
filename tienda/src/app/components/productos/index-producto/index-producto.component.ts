@@ -181,6 +181,19 @@ orden_por(){
         return 0;
       });
       break;
+    default:
+      if(this.sort_by.includes('Precio')) {
+        this.orderPorPrecio();
+      }else {
+        this.ordenPorTitulo();
+      }
+
+      break;
+  }
+}
+
+orderPorPrecio () {
+  switch(this.sort_by) {
     case '+-Precio':
       this.productos.sort(function (a, b) {
 
@@ -206,6 +219,11 @@ orden_por(){
         return 0;
       });
       break;
+  }
+}
+
+ordenPorTitulo() {
+  switch(this.sort_by) {
     case 'azTitulo':
       this.productos.sort(function (a, b) {
 
@@ -231,8 +249,6 @@ orden_por(){
       });
       break;
   }
- 
-  
 }
 
 agregar_producto(producto:any){

@@ -77,8 +77,7 @@ export class LoginComponent implements OnInit {
       }
 
       this._clienteService.agregar_carrito_cliente(data, token).subscribe(
-        response=>{},
-        error=>{console.log(error);}
+        error => {console.log(error);}
       )
     });
   }
@@ -88,7 +87,7 @@ export class LoginComponent implements OnInit {
     if(!ValidatonsCliente.registrarCliente(loginForm.form.value)){return;}
 
     this._clienteService.registro_cliente(this.cliente).subscribe(
-      response =>{
+      response => {
         if(response.data == undefined) {MessageBox.messageError("Cuenta existente"); return;}
 
         let data = {
