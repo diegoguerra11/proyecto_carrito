@@ -32,8 +32,10 @@ const listar_productos_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
     let filtro = req.params['filtro'];
 
-    let reg = await Producto.find({titulo: new RegExp(filtro, 'i')});
-    res.status(200).send({data: reg});
+    let reg = Promise.resolve(Producto.find({titulo: new RegExp(filtro, 'i')}));
+    reg.then(reg => res.status(200).send({data: reg}));
+    
+    
 }
 
 const obtener_portada = async function(req,res){
@@ -56,9 +58,8 @@ const obtener_producto_admin = async function (req,res){
     let id = req.params['id'];
 
     try {
-        let reg = await Producto.findById({_id:id});
-
-        res.status(200).send({data:reg});
+        let reg = Promise.resolve(Producto.findById({_id:id}));
+        reg.then(reg => res.status(200).send({data: reg}));
     } catch (error) {
         res.status(200).send({message:'No se encontró el producto', data:undefined});
     }
@@ -77,7 +78,7 @@ const actualizar_producto_admin = async function (req,res){
         let portada_name = name [2];
 
         
-        reg = await Producto.findByIdAndUpdate({_id:id},{
+        reg = Promise.resolve(Producto.findByIdAndUpdate({_id:id},{
             titulo: data.titulo,
             stock: data.stock,
             precio: data.precio,
@@ -85,29 +86,37 @@ const actualizar_producto_admin = async function (req,res){
             descripcion: data.descripcion,
             contenido:data.contenido,
             portada: portada_name
-        });
+        }));
 
-        fs.stat('./uploads/productos/'+reg.portada, function(err){
-            if (!err) {
-                fs.unlink('./uploads/productos/'+reg.portada, (error) => {
-                    if (error) throw error;
-                });
+        reg.then(reg =>{
+            
+            fs.stat('./uploads/productos/'+reg.portada, function(err){
+                if (!err) {
+                    fs.unlink('./uploads/productos/'+reg.portada, (error) => {
+                        if (error) throw error;
+                    });
+                }
             }
-        })
+            );
+            res.status(200).send({data:reg});
+        });
+        
 
        
     }else{
+       
         //No HAY IMAGEN
-        reg = await Producto.findByIdAndUpdate({_id:id},{
+        reg = Promise.resolve(Producto.findByIdAndUpdate({_id:id},{
             titulo: data.titulo,
             stock: data.stock,
             precio: data.precio,
             categoria: data.categoria,
             descripcion: data.descripcion,
             contenido:data.contenido,
-        });
+        }));
+        reg.then(reg => res.status(200).send({data:reg}));
     }
-    res.status(200).send({data:reg});
+   
 }
 
 const eliminar_producto_admin = async function (req,res){

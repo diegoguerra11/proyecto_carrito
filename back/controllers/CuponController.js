@@ -100,16 +100,17 @@ const disminuir_cupon = async function(req, res){
     if(cupon == undefined){return;}
 
     let data = await Cupon.findOne({codigo:cupon});
-
+    if(data){
     let id = data._id;
     let reg = await Cupon.findByIdAndUpdate({_id:id,},{
         codigo : data.codigo,
         tipo: data.tipo,
         valor: data.valor,
         limite: (data.limite -1)
-    });
+        
+    }); res.status(200).send({data:reg});    }
 
-    res.status(200).send({data:reg});     
+     
 }
 
 module.exports = {

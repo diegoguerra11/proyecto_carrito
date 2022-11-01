@@ -305,7 +305,7 @@ const cambiar_vs_producto_admin = async function(req,res){
 const enviar_email = async function(venta, motivo) {
     let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
     let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
-
+    console.log(dventa);
     switch(motivo){
         case 'confirmar_pedido':
             mail.enviar_correo(
@@ -328,7 +328,7 @@ const enviar_email = async function(venta, motivo) {
             mail.enviar_correo(
                 orden, 
                 dventa, 
-                '/mails/email_enviado.html', 
+                '/mails/email_compra.html', 
                 'Confirmación de compra ' + orden._id
             );
             break;

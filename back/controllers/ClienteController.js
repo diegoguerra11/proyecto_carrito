@@ -387,7 +387,7 @@ const enviar_email = async function(venta, motivo) {
             mail.enviar_correo(
                 orden, 
                 dventa, 
-                '/mails/email_pedido.html', 
+                '/mails/email_compra.html', 
                 'Confirmación de compra ' + orden._id,
             );
             break;

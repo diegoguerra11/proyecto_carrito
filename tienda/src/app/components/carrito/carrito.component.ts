@@ -114,6 +114,11 @@ export class CarritoComponent implements OnInit {
 
 
   generar_pedido(){
+
+    if (!this.direccion_principal){
+      this._router.navigate(['/cuenta/direcciones/']);
+      return MessageBox.messageError("Debe tener una dirección de envio registrada");
+    }                                                                         
     this.venta.transaccion = 'Venta pedido';
     if(this.currency != 'PEN'){
       this.venta.currency = 'USD';
@@ -135,7 +140,15 @@ export class CarritoComponent implements OnInit {
     this._guestService.registro_pedido_compra_cliente(this.venta,this.token).subscribe(
       response=>{
         this.btn_load = false;
+        console.log();
+        this._clienteService.disminuir_cupon(response.data["cupon"], this.token).subscribe(
+          response=>{
+            console.log("miau");
+            console.log(response);
+          }
+        );
         if(!response.data){return MessageBox.messageError(response.data.message);}
+        
         this._router.navigate(['/cuenta/pedidos/',response.data._id]);
       }
     );
@@ -156,6 +169,10 @@ export class CarritoComponent implements OnInit {
   }
 
   get_token_mercado_pago(){
+    if(!this.direccion_principal){
+      this._router.navigate(['/cuenta/direcciones/']);
+      return MessageBox.messageError("Debe registrar una dirección de envío");
+    }
     this._guestService.comprobar_carrito_cliente({detalles:this.dventa},this.token).subscribe(
       (response: any)=>{
         if(!response.venta){
@@ -323,8 +340,10 @@ export class CarritoComponent implements OnInit {
   }
 
   select_direccion_envio(item:any){
+    
     this.envio_gratis = false;
     let direccion = item;
+    if(!direccion){return;}
     if(direccion.pais == 'Perú'){
       if(direccion.region == 'Lima'){
         this.envio = 10;
