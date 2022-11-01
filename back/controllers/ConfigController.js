@@ -32,8 +32,8 @@ const actualizar_config_admin = async function(req,res){
 
         fs.stat('./uploads/configuraciones/'+reg.logo, function(err){
             if(!err){
-                fs.unlink('./uploads/configuraciones/'+reg.logo, (err)=>{
-                    if(err) throw err;
+                fs.unlink('./uploads/configuraciones/'+reg.logo, (error)=>{
+                    if(error) throw error;
                 });
             }
         }); 

@@ -9,10 +9,7 @@ let jwt = require('../helpers/jwt');
 let Variedad = require('../models/Variedad');
 let Direccion = require("../models/direccion");
 let Producto = require("../models/producto");
-let nodemailer = require("nodemailer");
-let fs = require('fs');
-let ejs = require('ejs');
-let handlebars = require('handlebars');
+let mail = require('../helpers/mail');
 
 const registro_cliente = async function(req,res){
     try {
@@ -75,22 +72,19 @@ const registro_cliente_admin = async function(req,res){
     let data = req.body;
     
     bcrypt.hash('123456789',null,null, async function(err,hash){
-        if(!hash){
-            res.status(200).send({message:'Hubo un error en el servidor',data:undefined});
-        }
+        if(!hash){res.status(200).send({message:'Hubo un error en el servidor',data:undefined});}
+        
         data.password = hash;
+
         let existeNdoc = await Cliente.findOne({numeroDocumento: data.numeroDocumento});
 
-        if(existeNdoc){
-            return res.status(200).send({data: undefined});
-        }
+        if(existeNdoc){return res.status(200).send({data: undefined});}
         
         let reg = await Cliente.create(data);
-        res.status(200).send({data:reg});
-        
+
+        res.status(200).send({data:reg});     
     });
 }
-   
 
 const obtener_cliente_admin = async function (req,res){
     if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
@@ -99,6 +93,7 @@ const obtener_cliente_admin = async function (req,res){
 
     try {
         let reg = await Cliente.findById({_id:id});
+
         res.status(200).send({data: reg});
     } catch (error) {
         res.status(200).send({data:undefined});
@@ -111,16 +106,7 @@ const actualizar_cliente_admin = async function(req,res){
     let id = req.params['id'];
     let data = req.body;
 
-    let reg = await Cliente.findByIdAndUpdate({_id:id},{
-        nombres: data.nombres,
-        apellidos: data.apellidos,
-        email: data.email,
-        telefono:data.telefono,
-        f_nacimiento: data.f_nacimiento,
-        numeroDocumento: data.numeroDocumento,
-        tipoDocumento: data.tipoDocumento,
-        genero: data.genero
-    });
+    let reg = await actualizar_cliente(id, data);
 
     res.status(200).send({data:reg});
 }
@@ -153,40 +139,19 @@ const actualizar_perfil_cliente_guest = async function(req,res){
     if(!req.user){return  res.status(500).send({message: 'NoAccess'});}
     let id = req.params['id'];
     let data = req.body;
-    let reg;
+    
+    let reg = await actualizar_cliente(id, data);
 
     if (data.password) {
         bcrypt.hash(data.password,null,null, async function(err,hash){
-             reg = await Cliente.findByIdAndUpdate({_id:id},{
-                nombres: data.nombres,
-                apellidos: data.apellidos,
-                telefono: data.telefono,
-                f_nacimiento: data.f_nacimiento,
-                numeroDocumento: data.numeroDocumento,
-                tipoDocumento: data.tipoDocumento,
-                genero: data.genero,
-                pais: data.pais,
+            reg = await Cliente.findByIdAndUpdate({_id:id},{
                 password: hash,
             }); 
-            res.status(200).send({data:reg});
         });
-
-    } else {
-         reg = await Cliente.findByIdAndUpdate({_id:id},{
-            nombres: data.nombres,
-            apellidos: data.apellidos,
-            telefono: data.telefono,
-            f_nacimiento: data.f_nacimiento,
-            numeroDocumento: data.numeroDocumento,
-            tipoDocumento: data.tipoDocumento,
-            genero: data.genero,
-            pais: data.pais,
-        });
-        res.status(200).send({data:reg});
     }
 
-    }
-
+    res.status(200).send({data:reg});
+}
 
 /*********************************************************ORDENES********************************************/
 
@@ -224,7 +189,8 @@ const registro_pedido_compra_cliente = async function(req, res) {
         await Carrito.deleteMany({cliente:data.cliente});
     }
 
-    enviar_orden_pedido(venta._id);
+    enviar_email(venta._id, 'enviar_pedido');
+
     res.status(200).send({data:venta});
 }
 
@@ -355,6 +321,7 @@ const listar_productos_recomendados_publico = async function(req,res){
     let reg = await Producto.find({categoria: categoria,estado:'Publicado'}).sort({createdAt:-1}).limit(8);
     res.status(200).send({data: reg});
 }
+
 const registro_compra_cliente = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -389,124 +356,55 @@ const registro_compra_cliente = async function(req,res){
         await Carrito.remove({cliente:data.cliente});
     }
 
-    enviar_orden_compra(venta._id);
+    enviar_email(venta._id, 'enviar_compra');
 
     res.status(200).send({data:venta});
+}
 
-}
-const enviar_orden_compra = async function(venta){
-    try {
-        let readHTMLFile = function(path, callback) {
-            fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                if (err) {
-                    callback(err);
-                    throw err;
-                }
-                else {
-                    callback(null, html);
-                }
-            });
-        };
-    
-        let transporter = nodemailer.createTransport(({
-            service: 'gmail',
-            host: 'smtp.gmail.com',
-            auth: {
-                user: 'renzo.carrascom@gmail.com',
-                pass: 'mjqzblcffaegvdzm'
-            }
-        }));
-    
-     
-        let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
-        let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
-    
-    
-        readHTMLFile(process.cwd() + '/mails/email_compra.html', (err, html)=>{
-                                
-            let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
-            console.log(orden);
-            let template = handlebars.compile(rest_html);
-            let htmlToSend = template({op:true});
-    
-            let mailOptions = {
-                from: 'renzo.carrascom@gmail.com',
-                to: orden.cliente.email,
-                subject: 'Confirmación de compra ' + orden._id,
-                html: htmlToSend
-            };
-          
-            transporter.sendMail(mailOptions, function(error, info){
-                if (!error) {
-                    console.log('Email sent: ' + info.response);
-                }
-            });
-        
-        });
-    } catch (error) {
-        console.log(error);
-    }
-}
-const enviar_orden_pedido = async function(venta){
-    try {
-        let readHTMLFile = function(path, callback) {
-            fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                if (err) {
-                    console.log("Error");
-                    callback(err);
-                    throw err;
-                }
-                else {
-                    callback(null, html);
-                }
-            });
-        };
-        
-        let transporter = nodemailer.createTransport(({
-            service: 'gmail',
-            host: 'smtp.gmail.com',
-            auth: {
-                user: 'renzo.carrascom@gmail.com',
-                pass: 'mjqzblcffaegvdzm'
-            }
-        }));
-    
-     
-        let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
-        let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
-    
-    
-        readHTMLFile(process.cwd() + '/mails/email_pedido.html', (err, html)=>{
-                                
-            let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
-            console.log(orden);
-            let template = handlebars.compile(rest_html);
-            let htmlToSend = template({op:true});
-    
-            let mailOptions = {
-                from: 'renzo.carrascom@gmail.com',
-                to: orden.cliente.email,
-                subject: 'Gracias por tu Orden ',
-                html: htmlToSend
-            };
-          
-            transporter.sendMail(mailOptions, function(error, info){
-                if (!error) {
-                    console.log('Email sent: ' + info.response);
-                }
-            });
-        
-        });
-    } catch (error) {
-        console.log(error);
-    }
-}
 const consultarIDPago = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
-
+    
     let id = req.params['id'];
     let ventas = await Venta.find({transaccion:id});
     res.status(200).send({data:ventas});
+}
+
+const enviar_email = async function(venta, motivo) {
+    let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
+    let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
+
+    switch(motivo){
+        case 'enviar_pedido':
+            mail.enviar_correo(
+                orden, 
+                dventa, 
+                '/mails/email_pedido.html', 
+                'Gracias por tu Orden '
+            );
+    
+            break;
+        case 'enviar_compra':
+            mail.enviar_correo(
+                orden, 
+                dventa, 
+                '/mails/email_pedido.html', 
+                'Confirmación de compra ' + orden._id,
+            );
+            break;
+    }
+}
+
+const actualizar_cliente = async function (id, data) { 
+    return  Cliente.findByIdAndUpdate({_id:id},{
+        nombres: data.nombres,
+        apellidos: data.apellidos,
+        telefono: data.telefono,
+        f_nacimiento: data.f_nacimiento,
+        numeroDocumento: data.numeroDocumento,
+        tipoDocumento: data.tipoDocumento,
+        genero: data.genero,
+        pais: data.pais,
+    }); 
 }
 
 module.exports = {

@@ -7,10 +7,7 @@ let Producto = require('../models/producto');
 let Dventa = require('../models/Dventa');
 let bcrypt = require('bcrypt-nodejs');
 let jwt = require('../helpers/jwt');
-let nodemailer = require("nodemailer");
-let fs = require('fs');
-let ejs = require('ejs');
-let handlebars = require('handlebars');
+let mail = require('../helpers/mail');
 
 const registro_admin = async function(req, res){
     let data = req.body;
@@ -141,7 +138,7 @@ const marcar_envio_orden = async function(req,res){
         estado: 'Enviado'
     });
 
-    mail_confirmar_envio(id);
+    enviar_email(venta._id, 'confirmar_envio');
 
     res.status(200).send({data:venta});
 }
@@ -178,60 +175,6 @@ const confirmar_pago_orden = async function(req,res) {
     res.status(200).send({data:venta});
 }
 
-const mail_confirmar_envio = async function(venta){
-    try {
-        let readHTMLFile = function(path, callback) {
-            fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                if (err) {
-                    callback(err);
-                    throw err;
-                }
-                else {
-                    callback(null, html);
-                }
-            });
-        };
-    
-        let transporter = nodemailer.createTransport(({
-            service: 'gmail',
-            host: 'smtp.gmail.com',
-            auth: {
-                user: 'renzo.carrascom@gmail.com',
-                pass: 'mjqzblcffaegvdzm'
-            }
-        }));
-    
-     
-        let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
-        let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
-    
-    
-        readHTMLFile(process.cwd() + '/mails/email_enviado.html', (err, html)=>{
-                                
-            let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
-    
-            let template = handlebars.compile(rest_html);
-            let htmlToSend = template({op:true});
-    
-            let mailOptions = {
-                from: 'renzo.carrascom@gmail.com',
-                to: orden.cliente.email,
-                subject: 'Tu pedido ' + orden._id + ' fué enviado',
-                html: htmlToSend
-            };
-          
-            transporter.sendMail(mailOptions, function(error, info){
-                if (!error) {
-                    console.log('Email sent: ' + info.response);
-                }
-            });
-        
-        });
-    } catch (error) {
-        console.log(error);
-    }
-}
-
 const eliminar_variedad_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -245,9 +188,7 @@ const agregar_nueva_variedad_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
     let data = req.body;
-
-        console.log(data);
-        let reg = await Variedad.create(data);
+    let reg = await Variedad.create(data);
 
     res.status(200).send({data:reg});
 }
@@ -299,64 +240,9 @@ const registro_compra_manual_cliente = async function(req,res){
         });
     }
 
-    enviar_orden_compra(venta._id);
+    enviar_email(venta._id, 'confirmar_compra');
 
     res.status(200).send({venta:venta});
-}
-
-const enviar_orden_compra = async function(venta){
-    try {
-        let readHTMLFile = function(path, callback) {
-            fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                if (err) {
-                    console.log(err);
-                    callback(err);
-                    throw err;
-                }
-                else {
-                    callback(null, html);
-                }
-            });
-        };
-    
-        let transporter = nodemailer.createTransport(({
-            service: 'gmail',
-            host: 'smtp.gmail.com',
-            auth: {
-                user: 'renzo.carrascom@gmail.com',
-                pass: 'mjqzblcffaegvdzm'
-            }
-        }));
-    
-     
-        let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
-        let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
-    
-    
-        readHTMLFile(process.cwd() + '/mails/email_compra.html', (err, html)=>{
-                                
-            let rest_html = ejs.render(html, {orden: orden, dventa:dventa});
-    
-            let template = handlebars.compile(rest_html);
-            let htmlToSend = template({op:true});
-    
-            let mailOptions = {
-                from: 'renzo.carrascom@gmail.com',
-                to: orden.cliente.email,
-                subject: 'Confirmación de compra ' + orden._id,
-                html: htmlToSend
-            };
-          
-            transporter.sendMail(mailOptions, function(error, info){
-                if (!error) {
-                    console.log('Email sent: ' + info.response);
-                }
-            });
-        
-        });
-    } catch (error) {
-        console.log(error);
-    }
 }
 
 const pedido_compra_cliente = async function(req,res){
@@ -386,32 +272,66 @@ const pedido_compra_cliente = async function(req,res){
             await Carrito.remove({cliente:data.cliente});
         }
         
-        enviar_email_pedido_compra(venta._id);
-        
+        enviar_email(venta._id, 'confirmar_pedido');
+
         res.status(200).send({venta:venta});
     } catch (error) {
         res.status(200).send({message:'Error server', data:undefined});
     }
 }
 
+
 const cambiar_vs_producto_admin = async function(req,res){
     if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
-
+    
     let id = req.params['id'];
     let estado = req.params['estado'];
-
+    
     try {
         switch(estado){
             case 'Edicion':
                 await Producto.findByIdAndUpdate({_id:id},{estado:'Publicado'});
-            break;
+                break;
             case 'Publicado':
                 await Producto.findByIdAndUpdate({_id:id},{estado:'Edicion'});
-            break;
+                break;
+            }
+            res.status(200).send({data:true});
+        } catch (error) {
+            res.status(200).send({data:undefined});
         }
-        res.status(200).send({data:true});
-    } catch (error) {
-        res.status(200).send({data:undefined});
+    }
+    
+const enviar_email = async function(venta, motivo) {
+    let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
+    let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
+
+    switch(motivo){
+        case 'confirmar_pedido':
+            mail.enviar_correo(
+                orden, 
+                dventa, 
+                '/mails/email_pedido.html', 
+                'Confirmación del pedido' + orden._id
+            );
+            break;
+        case 'confirmar_envio':
+            mail.enviar_correo(
+                orden, 
+                dventa, 
+                '/mails/email_enviado.html', 
+                'Tu pedido ' + orden._id + ' fué enviado'
+            );
+    
+            break;
+        case 'confirmar_compra':
+            mail.enviar_correo(
+                orden, 
+                dventa, 
+                '/mails/email_enviado.html', 
+                'Confirmación de compra ' + orden._id
+            );
+            break;
     }
 }
 
@@ -426,7 +346,6 @@ module.exports ={
     marcar_envio_orden,
     eliminar_orden_admin,
     marcar_finalizado_orden,
-    mail_confirmar_envio,
     agregar_nueva_variedad_admin, 
     eliminar_variedad_admin,
     registro_compra_manual_cliente,

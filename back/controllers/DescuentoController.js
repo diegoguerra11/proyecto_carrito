@@ -77,8 +77,8 @@ const actualizar_descuento_admin = async function(req,res){
 
         fs.stat('./uploads/descuentos/'+reg.banner, function(err){
             if(!err){
-                fs.unlink('./uploads/descuentos/'+reg.banner, (err)=>{
-                    if(err) throw err;
+                fs.unlink('./uploads/descuentos/'+reg.banner, (error)=>{
+                    if(error) throw error;
                 });
             }
         })

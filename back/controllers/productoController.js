@@ -89,8 +89,8 @@ const actualizar_producto_admin = async function (req,res){
 
         fs.stat('./uploads/productos/'+reg.portada, function(err){
             if (!err) {
-                fs.unlink('./uploads/productos/'+reg.portada, (err)=>{
-                    if (err) throw err;
+                fs.unlink('./uploads/productos/'+reg.portada, (error) => {
+                    if (error) throw error;
                 });
             }
         })
