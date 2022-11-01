@@ -12,38 +12,39 @@ let mail = require('../helpers/mail');
 const registro_admin = async function(req, res){
     let data = req.body;
 
-    let existe_correo = await Admin.exists({email: data.email});
-
     if(!data.password){return res.status(200).send({message:'El campo contraseña es obligatorio', data:undefined});}
-    if(existe_correo){return res.status(200).send({message:'El correo ya existe en la base de datos', data:undefined});}
 
-    bcrypt.hash(data.password,null,null, async function(err,hash){
-        if(!hash){return res.status(500).send({message:'ErrorServer', data:undefined});}
-        data.password = hash;
-        let reg = await Admin.create(data);
-        res.status(200).send({data:reg});
+    let existe_correo = Promise.resolve(Admin.exists({email: data.email}));
+
+    existe_correo.then(existe => {
+        if(existe){return res.status(200).send({message:'El correo ya existe en la base de datos', data:undefined});}
+
+        bcrypt.hash(data.password,null,null, async function(err,hash){
+            if(!hash){return res.status(500).send({message:'ErrorServer', data:undefined});}
+            data.password = hash;
+            let reg = await Admin.create(data);
+            res.status(200).send({data:reg});
+        });
     });
 }
 
 const login_admin = async function(req, res){
     let data = req.body;
-    let admin_arr = [];
 
-    admin_arr = await Admin.find({email:data.email});
+    let buscar_admin = Promise.resolve(Admin.findOne({email:data.email}));
 
-    if(admin_arr.length == 0){return res.status(200).send({message: 'No se encontro el correo', data:undefined});}  
-    
-    //LOGIN
-    let user = admin_arr[0];
+    buscar_admin.then(admin => {
+        if(!admin){return res.status(200).send({message: 'No se encontro el correo', data:undefined});}  
 
-    bcrypt.compare(data.password,user.password,async function(error, check){
-        if(!check){return res.status(500).send({message: 'La contraseña no coincide', data: undefined});}
+        bcrypt.compare(data.password, admin.password,async function(error, check){
+            if(!check){return res.status(500).send({message: 'La contraseña no coincide', data: undefined});}
 
-        res.status(200).send({
-            data:user,
-            token: jwt.createToken(user)
+            res.status(200).send({
+                data: admn,
+                token: jwt.createToken(user)
+            });
         });
-    });
+    });  
  } 
 
  const obtener_ventas_admin  = async function(req,res){
@@ -52,40 +53,47 @@ const login_admin = async function(req, res){
     let desde = req.params['desde'];
     let hasta = req.params['hasta'];
     
-    let ventas = await Venta.find().populate('cliente').populate('direccion').sort({createdAt:-1});
+    let buscar_ventas = Promise.resolve(Venta.find().populate('cliente').populate('direccion').sort({createdAt:-1}));
 
-    if(desde != 'undefined' && hasta != 'undefined'){
-        let ventas_fecha = []
-        let tt_desde = Date.parse(new Date(desde +'T00:00:00'))/1000;
-        let tt_hasta = Date.parse(new Date(hasta +'T00:00:00'))/1000;
-
-        for(let item of tem_ventas){
-            let tt_created = Date.parse(new Date(item.createdAt))/1000;
-             if(tt_created >= tt_desde && tt_created <= tt_hasta){
-                ventas_fecha.push(item);
+    buscar_ventas.then(ventas => {
+        if(desde != 'undefined' && hasta != 'undefined'){
+            let ventas_fecha = []
+            let tt_desde = Date.parse(new Date(desde +'T00:00:00'))/1000;
+            let tt_hasta = Date.parse(new Date(hasta +'T00:00:00'))/1000;
+    
+            for(let item of ventas){
+                let tt_created = Date.parse(new Date(item.createdAt))/1000;
+                 if(tt_created >= tt_desde && tt_created <= tt_hasta){
+                    ventas_fecha.push(item);
+                }
             }
+    
+            return res.status(200).send({data: ventas_fecha});
         }
-
-        return res.status(200).send({data: ventas_fecha});
-    }
-
-    res.status(200).send({data: ventas});
+    
+        res.status(200).send({data: ventas});
+    });
 }
 
 const listar_variedades_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
     let id = req.params['id'];
-    let data = await Variedad.find({producto:id});
-   
-    res.status(200).send({data: data});
+    let buscar_variedades = Promise.resolve(Variedad.find({producto:id}));
+
+    buscar_variedades.then(data => {
+        res.status(200).send({data: data});
+    });
 }
 
 const listar_variedades_productos_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});} 
 
-    let productos = await Variedad.find().populate('producto');
-    res.status(200).send({data: productos});
+    let buscar_vars_prod = Promise.resolve( Variedad.find().populate('producto'));
+
+    buscar_vars_prod.then(vars_prod => {
+        res.status(200).send({data: vars_prod});
+    });
 }
 
 //venta
@@ -94,14 +102,16 @@ const obtener_detalles_ordenes_cliente  = async function(req,res){
     
     let id = req.params['id'];
 
-    try {
-        let venta = await Venta.findById({_id:id}).populate('direccion').populate('cliente');
-        let detalles = await Dventa.find({venta: venta._id}).populate('producto').populate('variedad');
-        res.status(200).send({data:venta, detalles:detalles});
-
-    } catch (error) {
-        res.status(200).send({message:'Error server', data:undefined});
-    }
+    let buscar_venta = Promise.resolve(Venta.findById({_id:id}).populate('direccion').populate('cliente'));
+        
+    buscar_venta.then(venta => {
+        let buscar_detalles = Promise.resolve(Dventa.find({venta: venta._id}).populate('producto').populate('variedad'));
+        
+        buscar_detalles.then(detalles => {
+            res.status(200).send({data:venta, detalles:detalles});
+        });
+    })
+    .catch(res.status(200).send({message:'Error server', data:undefined}));
 }
 
 const marcar_finalizado_orden = async function(req,res){
@@ -109,22 +119,26 @@ const marcar_finalizado_orden = async function(req,res){
    
     let id = req.params['id'];
 
-    let venta = await Venta.findByIdAndUpdate({_id:id}, {
+    let buscar_venta = Promise.resolve( Venta.findByIdAndUpdate({_id:id}, {
         estado: 'Finalizado'
-    });
+    }));
 
-    res.status(200).send({data:venta});
+    buscar_venta.then(
+        venta => {res.status(200).send({data:venta});}
+    );
 }
 
 const eliminar_orden_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     let id = req.params['id'];
 
-    let venta = await Venta.findOneAndRemove({_id:id});
+    let buscar_venta = Promise.resolve(Venta.findOneAndRemove({_id:id}));
 
-    await Dventa.remove({venta:id});
-
-    res.status(200).send({data:venta});
+    buscar_venta.then(venta =>{
+        Promise.resolve(Dventa.remove({venta:id})).then(    
+            res.status(200).send({data:venta})
+        );
+    });
 }
 
 const marcar_envio_orden = async function(req,res){
@@ -133,14 +147,15 @@ const marcar_envio_orden = async function(req,res){
     let id = req.params['id'];
     let data = req.body;
 
-    let venta = await Venta.findByIdAndUpdate({_id:id},{
+    let buscar_venta = Promise.resolve(Venta.findByIdAndUpdate({_id:id},{
         tracking: data.tracking,
         estado: 'Enviado'
+    }));
+
+    buscar_venta.then(venta => {
+        enviar_email(venta._id, 'confirmar_envio');
+        res.status(200).send({data:venta});
     });
-
-    enviar_email(venta._id, 'confirmar_envio');
-
-    res.status(200).send({data:venta});
 }
 
 const confirmar_pago_orden = async function(req,res) {
@@ -148,31 +163,35 @@ const confirmar_pago_orden = async function(req,res) {
     
     let id = req.params['id'];
 
-    let venta = await Venta.findByIdAndUpdate({_id:id},{
+    let buscar_venta = Promise.resolve(Venta.findByIdAndUpdate({_id:id},{
         estado: 'Procesando'
-    });
+    }));
 
-    let detalles = await Dventa.find({venta:id});
+    buscar_venta.then(venta => {
+        let buscar_detalles = Promise.resolve+ Dventa.find({venta:id});
 
-    for(let element of detalles){
-        let element_producto = await Producto.findById({_id:element.producto});
-        let new_stock = element_producto.stock - element.cantidad;
-        let new_ventas = element_producto.nventas + 1;
-
-        let element_variedad = await Variedad.findById({_id:element.variedad});
-        let new_stock_variedad = element_variedad.stock - element.cantidad;
-
-        await Producto.findByIdAndUpdate({_id: element.producto},{
-            stock: new_stock,
-            nventas: new_ventas
+        buscar_detalles.then(detalles => {
+            for(let element of detalles){
+                let element_producto = Promise.resolve(Producto.findById({_id:element.producto}));
+                let new_stock = element_producto.stock - element.cantidad;
+                let new_ventas = element_producto.nventas + 1;
+        
+                let element_variedad = Promise.resolve(Variedad.findById({_id:element.variedad}));
+                let new_stock_variedad = element_variedad.stock - element.cantidad;
+        
+                Promise.resolve(Producto.findByIdAndUpdate({_id: element.producto},{
+                    stock: new_stock,
+                    nventas: new_ventas
+                })).then(
+                    Promise.resolve(Variedad.findByIdAndUpdate({_id: element.variedad},{
+                        stock: new_stock_variedad,
+                    })).then( 
+                        res.status(200).send({data:venta})
+                    )
+                );
+            } 
         });
-
-        await Variedad.findByIdAndUpdate({_id: element.variedad},{
-            stock: new_stock_variedad,
-        });
-    }
-
-    res.status(200).send({data:venta});
+    })
 }
 
 const eliminar_variedad_admin = async function(req,res){
@@ -180,17 +199,22 @@ const eliminar_variedad_admin = async function(req,res){
     
     let id = req.params['id'];
 
-    let reg = await Variedad.findByIdAndRemove({_id:id});
-    res.status(200).send({data:reg});
+    let buscar_var = Promise.resolve(Variedad.findByIdAndRemove({_id:id}));
+
+    buscar_var.then(reg => {
+        res.status(200).send({data:reg});
+    });
 }
 
 const agregar_nueva_variedad_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
     let data = req.body;
-    let reg = await Variedad.create(data);
+    let crear_variedad = Promise.resolve(Variedad.create(data));
 
-    res.status(200).send({data:reg});
+    crear_variedad.then(reg => {
+        res.status(200).send({data:reg});
+    });
 }
 
 const actualizar_producto_variedades_admin = async function(req,res){
@@ -199,11 +223,13 @@ const actualizar_producto_variedades_admin = async function(req,res){
     let id = req.params['id'];
     let data = req.body;
 
-    let reg = await Producto.findByIdAndUpdate({_id:id},{
+    let actualizar_prod = Promise.resolve(Producto.findByIdAndUpdate({_id:id},{
         titulo_variedad: data.titulo_variedad,
-    });
+    }));
 
-    res.status(200).send({data:reg});
+    actualizar_prod.then(prod => {
+        res.status(200).send({data:prod});
+    });
 }
 
 const registro_compra_manual_cliente = async function(req,res){
@@ -212,37 +238,38 @@ const registro_compra_manual_cliente = async function(req,res){
     let data = req.body;
     let detalles = data.detalles;
 
-        data.estado = 'Procesando';
+    data.estado = 'Procesando';
+    
+    let crear_venta = await Venta.create(data);
+
+    crear_venta.then(venta => {   
+        for(let element of detalles){
+            element.venta = venta._id;
+            element.cliente = venta.cliente;
+            Promise.resolve(Dventa.create(element)).then(() => {
+                let element_producto = Promise.resolve(Producto.findById({_id:element.producto}));
+                let new_stock = element_producto.stock - element.cantidad;
+                let new_ventas = element_producto.nventas + 1;
         
-        console.log(data);
+                let element_variedad = Promise.resolve(Variedad.findById({_id:element.variedad}));
+                let new_stock_variedad = element_variedad.stock - element.cantidad;
+        
+                Promise.resolve(Producto.findByIdAndUpdate({_id: element.producto},{
+                    stock: new_stock,
+                    nventas: new_ventas
+                })).then(
+                    Promise.resolve(Variedad.findByIdAndUpdate({_id: element.variedad},{
+                        stock: new_stock_variedad,
+                    }))
+                );  
+            });
 
-        let venta = await Venta.create(data);
-
-    for(let element of detalles){
-        element.venta = venta._id;
-        element.cliente = venta.cliente;
-        await Dventa.create(element);
-
-        let element_producto = await Producto.findById({_id:element.producto});
-        let new_stock = element_producto.stock - element.cantidad;
-        let new_ventas = element_producto.nventas + 1;
-
-        let element_variedad = await Variedad.findById({_id:element.variedad});
-        let new_stock_variedad = element_variedad.stock - element.cantidad;
-
-        await Producto.findByIdAndUpdate({_id: element.producto},{
-            stock: new_stock,
-            nventas: new_ventas
-        });
-
-        await Variedad.findByIdAndUpdate({_id: element.variedad},{
-            stock: new_stock_variedad,
-        });
-    }
-
-    enviar_email(venta._id, 'confirmar_compra');
-
-    res.status(200).send({venta:venta});
+        
+        }
+        enviar_email(venta._id, 'confirmar_compra');
+    
+        res.status(200).send({venta:venta});
+    });
 }
 
 const pedido_compra_cliente = async function(req,res){
@@ -254,27 +281,31 @@ const pedido_compra_cliente = async function(req,res){
         let producto_sl = '';
 
         for(let item of detalles){
-            let variedad = await Variedad.findById({_id:item.variedad}).populate('producto');
-            if(variedad.stock < item.cantidad){
-                access = true;
-                producto_sl = variedad.producto.titulo;
-            }
+            let buscar_variedad = Promise.resolve(Variedad.findById({_id:item.variedad}).populate('producto'));
+            buscar_variedad.then(variedad => {
+                if(variedad.stock < item.cantidad){
+                    access = true;
+                    producto_sl = variedad.producto.titulo;
+                }
+            });
         }
 
         if(access) {return res.status(200).send({venta:undefined,message:'Stock insuficiente para ' + producto_sl});}
         
         data.estado = 'En espera';
-        let venta = await Venta.create(data);
+        let crear_venta = Promise.resolve(Venta.create(data));
 
-        for(let element of detalles){
-            element.venta = venta._id;
-            await Dventa.create(element);
-            await Carrito.remove({cliente:data.cliente});
-        }
-        
-        enviar_email(venta._id, 'confirmar_pedido');
-
-        res.status(200).send({venta:venta});
+        crear_venta.then(venta => {
+            for(let element of detalles){
+                element.venta = venta._id;
+                Promise.resolve(Dventa.create(element)).then(
+                    Promise.resolve(Carrito.remove({cliente:data.cliente}))
+                );
+            }
+            enviar_email(venta._id, 'confirmar_pedido');
+    
+            res.status(200).send({venta:venta});
+        });
     } catch (error) {
         res.status(200).send({message:'Error server', data:undefined});
     }
@@ -290,49 +321,54 @@ const cambiar_vs_producto_admin = async function(req,res){
     try {
         switch(estado){
             case 'Edicion':
-                await Producto.findByIdAndUpdate({_id:id},{estado:'Publicado'});
+                Promise.resolve(Producto.findByIdAndUpdate({_id:id},{estado:'Publicado'}));
                 break;
             case 'Publicado':
-                await Producto.findByIdAndUpdate({_id:id},{estado:'Edicion'});
+                Promise.resolve(Producto.findByIdAndUpdate({_id:id},{estado:'Edicion'}));
                 break;
-            }
-            res.status(200).send({data:true});
-        } catch (error) {
-            res.status(200).send({data:undefined});
         }
+        res.status(200).send({data:true});
+    } catch (error) {
+        res.status(200).send({data:undefined});
     }
+}
     
 const enviar_email = async function(venta, motivo) {
-    let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
-    let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
-    console.log(dventa);
-    switch(motivo){
-        case 'confirmar_pedido':
-            mail.enviar_correo(
-                orden, 
-                dventa, 
-                '/mails/email_pedido.html', 
-                'Confirmación del pedido' + orden._id
-            );
-            break;
-        case 'confirmar_envio':
-            mail.enviar_correo(
-                orden, 
-                dventa, 
-                '/mails/email_enviado.html', 
-                'Tu pedido ' + orden._id + ' fué enviado'
-            );
+    let buscar_orden = Promise.resolve(Venta.findById({_id:venta}).populate('cliente').populate('direccion'));
     
-            break;
-        case 'confirmar_compra':
-            mail.enviar_correo(
-                orden, 
-                dventa, 
-                '/mails/email_compra.html', 
-                'Confirmación de compra ' + orden._id
-            );
-            break;
-    }
+    buscar_orden.then(orden => {
+        let buscar_dventa = Promise.resolve(Dventa.find({venta:venta}).populate('producto').populate('variedad'));
+
+        buscar_dventa.then(dventa => {
+            switch(motivo){
+                case 'confirmar_pedido':
+                    mail.enviar_correo(
+                        orden, 
+                        dventa, 
+                        '/mails/email_pedido.html', 
+                        'Confirmación del pedido' + orden._id
+                    );
+                    break;
+                case 'confirmar_envio':
+                    mail.enviar_correo(
+                        orden, 
+                        dventa, 
+                        '/mails/email_enviado.html', 
+                        'Tu pedido ' + orden._id + ' fué enviado'
+                    );
+            
+                    break;
+                case 'confirmar_compra':
+                    mail.enviar_correo(
+                        orden, 
+                        dventa, 
+                        '/mails/email_compra.html', 
+                        'Confirmación de compra ' + orden._id
+                    );
+                    break;
+            }
+        });
+    }); 
 }
 
 module.exports ={

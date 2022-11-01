@@ -1,6 +1,7 @@
 let Descuento = require('../models/descuento');
 let fs = require('fs');
 let path = require('path');
+const descuento = require('../models/descuento');
 
 const registro_descuento_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
@@ -12,9 +13,11 @@ const registro_descuento_admin = async function(req,res){
     let banner_name = name[2];
 
     data.banner = banner_name;
-    let reg = await Descuento.create(data);
+    let crear_descuento = Promise.resolve(Descuento.create(data));
 
-    res.status(200).send({data:reg});
+    crear_descuento.then(reg => {
+        res.status(200).send({data:reg});
+    });
 }
 
 const listar_descuentos_admin = async function(req,res){
@@ -22,8 +25,11 @@ const listar_descuentos_admin = async function(req,res){
      
     let filtro = req.params['filtro'];
 
-    let reg = await Descuento.find({titulo: new RegExp(filtro, 'i')}).sort({createdAt:-1});
-    res.status(200).send({data: reg});
+    let buscar_descuentos = Promise.resolve(Descuento.find({titulo: new RegExp(filtro, 'i')}).sort({createdAt:-1}));
+
+    buscar_descuentos.then(reg => {
+        res.status(200).send({data: reg});
+    });
 }
 
 const obtener_banner_descuento = async function(req,res){
@@ -47,8 +53,11 @@ const obtener_descuento_admin = async function(req,res){
     let id = req.params['id'];
 
     try {
-        let reg = await Descuento.findById({_id:id});
-        res.status(200).send({data:reg});
+        let buscar_descuento = Promise.resolve(Descuento.findById({_id:id}));
+        buscar_descuento.then(reg => {
+            res.status(200).send({data:reg});
+        })
+        .catch(()=> {throw error});
     } catch (error) {
         res.status(200).send({data:undefined});
     }
@@ -67,13 +76,13 @@ const actualizar_descuento_admin = async function(req,res){
         let name = img_path.split('\\');
         let banner_name = name[2];
 
-        reg = await Descuento.findByIdAndUpdate({_id:id},{
+        reg = Promise.resolve(Descuento.findByIdAndUpdate({_id:id},{
             titulo: data.titulo,
             descuento: data.descuento,
             fecha_inicio: data.fecha_inicio,
             fecha_fin: data.fecha_fin,
             banner: banner_name
-        });
+        }));
 
         fs.stat('./uploads/descuentos/'+reg.banner, function(err){
             if(!err){
@@ -86,12 +95,12 @@ const actualizar_descuento_admin = async function(req,res){
         res.status(200).send({data:reg});
     }else{
         //NO HAY IMAGEN
-        reg = await Descuento.findByIdAndUpdate({_id:id},{
+        reg = Promise.resolve(Descuento.findByIdAndUpdate({_id:id},{
             titulo: data.titulo,
             descuento: data.descuento,
             fecha_inicio: data.fecha_inicio,
             fecha_fin: data.fecha_fin,
-        });
+        }));
     }
 
     res.status(200).send({data:reg});
@@ -101,27 +110,32 @@ const eliminar_descuento_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
     let id = req.params['id'];
 
-    let reg = await Descuento.findByIdAndRemove({_id:id});
-    res.status(200).send({data:reg});
+    let buscar_descuento = Promise.resolve(Descuento.findByIdAndRemove({_id:id}));
+    buscar_descuento.then(reg => {
+        res.status(200).send({data:reg});
+    });
 }
 
 const obtener_descuento_activo = async function(req,res){
-    let descuentos = await Descuento.find().sort({createdAt:-1});
-    let arr_descuentos = [];
-    let today = Date.parse(new Date().toString())/1000;
-   
-    descuentos.forEach(element => {
-        let tt_inicio = Date.parse(element.fecha_inicio+"T00:00:00")/1000;
-        let tt_fin = Date.parse(element.fecha_fin+"T23:59:59")/1000;
-
-        if(today >= tt_inicio && today <= tt_fin){
-            arr_descuentos.push(element);
-        }
-    });
-
-    if(arr_descuentos.length < 1) {return res.status(200).send({data:undefined});}
+    let buscar_descuentos = Promise.resolve(Descuento.find().sort({createdAt:-1}));
     
-    res.status(200).send({data:arr_descuentos});
+    buscar_descuentos.then(descuentos => {
+        let arr_descuentos = [];
+        let today = Date.parse(new Date().toString())/1000;
+    
+        descuentos.forEach(element => {
+            let tt_inicio = Date.parse(element.fecha_inicio+"T00:00:00")/1000;
+            let tt_fin = Date.parse(element.fecha_fin+"T23:59:59")/1000;
+
+            if(today >= tt_inicio && today <= tt_fin){
+                arr_descuentos.push(element);
+            }
+        });
+
+        if(arr_descuentos.length < 1) {return res.status(200).send({data:undefined});}
+        
+        res.status(200).send({data:arr_descuentos});
+    })
 }
 
 module.exports = {
