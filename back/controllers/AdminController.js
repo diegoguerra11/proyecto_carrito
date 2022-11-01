@@ -41,7 +41,7 @@ const login_admin = async function(req, res){
 
             res.status(200).send({
                 data: admin,
-                token: jwt.createToken(user)
+                token: jwt.createToken(admin)
             });
         });
     });  
