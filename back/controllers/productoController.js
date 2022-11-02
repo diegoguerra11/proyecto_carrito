@@ -16,7 +16,7 @@ const registro_producto_admin = async function (req,res){
 
     data.slug = data.titulo.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
     data.portada = portada_name;
-    let crear_producto = Producto.resolve(Producto.create(data));
+    let crear_producto = Promise.resolve(Producto.create(data));
 
     crear_producto.then(reg => {
         let crear_inventario = Promise.resolve(Inventario.create({

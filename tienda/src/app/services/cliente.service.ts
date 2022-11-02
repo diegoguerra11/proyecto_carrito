@@ -3,6 +3,7 @@ import { Observable } from "rxjs";
 import { GLOBAL } from "./GLOBAL";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { JwtHelperService } from "@auth0/angular-jwt";
+import { MessageBox } from '../Utils/MessageBox';
 
 @Injectable({
   providedIn: 'root'
@@ -191,6 +192,15 @@ export class ClienteService {
     let headers = new HttpHeaders({'Content-Type':'application/json', 'Authorization':token});
     return this._http.get(this.url+'obtener_cupon_cliente/'+cupon,{headers:headers});
 
+  }
+  actualizar_direccion_cliente(id:any,data:any,token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.put(this.url+'actualizar_direccion_cliente/'+id,data,{headers:headers});
+  }
+  recibir_direccion_cliente(id:any,token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+  
+    return this._http.get(this.url + 'recibir_direccion_cliente/' + id ,{headers:headers});
   }
 
 }
