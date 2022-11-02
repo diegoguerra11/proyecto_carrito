@@ -17,8 +17,8 @@ export class CreateClienteComponent implements OnInit {
   public cliente: any = {
     genero: ''
   };
-    public token;
-    public load_btn = false;
+  public token;
+  public load_btn = false;
 
   constructor(
     private _clienteService: ClienteService,
@@ -34,9 +34,7 @@ export class CreateClienteComponent implements OnInit {
   }
 
   registro(registroForm){
-    if(!ValidatonsCliente.verificarCliente(registroForm.form.value)){
-      return;
-    }
+    if(!ValidatonsCliente.verificarCliente(registroForm.form.value)){return;}
 
     this._clienteService.registro_cliente_admin(this.cliente,this.token).subscribe(
       response =>{
