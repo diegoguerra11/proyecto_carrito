@@ -255,20 +255,10 @@ const registro_direccion_cliente  = async function(req,res){
     
     let data = req.body;
 
-    let buscar_direcciones = Promise.resolve(Direccion.find({cliente:data.cliente}));
-
-    buscar_direcciones.then(direcciones => {
-        if(data.principal){
-            direcciones.forEach(async element => {
-               await Direccion.findByIdAndUpdate({_id:element._id},{principal:false});
-            });
-        }
-    }).then (()=> {
+    desactivar_direcciones(data.cliente, data.principal).then(()=> {
         let crear_direccion = Promise.resolve(Direccion.create(data));
     
-        crear_direccion.then(reg => {
-            res.status(200).send({data:reg});
-        });
+        crear_direccion.then(reg => {res.status(200).send({data:reg});});
     });
 }
 
@@ -472,7 +462,6 @@ const actualizar_cliente = async function (id, data) {
 }
 const actualizar_direccion = async function(id,data){
     return Promise.resolve( Direccion.findByIdAndUpdate({_id:id},{
-
         cliente: data.cliente,//{type: Schema.ObjectId, ref: 'cliente', required: true},
         destinatario: data.destinatario,//{type: String, required: true},
         numeroDocumento: data.numeroDocumento,//{type: String, required: true},
@@ -485,30 +474,40 @@ const actualizar_direccion = async function(id,data){
         distrito: data.distrito,//{type: String, required: false},
         telefono: data.telefono, // {type: String, required: true},
         principal: data.principal, //{type: Boolean, required: true},
-
     }));
 }
+
+const desactivar_direcciones = async function(cliente, principal) {
+    if(principal) {
+        let buscar_direcciones = Promise.resolve(Direccion.find({cliente: cliente}));
+        await buscar_direcciones.then(direcciones => {
+            direcciones.forEach(async element => {
+               Promise.resolve(Direccion.findByIdAndUpdate({_id:element._id},{principal:false}));
+            });
+        });
+    }
+}
+
 const recibir_direccion_cliente = async function(req,res){
-    
-    if(!req.user){return  res.status(500).send({message: 'NoAccess'});}
-    
-    
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
+
     let id = req.params['id'];
     let direccion = Promise.resolve(Direccion.find({_id:String(id)}));
 
-    direccion.then(direccion => {
-        console.log(direccion);
-        res.status(200).send({data:direccion});
-    });
+    direccion.then(direccion => {res.status(200).send({data:direccion});});
 }
 
 const actualizar_direccion_cliente = async function(req,res){
-    if(!req.user){return  res.status(500).send({message: 'NoAccess'});}
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     let id = req.params['id'];
     let data = req.body;
-    let actualiza_direccion = Promise.resolve(actualizar_direccion(id,data));
-    actualiza_direccion.then(reg => {res.status(200).send({data:reg});});
-    
+
+    desactivar_direcciones(data.cliente, data.principal).then(() => {
+        let actualiza_direccion = Promise.resolve(actualizar_direccion(id,data));
+        actualiza_direccion.then(reg => {
+            res.status(200).send({data:reg});
+        });  
+    });
 } 
 
 module.exports = {
