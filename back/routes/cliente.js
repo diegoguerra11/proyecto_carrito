@@ -21,6 +21,9 @@ api.get('/obtener_cliente_guest/:id',auth.auth,clienteController.obtener_cliente
 api.put('/actualizar_perfil_cliente_guest/:id',auth.auth,clienteController.actualizar_perfil_cliente_guest);
 api.get('/obtener_variedades_productos_cliente/:id',clienteController.obtener_variedades_productos_cliente);
 
+api.put('/actualizar_direccion_cliente/:id',auth.auth, clienteController.actualizar_direccion_cliente);
+api.get("/recibir_direccion_cliente/:id",auth.auth,clienteController.recibir_direccion_cliente)
+
 //Productos
 api.get('/obtener_productos_slug_publico/:slug',clienteController.obtener_productos_slug_publico);
 api.get('/listar_productos_recomendados_publico/:categoria',clienteController.listar_productos_recomendados_publico);

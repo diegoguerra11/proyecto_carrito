@@ -10,6 +10,7 @@ let Variedad = require('../models/Variedad');
 let Direccion = require("../models/direccion");
 let Producto = require("../models/producto");
 let mail = require('../helpers/mail');
+const { promiseImpl } = require('ejs');
 
 const registro_cliente = async function(req,res){
     try {
@@ -254,20 +255,10 @@ const registro_direccion_cliente  = async function(req,res){
     
     let data = req.body;
 
-    let buscar_direcciones = Promise.resolve(Direccion.find({cliente:data.cliente}));
-
-    buscar_direcciones.then(direcciones => {
-        if(data.principal){
-            direcciones.forEach(async element => {
-               await Direccion.findByIdAndUpdate({_id:element._id},{principal:false});
-            });
-        }
-    }).then (()=> {
+    desactivar_direcciones(data.cliente, data.principal).then(()=> {
         let crear_direccion = Promise.resolve(Direccion.create(data));
     
-        crear_direccion.then(reg => {
-            res.status(200).send({data:reg});
-        });
+        crear_direccion.then(reg => {res.status(200).send({data:reg});});
     });
 }
 
@@ -469,8 +460,58 @@ const actualizar_cliente = async function (id, data) {
         pais: data.pais,
     })); 
 }
+const actualizar_direccion = async function(id,data){
+    return Promise.resolve( Direccion.findByIdAndUpdate({_id:id},{
+        cliente: data.cliente,//{type: Schema.ObjectId, ref: 'cliente', required: true},
+        destinatario: data.destinatario,//{type: String, required: true},
+        numeroDocumento: data.numeroDocumento,//{type: String, required: true},
+        tipoDocumento: data.tipoDocumento,//{type: String, required: true},
+        zip: data.zip,//{type: String, required: true},
+        direccion: data.direccion,//{type: String, required: true},
+        pais: data.pais,//{type: String, required: true},
+        region: data.region,//{type: String, required: false},
+        provincia: data.provincia,//{type: String, required: false},
+        distrito: data.distrito,//{type: String, required: false},
+        telefono: data.telefono, // {type: String, required: true},
+        principal: data.principal, //{type: Boolean, required: true},
+    }));
+}
+
+const desactivar_direcciones = async function(cliente, principal) {
+    if(principal) {
+        let buscar_direcciones = Promise.resolve(Direccion.find({cliente: cliente}));
+        await buscar_direcciones.then(direcciones => {
+            direcciones.forEach(async element => {
+               Promise.resolve(Direccion.findByIdAndUpdate({_id:element._id},{principal:false}));
+            });
+        });
+    }
+}
+
+const recibir_direccion_cliente = async function(req,res){
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
+
+    let id = req.params['id'];
+    let direccion = Promise.resolve(Direccion.find({_id:String(id)}));
+
+    direccion.then(direccion => {res.status(200).send({data:direccion});});
+}
+
+const actualizar_direccion_cliente = async function(req,res){
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
+    let id = req.params['id'];
+    let data = req.body;
+
+    desactivar_direcciones(data.cliente, data.principal).then(() => {
+        let actualiza_direccion = Promise.resolve(actualizar_direccion(id,data));
+        actualiza_direccion.then(reg => {
+            res.status(200).send({data:reg});
+        });  
+    });
+} 
 
 module.exports = {
+    actualizar_direccion_cliente,
     registro_cliente,
     login_cliente,
     listar_clientes_filtro_admin,
@@ -494,4 +535,5 @@ module.exports = {
     listar_productos_recomendados_publico,
     registro_compra_cliente,
     consultarIDPago,
+    recibir_direccion_cliente,
 }

@@ -192,5 +192,14 @@ export class ClienteService {
     return this._http.get(this.url+'obtener_cupon_cliente/'+cupon,{headers:headers});
 
   }
+  actualizar_direccion_cliente(id:any,data:any,token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.put(this.url+'actualizar_direccion_cliente/'+id,data,{headers:headers});
+  }
+  recibir_direccion_cliente(id:any,token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+  
+    return this._http.get(this.url + 'recibir_direccion_cliente/' + id ,{headers:headers});
+  }
 
 }

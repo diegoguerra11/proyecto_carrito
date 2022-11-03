@@ -66,10 +66,8 @@ export class EditClienteComponent implements OnInit {
 
         }
       );
-    } else {//en caso de que no complete todos los campos saltara un mensaje
-      MessageBox.messageError("Debe completar todos los campos");
-
-}
+    } else {
+      MessageBox.messageError("Debe completar todos los campos");  
+    }
   }
-
 }
