@@ -137,6 +137,7 @@ export class IndexProductoComponent implements OnInit {
   }
 
   cambiar_vs(id:any,vs:any){
+    console.log(this.productos);
     this.load_estado = true;
     this._adminService.cambiar_vs_producto_admin(id,vs,this.token).subscribe(
       response=>{
