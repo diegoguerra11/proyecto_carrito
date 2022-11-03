@@ -18,10 +18,10 @@ export class IndexVentasComponent implements OnInit {
   public hasta :any = undefined;
   public load = false;
 
-  constructor(
+  constructor(//inyecta los servidores
     private _adminService:AdminService
   ) { }
-
+//obtiene las ventas
   ngOnInit(): void {
     this.load = true;
     this._adminService.obtener_ventas_admin(this.desde, this.hasta, this.token).subscribe(
@@ -32,7 +32,7 @@ export class IndexVentasComponent implements OnInit {
       }
     );
   }
-
+//filta las ventas
   filtrar_ventas(){
     if(this.filtro){
       let term = new RegExp(this.filtro.toString().trim() , 'i');
@@ -41,7 +41,7 @@ export class IndexVentasComponent implements OnInit {
       this.ventas = this.const_ventas;
     }
   }
-
+//filtro de ventas por fechas
   filtrar_fechas(){
 
     if(this.desde||this.hasta){
@@ -59,7 +59,7 @@ export class IndexVentasComponent implements OnInit {
       this.ventas = this.const_ventas;
     }
   }
-
+//resetea los datos del filtro fecha
   reset_data(){
     this.desde = '';
     this.hasta = '';

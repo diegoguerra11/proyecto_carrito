@@ -14,23 +14,23 @@ export class LoginComponent implements OnInit {
   public user: any = {};
   public usuario: any = {};
   public token: any = '';
-  
-  constructor(
+
+  constructor(//se inyecta los servidores
     private _adminService:AdminService,
     private _router: Router
-  ) {
+  ) {//llama al token que se inicialize con el servicio
     this.token = this._adminService.getToken();
    }
 
   ngOnInit(): void {
-   
+
     if(this.token){
-      this._router.navigate(['/']); 
+      this._router.navigate(['/']);
 
     }
   }
 
-
+//se valida los datos del login y si hay algun error en el formulario mandara un mensaje
   login(loginForm){
     if(!loginForm.valid){MessageBox.messageError('Los datos del formulario no son validos'); return;}
 
@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
     this._adminService.login_admin(data).subscribe(
       response =>{
         if(response.data == undefined){MessageBox.messageError(response.message); return;}
-        
+
         this.usuario = response.data;
 
         localStorage.setItem('token',response.token);
