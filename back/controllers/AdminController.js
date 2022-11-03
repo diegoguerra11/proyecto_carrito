@@ -37,7 +37,7 @@ const login_admin = async function(req, res){
         if(!admin){return res.status(200).send({message: 'No se encontro el correo', data:undefined});}  
 
         bcrypt.compare(data.password, admin.password,async function(error, check){
-            if(!check){return res.status(500).send({message: 'La contraseña no coincide', data: undefined});}
+            if(!check){return res.status(200).send({message: 'La contraseña no coincide', data: undefined});}
 
             res.status(200).send({
                 data: admin,

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { MessageBox } from '../../utils/MessageBox';
+import { ValidatonsIniciarSesion } from '../../validations/ValidatonsIniciarSesion';
 
 
 @Component({
@@ -30,9 +31,8 @@ export class LoginComponent implements OnInit {
     }
   }
 
-
   login(loginForm){
-    if(!loginForm.valid){MessageBox.messageError('Los datos del formulario no son validos'); return;}
+    if(!ValidatonsIniciarSesion.login(loginForm.form.value)){return;}
 
     let data={
       email: this.user.email,
