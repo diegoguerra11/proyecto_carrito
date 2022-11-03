@@ -40,8 +40,8 @@ const login_admin = async function(req, res){
             if(!check){return res.status(500).send({message: 'La contraseña no coincide', data: undefined});}
 
             res.status(200).send({
-                data: admn,
-                token: jwt.createToken(user)
+                data: admin,
+                token: jwt.createToken(admin)
             });
         });
     });  

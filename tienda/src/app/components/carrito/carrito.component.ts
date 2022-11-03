@@ -91,6 +91,7 @@ export class CarritoComponent implements OnInit {
     this.calcular_total();
   }
 
+  // obtiene los productos que el cliente ha agregado al carrito y calcula los precios
   async obtener_carrito(){
     this._clienteService.obtener_carrito_cliente(this.user_lc._id,this.token).subscribe(
       response=>{
@@ -112,7 +113,7 @@ export class CarritoComponent implements OnInit {
     );
   }
 
-
+  // pasa los datos del carrito a un pedido y lo registra
   generar_pedido(){
 
     if (!this.direccion_principal){
@@ -154,6 +155,7 @@ export class CarritoComponent implements OnInit {
     );
   }
 
+  // cuando se presiona el boton, ejecuta los metodos get_token_mercado_pago, generar_pedido y generar_pedido
   pagar() {
     switch(this.metodo_pago){
       case 'pasarela_pago':
@@ -237,6 +239,7 @@ export class CarritoComponent implements OnInit {
     );
   }
 
+  // obtiene la direccion que el cliente haya guardado previamente
   get_direccion_principal(){
     this._clienteService.obtener_direccion_principal_cliente(localStorage.getItem('_id'),this.token).subscribe(
       response=>{
@@ -250,6 +253,7 @@ export class CarritoComponent implements OnInit {
     );
   }
 
+  // calcula el precio del carrito sin descuento dependiendo si es en soles o dolares
   calcular_carrito(){
     this.subtotal = 0;
     if(this.user_lc != undefined){
@@ -281,6 +285,7 @@ export class CarritoComponent implements OnInit {
     this.totalAPagarMovible = this.subtotal_const;
   }
 
+  // calcula el precio del carrito con el descuento y el envio
   calcular_total(){
     let descuentoActual = 0;
     if(this.valor_descuento != 0){
@@ -302,6 +307,7 @@ export class CarritoComponent implements OnInit {
     this.totalAPagarEstatico = this.totalAPagarMovible;
   }
 
+  // elimina un producto del carrito y actualiza el total del carrito
   eliminar_item_guest(item:any){
     this.totalAPagarMovible  = 0;
     this.carrito_logout.splice(item._id,1);
@@ -323,6 +329,7 @@ export class CarritoComponent implements OnInit {
     this.totalAPagarEstatico = this.totalAPagarMovible;
   }
 
+  // elimina un producto del carrito y actualiza el total del carrito
   eliminar_item(id:any){
     this._clienteService.eliminar_carrito_cliente(id,this.token).subscribe(
       response=>{
@@ -334,11 +341,11 @@ export class CarritoComponent implements OnInit {
             this.calcular_carrito();
           }
         );
-
       }
     );
   }
 
+  // si la region es de lima el envio cuesta 10 soles, caso contrario cuesta 15
   select_direccion_envio(item:any){
     
     this.envio_gratis = false;
@@ -353,6 +360,7 @@ export class CarritoComponent implements OnInit {
     }
   }
 
+  // valida el cupon como ser menor a 25 caracteres, y luego llama al metodo calcular_total para el precio del carrito
   validar_cupon(){
     if(this.cuponTemporal != "") {return MessageBox.messageError("Solo se puede canejar un cupón por compra");}
     if(!this.venta.cupon) {return MessageBox.messageError('El cupon no es valido.');}

@@ -74,6 +74,7 @@ export class NavComponent implements OnInit {
    } 
   }
   
+  
   obtener_carrito(){
     this._clienteService.obtener_carrito_cliente(this.user_lc._id,this.token).subscribe(
       response=>{

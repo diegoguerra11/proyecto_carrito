@@ -91,6 +91,7 @@ export class IndexProductoComponent implements OnInit {
     $('.noUi-tooltip').css('font-size','11px');
   }
 
+  
   buscar_categorias(){
     if(this.filter_categoria){
       let search = new RegExp(this.filter_categoria, 'i');
