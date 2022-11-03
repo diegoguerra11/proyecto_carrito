@@ -20,28 +20,28 @@ export class CreateClienteComponent implements OnInit {
     public token;
     public load_btn = false;
 
-  constructor(
+  constructor(//iunyecta los servidores
     private _clienteService: ClienteService,
     private _adminService: AdminService,
     private _router: Router
-  ){
+  ){//llama al token que se inicialize con el servicio
     this.token = this._adminService.getToken();
   }
 
   ngOnInit(): void {
-    
-    // TODO No hace falta iniciar con métodos 
-  }
 
+    // TODO No hace falta iniciar con métodos
+  }
+//regitra los clientes y valida que los datos esten correctos
   registro(registroForm){
     if(!ValidatonsCliente.verificarCliente(registroForm.form.value)){
       return;
     }
-
+//verifica si el documento ya existe en la base de datos
     this._clienteService.registro_cliente_admin(this.cliente,this.token).subscribe(
       response =>{
         if(!response.data){
-          this.load_btn = false;
+          this.load_btn = false;//si el documento ya existe saltara un mensaje
           return MessageBox.messageError("El numero documento ya existe");
         }
         MessageBox.messageSuccess("Cliente registrado satisfactoriamente");

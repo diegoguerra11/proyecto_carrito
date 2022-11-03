@@ -18,20 +18,20 @@ export class EditClienteComponent implements OnInit {
   public load_btn = false;
   public load_data = true;
 
-  constructor(
+  constructor(//inyecta los servidores
     private _route : ActivatedRoute,
     private _clienteService: ClienteService,
     private _adminService : AdminService,
     private _router: Router
-  ) {
+  ) {//llama al token que se inicialize con el servicio
     this.token = this._adminService.getToken();
    }
-
+//obtiene a los clientes
   ngOnInit(): void {
     this._route.params.subscribe(
       params => {
         this.id = params['id'];
-        
+
         this._clienteService.obtener_cliente_admin(this.id,this.token).subscribe(
           response =>{
             if (response.data == undefined) {
@@ -49,26 +49,26 @@ export class EditClienteComponent implements OnInit {
       }
     )
   }
-
+//actualiza los clientes y valida si los datos cambiados de los clientes son correctos
   actualizar(updateForm){
     if (updateForm.valid) {
       if(!ValidatonsCliente.verificarCliente(updateForm.form.value)){return;}
       this.load_btn = true;
       this._clienteService.actualizar_cliente_admin(this.id,this.cliente,this.token).subscribe(
-        response => {  
-          MessageBox.messageSuccess("Cliente Actualizado correctamente");       
-    
+        response => {
+          MessageBox.messageSuccess("Cliente Actualizado correctamente");
+
           this.load_btn = false;
 
           this._router.navigate(['/panel/clientes']);
         }, error=>{
           console.log(error);
-          
+
         }
       );
-    } else {
+    } else {//en caso de que no complete todos los campos saltara un mensaje
       MessageBox.messageError("Debe completar todos los campos");
-      
+
 }
   }
 

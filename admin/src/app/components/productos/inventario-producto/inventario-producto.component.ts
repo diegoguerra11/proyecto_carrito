@@ -23,30 +23,30 @@ export class InventarioProductoComponent implements OnInit {
     public inventario : any = {}
     public page=1;
     public pageSize = 20;
-    
+
     public load_btn = false;
 
-  constructor(
+  constructor(//se inyecta los servidores
     private _route: ActivatedRoute,
     private _productoService: ProductoService
-  ) { 
+  ) { //se obtiene el token y el id
     this.token = localStorage.getItem('token');
     this._iduser = localStorage.getItem('_id');
-    
+
   }
 
   ngOnInit(): void {
     this._route.params.subscribe(
       params=>{
         this.id = params['id'];
- 
+ //obtiene los productos
         this._productoService.obtener_producto_admin(this.id,this.token).subscribe(
           response=>{
             if(response.data == undefined){
               this.producto = undefined;
             }else{
               this.producto = response.data;
-              
+
               this._productoService.listar_inventario_producto_admin(this.producto._id, this.token).subscribe(
                 response=>{
                   this.inventarios = response.data;
@@ -57,26 +57,26 @@ export class InventarioProductoComponent implements OnInit {
                       proveedor: element.proveedor
                     });
                   });
-                  
+
                 },
                 error=>{
                   console.log(error);
                 }
-                
+
               )
-              
+
             }
-            
+
           },
           error=>{
             console.log(error);
           }
         );
-      
+
       }
     );
    }
-
+//elimina el producto y salta un mensaje
    eliminar(id){
     this.load_btn = true;
     this._productoService.eliminar_inventario_producto_admin(id,this.token).subscribe(
@@ -91,29 +91,29 @@ export class InventarioProductoComponent implements OnInit {
         this._productoService.listar_inventario_producto_admin(this.producto._id, this.token).subscribe(
           response=>{
             this.inventarios = response.data;
-            
-            
+
+
           },
           error=>{
             console.log(error);
-            
+
           }
-          
+
         )
 
-        
+
       },
-      error=>{
+      error=>{//si no se pudo eliminar el producto saltara un mensaje
         MessageBox.messageError('Ocurrió un error en el servidor.');
         console.log(error);
         this.load_btn = false;
     }
   )
    }
-
+//registra el inventario con el formato del inventari y lo valida
    registro_inventario(inventarioForm){
     if (inventarioForm.valid) {
-      
+
       let data = {
         producto: this.producto._id,
         cantidad: inventarioForm.value.cantidad,
@@ -121,7 +121,7 @@ export class InventarioProductoComponent implements OnInit {
         proveedor: inventarioForm.value.proveedor
       }
 
-      
+
       this._productoService.registro_inventario_producto_admin(data,this.token).subscribe(
         response=>{
           MessageBox.messageSuccess('Se agrego el nuevo stock al producto');
@@ -129,50 +129,50 @@ export class InventarioProductoComponent implements OnInit {
             this._productoService.listar_inventario_producto_admin(this.producto._id, this.token).subscribe(
               response=>{
                 this.inventarios = response.data;
-                
-                
+
+
               },
               error=>{
                 console.log(error);
               }
-              
+
             )
-          
+
         },
         error=>{
           console.log(error);
-          
+
         }
       )
 
-    } else {
+    } else {// en caso de que no esten bien validados saltara un mensaje
      MessageBox.messageError('Los datos del formulario no son validos');
     }
    }
-
+//descarga el inventario en un excel
    download_excel(){
     let workbook = new Workbook();
     let worksheet = workbook.addWorksheet("Reporte de productos");
-  
+
     worksheet.addRow(undefined);
     for (let x1  of this.arr_inventario){
       let x2=Object.keys(x1);
-  
+
       let temp=[]
       for(let y of x2){
         temp.push(x1[y] as never)
       }
       worksheet.addRow(temp)
     }
-  
+
     let fname='REP01- ';
-  
+
     worksheet.columns = [
       { header: 'Trabajador', key: 'col1', width: 30},
       { header: 'Cantidad', key: 'col2', width: 15},
       { header: 'Proveedor', key: 'col3', width: 25}
     ]as any;
-  
+
     workbook.xlsx.writeBuffer().then((data) => {
       let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');

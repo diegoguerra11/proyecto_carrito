@@ -28,7 +28,7 @@ export class ShowVentasComponent implements OnInit {
   public tracking = '';
   public pago : any = {};
 
-  constructor(
+  constructor(//inyecta los servidores
     private _route:ActivatedRoute,
     private _adminService:AdminService,
     private _router:Router
@@ -47,7 +47,7 @@ export class ShowVentasComponent implements OnInit {
       }
     );
   }
-
+//obtiene detalles de las ordenes de clientes
   init_data(){
     this._adminService.obtener_detalles_ordenes_cliente(this.id,this.token).subscribe(
       response=>{
@@ -70,7 +70,7 @@ export class ShowVentasComponent implements OnInit {
       }
     );
   }
-
+//marca el cierre de la venta
   finalzar(id:any){
     this.load_final = true;
     this._adminService.marcar_finalizado_orden(id,{data:''},this.token).subscribe(
@@ -83,7 +83,7 @@ export class ShowVentasComponent implements OnInit {
       }
     );
   }
-
+//marca la orden como enviada
   enviar(id:any){
     if(this.tracking){
       this.load_send = true;
@@ -100,7 +100,7 @@ export class ShowVentasComponent implements OnInit {
       MessageBox.messageError('Ingrese el numero de seguimiento.');
     }
   }
-
+//elimina el pedido
   eliminar(id:any){
     this.load_del = true;
     this._adminService.eliminar_orden_admin(id,this.token).subscribe(
@@ -113,7 +113,7 @@ export class ShowVentasComponent implements OnInit {
       }
     );
   }
-
+//confirma que haya llegado el pago
   confirmar_pago(id:any){
     this.load_conf_pago = true;
     this._adminService.confirmar_pago_orden(id,{data:''},this.token).subscribe(
