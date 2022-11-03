@@ -1,5 +1,8 @@
+
+//Declaración de variables.
 let Cupon = require('../models/cupon');
 
+//Función para registrar cupones en Admin. El administrador podrá registrar cupones de descuentos y verificar si ya existen.
 const registro_cupon_admin = async function (req,res){
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAcceess'});}
 
@@ -13,6 +16,7 @@ const registro_cupon_admin = async function (req,res){
     res.status(200).send({data:reg});
  }
 
+ //Función para listar los cupones en Admin. El administrador podrá solicitar la lista de cupones registrados.
  const listar_cupones_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
 
@@ -22,6 +26,7 @@ const registro_cupon_admin = async function (req,res){
     res.status(200).send({data: reg});
 }
 
+//Función para obtener un cupón en Admin. El administrador podrá buscar los cupones registrados en la tienda.
 const obtener_cupon_admin = async function (req,res){
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
     
@@ -36,6 +41,7 @@ const obtener_cupon_admin = async function (req,res){
     }
 }
 
+//Función para obtener un cupón por parte del cliente. El cliente podrá acceder a un cupón ingresando su código antes de realizar su compra.
 const obtener_cupon_cliente = async function (req,res){
     if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
@@ -52,6 +58,7 @@ const obtener_cupon_cliente = async function (req,res){
     }
 }
 
+//Función para actualizar cupones en Admin. El administrador podrá actualizar los cupones registrados en el sistema.
 const actualizar_cupon_admin = async function (req,res){
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
     
@@ -69,6 +76,7 @@ const actualizar_cupon_admin = async function (req,res){
     res.status(200).send({data:reg});
 }
 
+//Función para eliminar cupones en Admin. El administrador podrá eliminar cupones del sistema.
 const eliminar_cupon_admin = async function (req,res){
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
     
@@ -78,6 +86,7 @@ const eliminar_cupon_admin = async function (req,res){
     res.status(200).send({data:reg});
 }
 
+//Función para validar cupones. El cupón debe estar registrado en el sistema para que pueda ser validado, restringiendo también la cantidad máxima de canjes.
 const validar_cupon_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -92,6 +101,7 @@ const validar_cupon_admin = async function(req,res){
     res.status(200).send({data:data});
 }
 
+//Función para reducir la cantidad de cupones canjeados. El cliente podrá reducir la cantidad de cupones canjeados.
 const disminuir_cupon = async function(req, res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -112,6 +122,7 @@ const disminuir_cupon = async function(req, res){
     res.status(200).send({data:reg});     
 }
 
+//Exportación de las funciones.
 module.exports = {
     registro_cupon_admin,
     listar_cupones_admin,

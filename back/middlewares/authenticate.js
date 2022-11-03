@@ -1,9 +1,11 @@
 'use strict'
 
+//Declaración de variables.
 let jwt = require('jwt-simple');
 let moment = require('moment');
 let secret = 'javierrojas';
 
+//Autenticación de los usuarios mediante tokens.
 exports.auth = function(req,res,next){
     if(!req.headers.authorization){return res.status(403).send({message: 'NoHeaderError'});}
 

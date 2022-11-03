@@ -1,7 +1,9 @@
+//Declaración de variables.
 let Descuento = require('../models/descuento');
 let fs = require('fs');
 let path = require('path');
 
+//Función para el registro de descuentos en Admin. El administrador podrá registrar un descuento a un producto para que sea visto en la página y el catálogo de la tienda.
 const registro_descuento_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
 
@@ -17,6 +19,7 @@ const registro_descuento_admin = async function(req,res){
     res.status(200).send({data:reg});
 }
 
+//Función para listar los descuentos registrados en Admin. El administrador podrá listar los descuentos registrados en la tienda.
 const listar_descuentos_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin') {return   res.status(500).send({message: 'NoAccess'});}
      
@@ -26,6 +29,7 @@ const listar_descuentos_admin = async function(req,res){
     res.status(200).send({data: reg});
 }
 
+//Función para obtener el banner de descuento. En la vista del producto, el sistema podrá incorporar un banner indicando que el producto se encuentra con descuento.
 const obtener_banner_descuento = async function(req,res){
     let img = req.params['img'];
     let path_img;
@@ -41,6 +45,7 @@ const obtener_banner_descuento = async function(req,res){
     })
 }
 
+//Función para obtener el descuento en Admin. El administrador podrá buscar un descuento por su id.
 const obtener_descuento_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
     
@@ -54,7 +59,8 @@ const obtener_descuento_admin = async function(req,res){
     }
 }
 
-
+//Función para actualizar un descuento en Admin. El administrador podrá actualizar un descuento. Si el descuento tiene una imagen donde se indique el descuento, se actualizarán
+//los datos del descuento con la imagen del banner. De lo contrario, solo se actualizarán los datos.
 const actualizar_descuento_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin'){return  res.status(500).send({message: 'NoAccess'});}
     let id = req.params['id'];
@@ -97,6 +103,7 @@ const actualizar_descuento_admin = async function(req,res){
     res.status(200).send({data:reg});
 }
 
+//Función para eliminar un descuento en Admin. El administrador podrá eliminar un descuento de la lista de descuentos.
 const eliminar_descuento_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
     let id = req.params['id'];
@@ -105,6 +112,8 @@ const eliminar_descuento_admin = async function(req,res){
     res.status(200).send({data:reg});
 }
 
+//Función para obtener un descuento activo. Este descuento se podrá obtener de acuerdo al plazo en el que se encuentren los descuentos. Si un descuento termina, se elimina de la lista y
+//el segundo descuento más reciente en vigencia pasa a ser el último.
 const obtener_descuento_activo = async function(req,res){
     let descuentos = await Descuento.find().sort({createdAt:-1});
     let arr_descuentos = [];
@@ -124,6 +133,7 @@ const obtener_descuento_activo = async function(req,res){
     res.status(200).send({data:arr_descuentos});
 }
 
+//Exportación de las funciones.
 module.exports = {
     registro_descuento_admin,
     listar_descuentos_admin,

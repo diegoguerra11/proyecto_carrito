@@ -1,10 +1,12 @@
 'use strict'
 
+//Creación de variables.
 let nodemailer = require("nodemailer");
 let fs = require('fs');
 let ejs = require('ejs');
 let handlebars = require('handlebars');
 
+//Función para verificación del correo al momento de realizar una compra.
 exports.enviar_correo = function (orden, dventa, plantilla, subject) {
     try {
         let readHTMLFile = function(path, callback) {

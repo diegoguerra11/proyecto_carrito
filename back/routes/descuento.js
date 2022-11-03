@@ -8,6 +8,7 @@ let auth = require('../middlewares/authenticate');
 let multiParty = require("connect-multiparty");
 let path = multiParty({uploadDir: "./uploads/descuentos"});
 
+//CRUD descuento
 api.post("/registro_descuento_admin", [auth.auth, path], DescuentoController.registro_descuento_admin);
 api.get("/listar_descuentos_admin/:filtro?",auth.auth,DescuentoController.listar_descuentos_admin);
 api.get("/obtener_banner_descuento/:img",DescuentoController.obtener_banner_descuento);

@@ -1,5 +1,6 @@
 'use strict'
 
+//Modelo de cupón.
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 

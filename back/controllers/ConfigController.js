@@ -1,8 +1,11 @@
+
+//Declaración de variables.
 let Config = require('../models/config');
 let fs = require('fs');
 let path = require('path');
 let config = require('../global');
 
+//Función para obtener la configuración actual de la tienda en Admin. El administrador podrá establecer la configuración que desee.
 const obtener_config_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
 
@@ -11,6 +14,7 @@ const obtener_config_admin = async function(req,res){
     res.status(200).send({data:reg});
 }
 
+//Función para modificar la configuración de la tienda en Admin. El administrador podrá agregar diversas configuraciones como nuevas columnas, cambio del logo de la tienda, entre otras.
 const actualizar_config_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
     
@@ -49,6 +53,7 @@ const actualizar_config_admin = async function(req,res){
     res.status(200).send({data:reg});
 }
 
+//Función para obtener el logo de la tienda- El sistema extrae la imagen establecida para el logo de la tienda y la muestra en las interfaces de la tienda.
 const obtener_logo = async function(req,res){
     let img = req.params['img'];
     let path_img;
@@ -63,11 +68,13 @@ const obtener_logo = async function(req,res){
     });
 }
 
+//Función para obtener la configuración en un ámbito público. Esto se establecerá para la página principal y sus vistas principales.
 const obtener_config_publico  = async function(req,res){
     let reg = await Config.findById({_id: config.config_id});
     res.status(200).send({data:reg});
 }
 
+//Exportación de las funciones.
 module.exports = {
     actualizar_config_admin,
     obtener_config_admin,

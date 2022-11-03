@@ -1,5 +1,6 @@
 'use strict'
 
+//Creación de tokens para cada usuario.
 let jwt = require('jwt-simple');
 let moment = require('moment');
 let secret = 'javierrojas';

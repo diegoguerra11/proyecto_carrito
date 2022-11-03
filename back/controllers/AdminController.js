@@ -1,5 +1,6 @@
 'use strict'
 
+//Declaración de variables.
 let Admin = require('../models/admin');
 let Venta = require('../models/Venta');
 let Variedad = require('../models/Variedad');
@@ -9,6 +10,7 @@ let bcrypt = require('bcrypt-nodejs');
 let jwt = require('../helpers/jwt');
 let mail = require('../helpers/mail');
 
+//Función para el registro de usuarios administradores. El registro requerirá un correo y una contraseña, los cuales serán necesarios para el inicio de sesión en el panel de Admin.
 const registro_admin = async function(req, res){
     let data = req.body;
 
@@ -25,9 +27,11 @@ const registro_admin = async function(req, res){
     });
 }
 
+//Inicio de sesión en panel de Admin. 
 const login_admin = async function(req, res){
     let data = req.body;
     let admin_arr = [];
+
 
     admin_arr = await Admin.find({email:data.email});
 
@@ -46,7 +50,10 @@ const login_admin = async function(req, res){
     });
  } 
 
+ //Función para solicitar el registro de ventas en Admin.
  const obtener_ventas_admin  = async function(req,res){
+
+    //Restricción realizada a los usuarios: si no son usuarios con el rol de administrador, no podrán acceder a esta función.
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
     
     let desde = req.params['desde'];
@@ -72,6 +79,7 @@ const login_admin = async function(req, res){
     res.status(200).send({data: ventas});
 }
 
+//Función para el listado de variedades en Admin. Se podrá listar las variedades por su id.
 const listar_variedades_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -81,6 +89,7 @@ const listar_variedades_admin = async function(req,res){
     res.status(200).send({data: data});
 }
 
+//Función para el listado de productos por variedades en Admin. Se podrá listar las variedades y los productos que tengan estas variedades.
 const listar_variedades_productos_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});} 
 
@@ -88,7 +97,7 @@ const listar_variedades_productos_admin = async function(req,res){
     res.status(200).send({data: productos});
 }
 
-//venta
+//Función para obtener los detalles de la orden realizada por el cliente. El cliente podrá ver los detalles de la orden realizada, tales como el monto a pagar y los productos especificados.
 const obtener_detalles_ordenes_cliente  = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -104,6 +113,7 @@ const obtener_detalles_ordenes_cliente  = async function(req,res){
     }
 }
 
+//Función para marcar una orden de pedido como 'Finalizado'. El usuario puede establecer su orden de pedido como finalizada cuando haya recibido el producto.
 const marcar_finalizado_orden = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
    
@@ -116,6 +126,7 @@ const marcar_finalizado_orden = async function(req,res){
     res.status(200).send({data:venta});
 }
 
+//Función para eliminar una orden de pedido. El usuario puede eliminar una orden de pedido si ya no desea continuar con la compra.
 const eliminar_orden_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     let id = req.params['id'];
@@ -127,6 +138,7 @@ const eliminar_orden_admin = async function(req,res){
     res.status(200).send({data:venta});
 }
 
+//Función para marcar una orden de pedido como 'Enviado'. El usuario puede establecer la orden de pedido como 'Enviado' cuando el pedido haya sido enviado.
 const marcar_envio_orden = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -143,6 +155,7 @@ const marcar_envio_orden = async function(req,res){
     res.status(200).send({data:venta});
 }
 
+//Función que confirma el pago de un cliente de su orden de pedido. El sistema actualizará los datos de los productos como el stock y las ventas realizadas.
 const confirmar_pago_orden = async function(req,res) {
     if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
@@ -175,6 +188,7 @@ const confirmar_pago_orden = async function(req,res) {
     res.status(200).send({data:venta});
 }
 
+//Función para eliminar una variedad de la lista de variedades. El administrador podrá eliminar una variedad de producto.
 const eliminar_variedad_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -184,6 +198,7 @@ const eliminar_variedad_admin = async function(req,res){
     res.status(200).send({data:reg});
 }
 
+//Función para agregar nueva variedad de producto. El administrador podrá agregar una nueva variedad de producto.
 const agregar_nueva_variedad_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -193,6 +208,7 @@ const agregar_nueva_variedad_admin = async function(req,res){
     res.status(200).send({data:reg});
 }
 
+//Función para modificar una variedad de producto. El administrador podrá modificar los datos de una variedad existente. 
 const actualizar_producto_variedades_admin = async function(req,res){
     if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
@@ -206,6 +222,8 @@ const actualizar_producto_variedades_admin = async function(req,res){
     res.status(200).send({data:reg});
 }
 
+//Función para registrar una compra de manera manual por el cliente. El cliente podrá registrar un pedido que podrá pagar de manera física (pago contra entrega). A la vez, esta compra
+//será registrada en el sistema.
 const registro_compra_manual_cliente = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
@@ -245,6 +263,8 @@ const registro_compra_manual_cliente = async function(req,res){
     res.status(200).send({venta:venta});
 }
 
+//Función para verificar si la cantidad de productos que el cliente desea comprar es manor o mayor al stock del producto. Si fuese mayor, el sistema no permitirá la compra de la cantidad
+//indicada.
 const pedido_compra_cliente = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     try {
@@ -280,7 +300,8 @@ const pedido_compra_cliente = async function(req,res){
     }
 }
 
-
+//Función para cambiar la visibilidad del producto en el catálogo de la tienda. Los productos que se encuentren como 'publicados' son los productos visibles en el catálogo virtual,
+//mientras que los que se encuentren en 'edición' son aquellos que no están visibles en el catálogo.
 const cambiar_vs_producto_admin = async function(req,res){
     if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
@@ -301,7 +322,8 @@ const cambiar_vs_producto_admin = async function(req,res){
             res.status(200).send({data:undefined});
         }
     }
-    
+
+//Función para que el cliente pueda registrar su email al momento de realizar su compra. El email servirá para recibir el comprobante con lso detalles de la compra.
 const enviar_email = async function(venta, motivo) {
     let orden = await Venta.findById({_id:venta}).populate('cliente').populate('direccion');
     let dventa = await Dventa.find({venta:venta}).populate('producto').populate('variedad');
@@ -335,6 +357,7 @@ const enviar_email = async function(venta, motivo) {
     }
 }
 
+//Exportación de las funciones.
 module.exports ={
     registro_admin,
     login_admin,
