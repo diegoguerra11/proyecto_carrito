@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
 
     this._adminService.login_admin(data).subscribe(
       response =>{
-        if(response.data == undefined){MessageBox.messageError(response.message); return;}
+        if(!response.data){return MessageBox.messageError(response.message);}
         
         this.usuario = response.data;
 
