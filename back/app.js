@@ -28,7 +28,7 @@ let producto_route = require('./routes/producto');
 let cupon_route = require ('./routes/cupon');
 let config_route = require ('./routes/config');
 let carrito_route = require ('./routes/carrito');
-
+let vendedor_route = require("./routes/vendedor");
 
 const cors = require('cors');
 
@@ -63,6 +63,7 @@ app.use('/api',cupon_route);
 app.use('/api',config_route);
 app.use('/api',carrito_route);
 app.use('/api',descuento_route);
+app.use("/api", vendedor_route);
 
 
 module.exports = app;

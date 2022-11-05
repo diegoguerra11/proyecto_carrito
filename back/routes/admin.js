@@ -23,7 +23,6 @@ api.put('/confirmar_pago_orden/:id',auth.auth,adminController.confirmar_pago_ord
 api.get('/cambiar_vs_producto_admin/:id/:estado',auth.auth,adminController.cambiar_vs_producto_admin);
 
 //Venta
-api.post('/registro_compra_manual_cliente',auth.auth,adminController.registro_compra_manual_cliente);
 api.post('/pedido_compra_cliente',auth.auth,adminController.pedido_compra_cliente);
 
 //variedades

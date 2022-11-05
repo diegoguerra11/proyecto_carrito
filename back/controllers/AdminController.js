@@ -232,46 +232,6 @@ const actualizar_producto_variedades_admin = async function(req,res){
     });
 }
 
-const registro_compra_manual_cliente = async function(req,res){
-    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
-
-    let data = req.body;
-    let detalles = data.detalles;
-
-    data.estado = 'Procesando';
-    
-    let crear_venta = await Venta.create(data);
-
-    crear_venta.then(venta => {   
-        for(let element of detalles){
-            element.venta = venta._id;
-            element.cliente = venta.cliente;
-            Promise.resolve(Dventa.create(element)).then(() => {
-                let element_producto = Promise.resolve(Producto.findById({_id:element.producto}));
-                let new_stock = element_producto.stock - element.cantidad;
-                let new_ventas = element_producto.nventas + 1;
-        
-                let element_variedad = Promise.resolve(Variedad.findById({_id:element.variedad}));
-                let new_stock_variedad = element_variedad.stock - element.cantidad;
-        
-                Promise.resolve(Producto.findByIdAndUpdate({_id: element.producto},{
-                    stock: new_stock,
-                    nventas: new_ventas
-                })).then(
-                    Promise.resolve(Variedad.findByIdAndUpdate({_id: element.variedad},{
-                        stock: new_stock_variedad,
-                    }))
-                );  
-            });
-
-        
-        }
-        enviar_email(venta._id, 'confirmar_compra');
-    
-        res.status(200).send({venta:venta});
-    });
-}
-
 const pedido_compra_cliente = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     try {
@@ -384,7 +344,6 @@ module.exports ={
     marcar_finalizado_orden,
     agregar_nueva_variedad_admin, 
     eliminar_variedad_admin,
-    registro_compra_manual_cliente,
     actualizar_producto_variedades_admin,
     pedido_compra_cliente,
     cambiar_vs_producto_admin
