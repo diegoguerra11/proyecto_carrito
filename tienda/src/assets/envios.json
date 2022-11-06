@@ -1,10 +1,6 @@
 [
     {
-        "titulo": "Recojo en Tienda",
-        "tiempo": "Al Instante"
-    },
-    {
         "titulo": "Delivery",
-        "tiempo": "máximo 1 mes"
+        "tiempo": "Máximo 3 semanas"
     }
 ]

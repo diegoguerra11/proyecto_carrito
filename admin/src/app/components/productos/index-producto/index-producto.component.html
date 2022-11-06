@@ -96,8 +96,8 @@
                                 Debe tener 4 imágenes en la galería.
                               </div>
                             </div>
-                            <p *ngIf="!item.vs">Desea hacer visible el producto en la tienda?</p>
-                            <p *ngIf="item.vs">Desea ocultar el producto de la tienda?</p>
+                            <p *ngIf="item.estado == 'Edicion'">Desea hacer visible el producto en la tienda?</p>
+                            <p *ngIf="item.estado != 'Edicion'">Desea ocultar el producto de la tienda?</p>
                           </div>
                           <div class="modal-footer">
                             <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>

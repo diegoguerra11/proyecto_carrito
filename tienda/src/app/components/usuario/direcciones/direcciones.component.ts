@@ -3,6 +3,7 @@ import { MessageBox } from '../../../../../../admin/src/app/utils/MessageBox';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { GuestService } from 'src/app/services/guest.service';
 import { ValidationsDireccion } from 'src/app/validations/validationsDireccion';
+import { Router } from '@angular/router';
 declare let $:any;
 
 @Component({
@@ -35,7 +36,8 @@ export class DireccionesComponent implements OnInit {
 
   constructor(
     private _guestService:GuestService,
-    private _clienteService:ClienteService
+    private _clienteService:ClienteService,
+    private _router:Router
   ){
     this.token = localStorage.getItem('token');
 
@@ -201,6 +203,9 @@ export class DireccionesComponent implements OnInit {
         this.obtener_direccion();
       }
     );
+  }
+  actualizarDireccion(id:any){
+    this._router.navigate(['/cuenta/direcciones/'+id]);
   }
 
 }

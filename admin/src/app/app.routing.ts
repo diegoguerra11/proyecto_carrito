@@ -1,4 +1,4 @@
-import { Routes, RouterModule } from  "@angular/router";
+import { Routes, RouterModule, CanActivate } from '@angular/router';
 import { ModuleWithProviders } from "@angular/core";
 import { InicioComponent } from './components/inicio/inicio.component';
 import { LoginComponent } from './components/login/login.component';
@@ -20,6 +20,9 @@ import { GaleriaProductoComponent } from './components/productos/galeria-product
 import { IndexVentasComponent } from "./components/ventas/index-ventas/index-ventas.component";
 import { CreateVentasComponent } from "./components/ventas/create-ventas/create-ventas.component";
 import { ShowVentasComponent } from "./components/ventas/show-ventas/show-ventas.component";
+import { IndexTrabajadorComponent } from './components/trabajador/index-trabajador/index-trabajador.component';
+import { CreateTrabajadorComponent } from './components/trabajador/create-trabajador/create-trabajador.component';
+import { UpdateTrabajadorComponent } from './components/trabajador/update-trabajador/update-trabajador.component';
 
 
 const appRoute : Routes = [
@@ -33,6 +36,10 @@ const appRoute : Routes = [
         {path: 'clientes/registro', component: CreateClienteComponent,canActivate: [AdminGuard]},
         {path: 'clientes/:id', component: EditClienteComponent,canActivate: [AdminGuard]},
 
+        {path: 'trabajadores', component:IndexTrabajadorComponent, canActivate: [AdminGuard]},
+        {path: 'trabajadores/registro', component:CreateTrabajadorComponent, canActivate: [AdminGuard]},
+        {path: 'trabajadores/:id', component:UpdateTrabajadorComponent, canActivate: [AdminGuard]},
+
         {path: 'productos/registro', component: CreateProductoComponent,canActivate: [AdminGuard]},
         {path: 'productos', component: IndexProductoComponent,canActivate: [AdminGuard]},
         {path: 'productos/:id', component: UpdateProductoComponent,canActivate: [AdminGuard]},
@@ -44,14 +51,11 @@ const appRoute : Routes = [
         {path: 'cupones', component: IndexCuponComponent,canActivate: [AdminGuard]},
         {path: 'cupones/:id', component: UpdateCuponComponent, canActivate: [AdminGuard]},
 
-
         {path: 'ventas', component: IndexVentasComponent, canActivate:[AdminGuard]},
         {path: 'ventas/create', component: CreateVentasComponent, canActivate:[AdminGuard]},
         {path: 'ventas/:id', component: ShowVentasComponent, canActivate:[AdminGuard]},
 
-    
         {path: 'configuraciones', component: ConfigComponent, canActivate: [AdminGuard]},
-
     ]},
 
     {path: 'login',component: LoginComponent}

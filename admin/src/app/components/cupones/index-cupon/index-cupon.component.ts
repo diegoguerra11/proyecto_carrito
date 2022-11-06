@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageBox } from 'src/app/utils/MessageBox';
 import { CuponService } from '../../../services/cupon.service';
-
 declare let $:any;
 
 @Component({
