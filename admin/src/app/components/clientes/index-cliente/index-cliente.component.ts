@@ -12,14 +12,14 @@ declare let $:any;
 })
 export class IndexClienteComponent implements OnInit {
 
-    public clientes : Array<any>=[];
-    public filtro_apellidos= '';
-    public filtro_correo= '';
+  public clientes : Array<any>=[];
+  public filtro_apellidos= '';
+  public filtro_correo= '';
 
-    public page=1;
-    public pageSize = 20;
-    public token;
-    public load_data = true;
+  public page=1;
+  public pageSize = 20;
+  public token;
+  public load_data = true;
 
   constructor(//inyecta los servidores
     private _clienteService : ClienteService,
