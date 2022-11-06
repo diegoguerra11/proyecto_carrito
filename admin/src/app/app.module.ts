@@ -28,6 +28,9 @@ import { GaleriaProductoComponent } from './components/productos/galeria-product
 import { CreateVentasComponent } from './components/ventas/create-ventas/create-ventas.component';
 import { IndexVentasComponent } from './components/ventas/index-ventas/index-ventas.component';
 import { ShowVentasComponent } from './components/ventas/show-ventas/show-ventas.component';
+import { IndexTrabajadorComponent } from './components/trabajador/index-trabajador/index-trabajador.component';
+import { CreateTrabajadorComponent } from './components/trabajador/create-trabajador/create-trabajador.component';
+import { UpdateTrabajadorComponent } from './components/trabajador/update-trabajador/update-trabajador.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +54,9 @@ import { ShowVentasComponent } from './components/ventas/show-ventas/show-ventas
     CreateVentasComponent,
     IndexVentasComponent,
     ShowVentasComponent,
+    IndexTrabajadorComponent,
+    CreateTrabajadorComponent,
+    UpdateTrabajadorComponent,
   ],
   imports: [
     BrowserModule,

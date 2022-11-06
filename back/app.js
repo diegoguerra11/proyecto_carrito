@@ -23,6 +23,7 @@ io.on('connection', function(socket){
 
 let descuento_route = require('./routes/descuento');
 let cliente_route = require('./routes/cliente');
+let trabajador_route = require('./routes/trabajador');
 let admin_route = require('./routes/admin');
 let producto_route = require('./routes/producto');
 let cupon_route = require ('./routes/cupon');
@@ -57,6 +58,7 @@ app.use((req,res,next)=>{
 });
 
 app.use('/api',cliente_route);
+app.use('/api',trabajador_route);
 app.use('/api',admin_route);
 app.use('/api',producto_route);
 app.use('/api',cupon_route);
