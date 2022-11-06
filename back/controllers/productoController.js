@@ -111,13 +111,6 @@ const actualizar_producto_admin = async function (req,res){
                     });
                 }
             }
-<<<<<<< HEAD
-        })
-       
-    }else{
-        //NO HAY IMAGEN
-        reg = await Producto.findByIdAndUpdate({_id:id},{
-=======
             );
             res.status(200).send({data:prod});
         });
@@ -125,7 +118,6 @@ const actualizar_producto_admin = async function (req,res){
     }else{
         //No HAY IMAGEN
         reg = Promise.resolve(Producto.findByIdAndUpdate({_id:id},{
->>>>>>> 54ceb196bb28eee5013b4676b9b0287a0a787281
             titulo: data.titulo,
             stock: data.stock,
             precio: data.precio,

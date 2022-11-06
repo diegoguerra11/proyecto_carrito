@@ -34,12 +34,7 @@ const registro_admin = async function(req, res){
 const login_admin = async function(req, res){
     let data = req.body;
 
-<<<<<<< HEAD
-
-    admin_arr = await Admin.find({email:data.email});
-=======
     let buscar_admin = Promise.resolve(Admin.findOne({email:data.email}));
->>>>>>> 54ceb196bb28eee5013b4676b9b0287a0a787281
 
     buscar_admin.then(admin => {
         if(!admin){return res.status(200).send({message: 'No se encontro el correo', data:undefined});}  
@@ -250,52 +245,6 @@ const actualizar_producto_variedades_admin = async function(req,res){
     actualizar_prod.then(prod => {
         res.status(200).send({data:prod});
     });
-<<<<<<< HEAD
-
-    res.status(200).send({data:reg});
-}
-
-//Función para registrar una compra de manera manual por el cliente. El cliente podrá registrar un pedido que podrá pagar de manera física (pago contra entrega). A la vez, esta compra
-//será registrada en el sistema.
-const registro_compra_manual_cliente = async function(req,res){
-    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
-
-    let data = req.body;
-    let detalles = data.detalles;
-
-        data.estado = 'Procesando';
-        
-        console.log(data);
-
-        let venta = await Venta.create(data);
-
-    for(let element of detalles){
-        element.venta = venta._id;
-        element.cliente = venta.cliente;
-        await Dventa.create(element);
-
-        let element_producto = await Producto.findById({_id:element.producto});
-        let new_stock = element_producto.stock - element.cantidad;
-        let new_ventas = element_producto.nventas + 1;
-
-        let element_variedad = await Variedad.findById({_id:element.variedad});
-        let new_stock_variedad = element_variedad.stock - element.cantidad;
-
-        await Producto.findByIdAndUpdate({_id: element.producto},{
-            stock: new_stock,
-            nventas: new_ventas
-        });
-
-        await Variedad.findByIdAndUpdate({_id: element.variedad},{
-            stock: new_stock_variedad,
-        });
-    }
-
-    enviar_email(venta._id, 'confirmar_compra');
-
-    res.status(200).send({venta:venta});
-=======
->>>>>>> 54ceb196bb28eee5013b4676b9b0287a0a787281
 }
 
 //Función para verificar si la cantidad de productos que el cliente desea comprar es manor o mayor al stock del producto. Si fuese mayor, el sistema no permitirá la compra de la cantidad
@@ -360,13 +309,8 @@ const cambiar_vs_producto_admin = async function(req,res){
     } catch (error) {
         res.status(200).send({data:undefined});
     }
-<<<<<<< HEAD
-
-//Función para que el cliente pueda registrar su email al momento de realizar su compra. El email servirá para recibir el comprobante con lso detalles de la compra.
-=======
 }
     
->>>>>>> 54ceb196bb28eee5013b4676b9b0287a0a787281
 const enviar_email = async function(venta, motivo) {
     let buscar_orden = Promise.resolve(Venta.findById({_id:venta}).populate('cliente').populate('direccion'));
     

@@ -478,11 +478,7 @@ const enviar_email = async function(venta, motivo) {
 
 //Función para actualizar datos de un cliente. Esta función actualiza los datos del cliente y los guarda en la base de datos.
 const actualizar_cliente = async function (id, data) { 
-<<<<<<< HEAD
-    return Cliente.findByIdAndUpdate({_id:id},{
-=======
     return Promise.resolve (Cliente.findByIdAndUpdate({_id:id},{
->>>>>>> 54ceb196bb28eee5013b4676b9b0287a0a787281
         nombres: data.nombres,
         apellidos: data.apellidos,
         telefono: data.telefono,
@@ -510,9 +506,6 @@ const actualizar_direccion = async function(id,data){
     }));
 }
 
-<<<<<<< HEAD
-//Exportación de las funciones.
-=======
 const desactivar_direcciones = async function(cliente, principal) {
     if(principal) {
         let buscar_direcciones = Promise.resolve(Direccion.find({cliente: cliente}));
@@ -546,7 +539,7 @@ const actualizar_direccion_cliente = async function(req,res){
     });
 } 
 
->>>>>>> 54ceb196bb28eee5013b4676b9b0287a0a787281
+//Exportación de las funciones.
 module.exports = {
     actualizar_direccion_cliente,
     registro_cliente,
