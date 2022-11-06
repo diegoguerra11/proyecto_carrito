@@ -6,9 +6,12 @@ let config = require('../global');
 const obtener_config_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
 
-    let reg = await Config.findById({_id: config.config_id});
+    let buscar_config = Promise.resolve(Config.findById({_id: config.config_id}));
     
-    res.status(200).send({data:reg});
+    buscar_config.then(reg => {
+        res.status(200).send({data:reg});
+    })
+
 }
 
 const actualizar_config_admin = async function(req,res){
@@ -22,28 +25,31 @@ const actualizar_config_admin = async function(req,res){
         let name = img_path.split('\\');
         let logo_name = name [2];
 
-        reg = await Config.findByIdAndUpdate({_id: config.config_id},{
+        reg = Promise.resolve(Config.findByIdAndUpdate({_id: config.config_id},{
             categorias: JSON.parse(data.categorias),
             titulo: data.titulo,
             serie: data.serie,
             logo: logo_name,
             correlativo: data.correlativo,
-        });
+        }));
 
-        fs.stat('./uploads/configuraciones/'+reg.logo, function(err){
-            if(!err){
-                fs.unlink('./uploads/configuraciones/'+reg.logo, (error)=>{
-                    if(error) throw error;
-                });
-            }
-        }); 
+        buscar_config.then(conf => {
+            fs.stat('./uploads/configuraciones/'+conf.logo, function(err){
+                if(!err){
+                    fs.unlink('./uploads/configuraciones/'+conf.logo, (error)=>{
+                        if(error) throw error;
+                    });
+                }
+            }); 
+        })
+
     } else {
-        reg = await Config.findByIdAndUpdate({_id: config.config_id},{
+        reg = Promise.resolve(Config.findByIdAndUpdate({_id: config.config_id},{
             categorias: data.categorias,
             titulo: data.titulo,
             serie: data.serie,
             correlativo: data.correlativo,
-        });
+        }));
     } 
 
     res.status(200).send({data:reg});
@@ -64,8 +70,11 @@ const obtener_logo = async function(req,res){
 }
 
 const obtener_config_publico  = async function(req,res){
-    let reg = await Config.findById({_id: config.config_id});
-    res.status(200).send({data:reg});
+    let buscar_config = Promise.resolve(Config.findById({_id: config.config_id}));
+
+    buscar_config.then(reg => {
+        res.status(200).send({data:reg});
+    })
 }
 
 module.exports = {

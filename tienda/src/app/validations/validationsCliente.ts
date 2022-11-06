@@ -3,11 +3,8 @@ import { MessageBox } from '../Utils/MessageBox';
 export class ValidatonsCliente {
     static actualizarCliente(form: any) {
         let numerico = /^[0-9]+$/;
-        const fecha = new Date();
-        const añoActual =fecha.getFullYear();
-        const mesActual =fecha.getMonth()+1;
-        const diaActual =fecha.getDate();
-
+        const fecha = new Date(form.f_nacimiento);
+        const timeDiff = Math.abs(Date.now() - fecha.getTime());
         
         if(!form.nombres) {
             MessageBox.messageError('El campo nombres es obligatorio');
@@ -43,21 +40,13 @@ export class ValidatonsCliente {
             MessageBox.messageError('Número de pasaporte Inválido');
             return false;
         }
-        //Se puede mejorar ;)
-        if(+(form.f_nacimiento.split("-")[0])> (añoActual-18)){
-            MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
-            return false;
-        }
-        if(+(form.f_nacimiento.split("-")[1]) > mesActual){
-            MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
-            return false;
-        }
-        if(+(form.f_nacimiento.split("-")[2])> diaActual){
+        if(Math.floor((timeDiff / (1000 * 3600 * 24))/365) < 18) {
             MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
             return false;
         }
         return true;
     }
+
     static registrarCliente(form:any){
         let numerico = /^[0-9]+$/;
         let esCorreo = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -74,13 +63,13 @@ export class ValidatonsCliente {
           MessageBox.messageError('El campo apellido es obligatorio');
           return false;
         }
-      if(form.apellidos.match(numerico)) {
-          MessageBox.messageError('El campo apellido debe ser alfabetico');
-          return false;
+        if(form.apellidos.match(numerico)) {
+            MessageBox.messageError('El campo apellido debe ser alfabetico');
+            return false;
         }
-      if(!form.email){
-        MessageBox.messageError('El campo email es obligatorio');
-        return false;
+        if(!form.email){
+            MessageBox.messageError('El campo email es obligatorio');
+            return false;
         }
         if(!form.email.match(esCorreo)) {
             MessageBox.messageError('Debe Ingresar un correo electrónico válido');
@@ -89,7 +78,7 @@ export class ValidatonsCliente {
         if(!form.password){
           MessageBox.messageError('El campo password es obligatorio');
           return false;
-          }
+        }
 
         return true;
 

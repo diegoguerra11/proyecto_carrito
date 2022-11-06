@@ -21,6 +21,7 @@ import { DireccionesComponent } from './components/usuario/direcciones/direccion
 import { IndexPedidosComponent } from './components/usuario/pedidos/index-pedidos/index-pedidos.component';
 import { PedidosDetallesComponent } from './components/usuario/pedidos/pedidos-detalles/pedidos-detalles.component';
 import { VerificarPagoComponent } from './components/verificar-pago/verificar-pago.component';
+import { EditDireccionComponent } from './components/usuario/edit-direccion/edit-direccion.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { VerificarPagoComponent } from './components/verificar-pago/verificar-pa
     IndexPedidosComponent,
     PedidosDetallesComponent,
     VerificarPagoComponent,
+    EditDireccionComponent,
   ],
   imports: [
     BrowserModule,

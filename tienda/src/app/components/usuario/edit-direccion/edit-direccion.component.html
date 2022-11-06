@@ -1,0 +1,123 @@
+<app-nav></app-nav>
+
+<main class="cs-page-wrapper">
+  <!-- Breadcrumb -->
+  <nav class="bg-secondary mb-3" aria-label="breadcrumb">
+    <div class="container">
+      <ol class="breadcrumb breadcrumb-alt mb-0">
+        <li class="breadcrumb-item"><a [routerLink]="['/']" ><i class="cxi-home" aria-hidden="true"></i></a></li>
+        <li class="breadcrumb-item active" aria-current="page">Mis direcciones</li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Page container -->
+  <section class="container pt-3 pt-lg-4 pb-5 pb-lg-6">
+    <div class="row pb-2 pb-lg-0">
+      <!-- Account menu (sticky sidebar) -->
+      <aside class="col-xl-3 col-lg-4 pb-3 mb-4 mb-lg-0">
+        <app-siderbar></app-siderbar>
+      </aside>
+      <div class="col align-item-center mb-4 pb-1 pb-sm-3">
+        <div class="row justify-content-center">
+          <h1 class="h1">Mi Cuenta</h1>
+          
+          
+        </div>
+        <div class="col ml-auto">
+          
+          <div class="row pb-2 pb-lg-0 justify-content-center align-item-center">
+            <!-- Content -->
+            
+            <div class="col-lg-14 ml-auto">
+              
+              <div class="d-flex align-items-center justify-content-between mb-4 pb-1 pb-sm-3">
+                <h1 class="h2 mb-0">Actualizar dirección</h1>
+              </div>
+              <form class="mb-5" #actualizarForm="ngForm" (ngSubmit)="actualizar(actualizarForm)">
+                <div class="row mb-3">
+                  <div class="col-sm-6 form-group">
+                    <label for="ac-fn">Destinatario</label>
+                    <input type="text" required class="form-control form-control-lg" name="destinatario" [(ngModel)]="direccion.destinatario" placeholder="Nombres completos del destinatario"/>
+                  </div>
+                  <div class="col-sm-6 form-group">
+                    <label for="ac-fn">Tipo de Documento</label>
+                    <select name="tipoDocumento" required [(ngModel)]="direccion.tipoDocumento" class="custom-select custom-select-lg">
+                      <option value="" selected disabled>Seleccionar</option>
+                      <option value="dni">DNI</option>
+                      <option value="carnetExtranjeria">Carnet de Extranjería</option>
+                      <option value="pasaporte">Pasaporte</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-6 form-group">
+                    <label for="ac-fn">Número de documento</label>
+                    <input type="text" required class="form-control form-control-lg" name="numeroDocumento" [(ngModel)]="direccion.numeroDocumento" placeholder="Número de Documento"/>
+                  </div>
+                  <div class="col-sm-6 form-group">
+                    <label for="ac-fn">ZIP</label>
+                    <input type="text" required class="form-control form-control-lg" name="zip" [(ngModel)]="direccion.zip" placeholder="Código postal"/>
+                  </div>
+                  <div class="col-sm-6 form-group">
+                    <label for="ac-fn">Telefono</label>
+                    <input type="text" required class="form-control form-control-lg" name="telefono" [(ngModel)]="direccion.telefono" placeholder="Telefono"/>
+                  </div>
+                  <div class="col-sm-12 form-group">
+                    <label for="ac-fn">Dirección</label>
+                    <textarea required class="form-control" placeholder="Direccion" name="direccion" [(ngModel)]="direccion.direccion" rows="3"></textarea>
+                  </div>
+                  <div class="col-sm-6 form-group">
+                    <label for="ac-fn">País</label>
+                    <select name="pais"  [(ngModel)]="direccion.pais" class="custom-select custom-select-lg" >
+                       
+                        <option value="{{direccion.pais}}" selected enabled>Perú</option>
+                      </select>
+                  </div>
+                  <div class="col-sm-6 form-group">
+                    <label for="ac-fn">Región</label>
+                    <select id="sl-region" name="region" [(ngModel)]="direccion.region" class="custom-select custom-select-lg" (change)="get_region()">
+                      <option value="" disabled>Seleccionar</option>
+                      <option value="{{direccion.region}}" selected >{{direccion.region}}</option>
+                      <option value="{{ item.name }}" *ngFor="let item of regiones_arr">{{ item.name }}</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-6 form-group">
+                    <label for="ac-fn">Provincia</label>
+                    <select id="sl-provincia" name="provincia" [(ngModel)]="direccion.provincia" class="custom-select custom-select-lg"   (change)="get_provincia()">
+                      <option value="" disabled>Seleccionar</option>
+                      <option value="{{direccion.provincia}}"selected >{{direccion.provincia}}</option>
+                      <option value="{{ item.name }}" *ngFor="let item of provincias_arr">{{ item.name }}</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-6 form-group">
+                    <label for="ac-fn">Distrito</label>
+                    <select id="sl-distrito" name="distrito" [(ngModel)]="direccion.distrito" class="custom-select custom-select-lg"  (change)="get_distrito()" >
+                      <option value=""  disabled>Seleccionar</option>
+                      <option value="{{direccion.distrito}}"selected >{{direccion.distrito}}</option>
+                      <option value="{{ item.name }}" *ngFor="let item of distritos_arr">{{ item.name }}</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-12 form-group">
+                    <div class="custom-control custom-checkbox">
+                      <input class="custom-control-input" type="checkbox" id="ex-check-1" name="principal" [(ngModel)]="direccion.principal"/>
+                      <label class="custom-control-label" for="ex-check-1">Activar cuenta principal</label>
+                    </div>
+                  </div>
+               
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-lg">
+                  &nbsp;Actualizar dirección&nbsp;
+                </button>
+                
+                
+              </form>
+             
+            </div>
+            
+          </div>
+          <a [routerLink]="['/cuenta/direcciones']" class="btn btn-primary btn-lg">Regresar</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

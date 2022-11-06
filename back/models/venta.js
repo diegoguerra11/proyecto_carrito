@@ -16,7 +16,7 @@ let VentaSchema = Schema({
     estado: {type: String, require: true},
     tipo_descuento: {type: String, require: false},
     valor_descuento: {type: String, require: false},
-    direccion: {type: Schema.ObjectId, ref: 'direccion', require: true},
+    direccion: {type: Schema.ObjectId, ref: 'direccion', require: false},
     nota: {type: String, require: false},
     createdAt: {type:Date, default: Date.now, require: true}
 });

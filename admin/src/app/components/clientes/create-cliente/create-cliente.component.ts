@@ -17,8 +17,8 @@ export class CreateClienteComponent implements OnInit {
   public cliente: any = {
     genero: ''
   };
-    public token;
-    public load_btn = false;
+  public token;
+  public load_btn = false;
 
   constructor(//iunyecta los servidores
     private _clienteService: ClienteService,
@@ -34,10 +34,8 @@ export class CreateClienteComponent implements OnInit {
   }
 //regitra los clientes y valida que los datos esten correctos
   registro(registroForm){
-    if(!ValidatonsCliente.verificarCliente(registroForm.form.value)){
-      return;
-    }
-//verifica si el documento ya existe en la base de datos
+    if(!ValidatonsCliente.verificarCliente(registroForm.form.value)){return;}
+
     this._clienteService.registro_cliente_admin(this.cliente,this.token).subscribe(
       response =>{
         if(!response.data){

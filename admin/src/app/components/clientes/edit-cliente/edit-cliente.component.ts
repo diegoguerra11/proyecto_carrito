@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ClienteService } from '../../../services/cliente.service';
 import { AdminService } from '../../../services/admin.service';
 import { ValidatonsCliente } from 'src/app/validations/validationsCliente';
@@ -67,9 +67,7 @@ export class EditClienteComponent implements OnInit {
         }
       );
     } else {//en caso de que no complete todos los campos saltara un mensaje
-      MessageBox.messageError("Debe completar todos los campos");
-
-}
+      MessageBox.messageError("Debe completar todos los campos");  
+    }
   }
-
 }

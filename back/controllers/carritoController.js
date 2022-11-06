@@ -6,18 +6,20 @@ const agregar_carrito_cliente = async function(req,res){
     
     let data = req.body;
 
-    let existe_en_carrito = await Carrito.exists({
+    let existe_en_carrito = Promise.resolve(Carrito.exists({
         cliente:data.cliente,
         producto:data.producto
+    }));
+
+    existe_en_carrito.then(existe => {
+        if(existe){return res.status(200).send({message: 'Producto agregado anteriormente', data:undefined});}
+
+        let crear_carrito = Promise.resolve(Carrito.create(data));
+
+        crear_carrito.then(reg => {
+            return res.status(200).send({data:reg});
+        });
     });
-
-    if(existe_en_carrito){
-        return res.status(200).send({message: 'Producto agregado anteriormente', data:undefined});
-    }
-
-    let reg = await Carrito.create(data);
-
-    return res.status(200).send({data:reg});
 }
 
 const comprobar_carrito_cliente = async function(req,res){
@@ -29,11 +31,13 @@ const comprobar_carrito_cliente = async function(req,res){
         let producto_sl = '';
 
         for(let item of detalles){
-            let variedad = await Variedad.findById({_id: item.variedad}).populate('producto');
-            if(variedad.stock < item.cantidad){
-                access = true;
-                producto_sl = variedad.producto.titulo;
-            }
+            let buscar_var = Promise.resolve(Variedad.findById({_id: item.variedad}).populate('producto'));
+            buscar_var.then(variedad => {
+                if(variedad.stock < item.cantidad){
+                    access = true;
+                    producto_sl = variedad.producto.titulo;
+                }
+            });
         }
 
         if(access){return res.status(200).send({venta:false,message:'Stock insuficiente para ' + producto_sl});}
@@ -49,9 +53,11 @@ const obtener_carrito_cliente = async function(req,res){
     
     let id = req.params['id'];
 
-    let carrito_cliente = await Carrito.find({cliente:id}).populate('variedad').populate('producto');
-    
-    res.status(200).send({data:carrito_cliente});
+    let buscar_carrito_cliente = Promise.resolve(Carrito.find({cliente:id}).populate('variedad').populate('producto'));
+
+    buscar_carrito_cliente.then(carrito_cliente => {
+        res.status(200).send({data:carrito_cliente});
+    });
 }
 
 const actualizar_cantidad_carrito_cliente = async function(req, res) {
@@ -63,9 +69,12 @@ const actualizar_cantidad_carrito_cliente = async function(req, res) {
     let filter = {_id: id};
     let newvalues = { $set: { cantidad: cantidad} };
 
-    let carrito_cliente = await Carrito.updateOne(filter, newvalues);
+    let crear_carrito_cliente = Promise.resolve(Carrito.updateOne(filter, newvalues));
 
-    res.status(200).send({data: carrito_cliente});
+    crear_carrito_cliente.then(carrito_cliente => {
+        res.status(200).send({data: carrito_cliente});
+    })
+
 }
 
 const eliminar_carrito_cliente = async function(req,res){
@@ -73,8 +82,12 @@ const eliminar_carrito_cliente = async function(req,res){
     
     let id = req.params['id'];
 
-    let reg = await Carrito.findByIdAndRemove({_id:id});
-    res.status(200).send({data:reg});
+    let buscar_carrito_cliente = Promise.resolve(Carrito.findByIdAndRemove({_id:id}));
+
+    buscar_carrito_cliente.then(carrito_cliente => {
+        res.status(200).send({data:carrito_cliente});
+    })
+
 }
 
 module.exports = {

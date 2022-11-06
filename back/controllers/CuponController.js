@@ -5,12 +5,16 @@ const registro_cupon_admin = async function (req,res){
 
     let data = req.body;
 
-    let existeCupon = await Cupon.findOne({codigo:data.codigo.trim()});
-    
-    if(existeCupon){return res.status(200).send({message: 'El cupón ya existe',data: undefined});}
+    let existeCupon = Promise.resolve(Cupon.findOne({codigo:data.codigo.trim()}));
 
-    let reg = await Cupon.create(data);
-    res.status(200).send({data:reg});
+    existeCupon.then((existe) => {
+        if(existeCupon){return res.status(200).send({message: 'El cupón ya existe',data: undefined});}
+
+        let crear_cupon = Promise.resolve(Cupon.create(data));
+        crear_cupon.then(cupon => {
+            res.status(200).send({data:cupon});
+        });
+    })
  }
 
  const listar_cupones_admin = async function(req,res){
@@ -18,8 +22,10 @@ const registro_cupon_admin = async function (req,res){
 
     let filtro = req.params['filtro'];
 
-    let reg = await Cupon.find({codigo: new RegExp(filtro, 'i')}).sort({createdAt: -1});
-    res.status(200).send({data: reg});
+    let  buscar_cupones = Promise.resolve(Cupon.find({codigo: new RegExp(filtro, 'i')}).sort({createdAt: -1}));
+    buscar_cupones.then(reg => {
+        res.status(200).send({data: reg});
+    });
 }
 
 const obtener_cupon_admin = async function (req,res){
@@ -28,9 +34,11 @@ const obtener_cupon_admin = async function (req,res){
     let id = req.params['id'];
 
     try {
-        let reg = await Cupon.findById({_id:id});
-
-        res.status(200).send({data:reg});
+        let buscar_cupon = Promise.resolve(Cupon.findById({_id:id}));
+        buscar_cupon.then(reg => {
+            res.status(200).send({data:reg});
+        })
+        .catch(()=> {throw error});
     } catch (error) {
         res.status(200).send({message:'Error en el servidor', data:undefined});
     }
@@ -44,9 +52,13 @@ const obtener_cupon_cliente = async function (req,res){
     if(cupon == undefined){return;}
 
     try {
-        let reg = await Cupon.findOne({codigo:cupon});
+        let buscar_cupon = Promise.resolve(Cupon.findOne({codigo:cupon}));
 
-        res.status(200).send({data:reg});
+        buscar_cupon.then(reg => {
+            res.status(200).send({data:reg});
+        })
+        .catch(() => {throw error})
+
     } catch (error) {
         res.status(200).send({message:'Error en el servidor', data:undefined});
     }
@@ -59,14 +71,17 @@ const actualizar_cupon_admin = async function (req,res){
     
     let id = req.params['id'];
 
-    let reg = await Cupon.findByIdAndUpdate({_id:id,},{
+    let buscar_cupon = Promise.resolve(Cupon.findByIdAndUpdate({_id:id,},{
         codigo : data.codigo,
         tipo: data.tipo,
         valor: data.valor,
         limite: data.limite
+    }));
+
+    buscar_cupon.then(reg => {
+        res.status(200).send({data:reg});
     });
 
-    res.status(200).send({data:reg});
 }
 
 const eliminar_cupon_admin = async function (req,res){
@@ -74,8 +89,10 @@ const eliminar_cupon_admin = async function (req,res){
     
     let id = req.params['id'];
 
-    let reg = await Cupon.findByIdAndRemove({_id:id});
-    res.status(200).send({data:reg});
+    let buscar_cupon = Promise.resolve(Cupon.findByIdAndRemove({_id:id}));
+    buscar_cupon.then(reg => {
+        res.status(200).send({data:reg});
+    });
 }
 
 const validar_cupon_admin = async function(req,res){
@@ -83,13 +100,15 @@ const validar_cupon_admin = async function(req,res){
     
     let cupon = req.params['cupon'];
     
-    let data = await Cupon.findOne({codigo:cupon});
-    
-    if(!data){return res.status(200).send({data:undefined,message: 'El cupón no existe'});}
-    
-    if(data.limite == 0) {return res.status(200).send({data:undefined,message: 'Se superó el limite máximo de canjes'});}
+    let buscar_cupon = Promise.resolve(Cupon.findOne({codigo:cupon}));
+    buscar_cupon.then(data => {
+            
+        if(!data){return res.status(200).send({data:undefined,message: 'El cupón no existe'});}
+        
+        if(data.limite == 0) {return res.status(200).send({data:undefined,message: 'Se superó el limite máximo de canjes'});}
 
-    res.status(200).send({data:data});
+        res.status(200).send({data:data});
+    });
 }
 
 const disminuir_cupon = async function(req, res){
@@ -99,17 +118,24 @@ const disminuir_cupon = async function(req, res){
 
     if(cupon == undefined){return;}
 
-    let data = await Cupon.findOne({codigo:cupon});
+    let buscar_cupon = Promise.resolve(Cupon.findOne({codigo:cupon}));
 
-    let id = data._id;
-    let reg = await Cupon.findByIdAndUpdate({_id:id,},{
-        codigo : data.codigo,
-        tipo: data.tipo,
-        valor: data.valor,
-        limite: (data.limite -1)
+    buscar_cupon.then(data => {
+        if(data){
+            let id = data._id;
+            let actualiza_cupon = Promise.resolve(Cupon.findByIdAndUpdate({_id:id,},{
+                codigo : data.codigo,
+                tipo: data.tipo,
+                valor: data.valor,
+                limite: (data.limite -1)
+                
+            })); 
+
+            actualiza_cupon.then(reg => {
+                res.status(200).send({data:reg});    
+            });
+        }
     });
-
-    res.status(200).send({data:reg});     
 }
 
 module.exports = {

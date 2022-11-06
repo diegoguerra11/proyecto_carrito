@@ -16,24 +16,32 @@ const registro_producto_admin = async function (req,res){
 
     data.slug = data.titulo.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
     data.portada = portada_name;
-    let reg = await Producto.create(data);
+    let crear_producto = Promise.resolve(Producto.create(data));
 
-    let inventario = await Inventario.create({
-        admin: req.user.sub,
-        cantidad: data.stock,
-        proveedor: 'Primer registro',
-        producto: reg._id
+    crear_producto.then(reg => {
+        let crear_inventario = Promise.resolve(Inventario.create({
+            admin: req.user.sub,
+            cantidad: data.stock,
+            proveedor: 'Primer registro',
+            producto: reg._id
+        }));
+        crear_inventario.then(inventario => {
+            res.status(200).send({data:reg, inventario: inventario});
+        })
     });
-
-    res.status(200).send({data:reg, inventario: inventario});
 }
 
 const listar_productos_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
     let filtro = req.params['filtro'];
 
-    let reg = await Producto.find({titulo: new RegExp(filtro, 'i')});
-    res.status(200).send({data: reg});
+    let reg = Promise.resolve(
+        Producto.find({titulo: new RegExp(filtro, 'i')})
+    );
+
+    reg.then(data => 
+        res.status(200).send({data: data})
+    );
 }
 
 const obtener_portada = async function(req,res){
@@ -56,9 +64,11 @@ const obtener_producto_admin = async function (req,res){
     let id = req.params['id'];
 
     try {
-        let reg = await Producto.findById({_id:id});
-
-        res.status(200).send({data:reg});
+        let reg = Promise.resolve(Producto.findById({_id:id}));
+        
+        reg.then(data => 
+            res.status(200).send({data: data})
+        );
     } catch (error) {
         res.status(200).send({message:'No se encontró el producto', data:undefined});
     }
@@ -77,7 +87,7 @@ const actualizar_producto_admin = async function (req,res){
         let portada_name = name [2];
 
         
-        reg = await Producto.findByIdAndUpdate({_id:id},{
+        reg = Promise.resolve(Producto.findByIdAndUpdate({_id:id},{
             titulo: data.titulo,
             stock: data.stock,
             precio: data.precio,
@@ -85,29 +95,34 @@ const actualizar_producto_admin = async function (req,res){
             descripcion: data.descripcion,
             contenido:data.contenido,
             portada: portada_name
-        });
+        }));
 
-        fs.stat('./uploads/productos/'+reg.portada, function(err){
-            if (!err) {
-                fs.unlink('./uploads/productos/'+reg.portada, (error) => {
-                    if (error) throw error;
-                });
+        reg.then(prod =>{
+            
+            fs.stat('./uploads/productos/'+prod.portada, function(err){
+                if (!err) {
+                    fs.unlink('./uploads/productos/'+prod.portada, (error) => {
+                        if (error) throw error;
+                    });
+                }
             }
-        })
-
-       
+            );
+            res.status(200).send({data:prod});
+        });
+         
     }else{
         //No HAY IMAGEN
-        reg = await Producto.findByIdAndUpdate({_id:id},{
+        reg = Promise.resolve(Producto.findByIdAndUpdate({_id:id},{
             titulo: data.titulo,
             stock: data.stock,
             precio: data.precio,
             categoria: data.categoria,
             descripcion: data.descripcion,
             contenido:data.contenido,
-        });
+        }));
+        reg.then(prod => res.status(200).send({data:prod}));
     }
-    res.status(200).send({data:reg});
+   
 }
 
 const eliminar_producto_admin = async function (req,res){
@@ -115,9 +130,11 @@ const eliminar_producto_admin = async function (req,res){
      
     let id = req.params['id'];
 
-    let reg = await Producto.findByIdAndRemove({_id:id});
+    let buscar_producto = Promise.resolve(Producto.findByIdAndRemove({_id:id}));
 
-    res.status(200).send({data:reg});
+    buscar_producto.then(reg => {
+        res.status(200).send({data:reg});
+    });
 }
 
 const listar_inventario_producto_admin = async function(req,res){
@@ -125,8 +142,11 @@ const listar_inventario_producto_admin = async function(req,res){
       
     let id = req.params['id'];
 
-    let reg = await Inventario.find({producto: id}).populate('admin').sort({createdAt: -1});
-    res.status(200).send({data:reg});
+    let buscar_inventario = Promise.resolve(Inventario.find({producto: id}).populate('admin').sort({createdAt: -1}));
+
+    buscar_inventario.then(reg => {
+        res.status(200).send({data:reg});
+    })
 }
 
 const eliminar_inventario_producto_admin = async function (req,res){
@@ -135,20 +155,26 @@ const eliminar_inventario_producto_admin = async function (req,res){
     let id = req.params['id'];
 
     //ELIMINAR INVENTARIO
-    let reg = await Inventario.findByIdAndRemove({_id:id});
+    let eliminar_inventario = Promise.resolve(Inventario.findByIdAndRemove({_id:id}));
 
-    //OBTENER EL REGISTRO DEL PRODUCTO
-    let prod = await Producto.findById({_id:reg.producto});
+    eliminar_inventario.then(reg => {
+        //OBTENER EL REGISTRO DEL PRODUCTO
+        let buscar_prod = Promise.resolve(Producto.findById({_id:reg.producto}));
 
-    //CALCULAR EL NUEVO STOCK
-    let nuevo_stock = parseInt(prod.stock) - parseInt(reg.cantidad);
+        buscar_prod.then(prod => {
+            //CALCULAR EL NUEVO STOCK
+            let nuevo_stock = parseInt(prod.stock) - parseInt(reg.cantidad);
 
-    //ACTUALIZACION DEL NUEVO STOCK AL PRODUCTO
-    let producto = await Producto.findByIdAndUpdate({_id:reg.producto},{
-        stock: nuevo_stock
-    })
+            //ACTUALIZACION DEL NUEVO STOCK AL PRODUCTO
+            let actualizar_producto = Promise.resolve(Producto.findByIdAndUpdate({_id:reg.producto},{
+                stock: nuevo_stock
+            }))
 
-    res.status(200).send({data:producto});
+            actualizar_producto.then(producto => {
+                res.status(200).send({data:producto});
+            });
+        });
+    });
 }
 
 const registro_inventario_producto_admin = async function(req,res){
@@ -156,9 +182,11 @@ const registro_inventario_producto_admin = async function(req,res){
     
     let data = req.body;
 
-    let reg = await Inventario.create(data);
+    let crear_inventario = Promise.resolve(Inventario.create(data));
 
-    res.status(200).send({data:reg});
+    crear_inventario.then(reg => {
+        res.status(200).send({data:reg});
+    });
 }
 
 const actualizar_producto_variedades_admin = async function (req,res){
@@ -167,12 +195,14 @@ const actualizar_producto_variedades_admin = async function (req,res){
     let id = req.params['id'];
     let data = req.body;
 
-    let reg = await Producto.findByIdAndUpdate({_id:id},{
+    let buscar_producto = Promise.resolve(Producto.findByIdAndUpdate({_id:id},{
         titulo_variedad: data.titulo_variedad,
         variedades: data.variedades
-    });
+    }));
 
-    res.status(200).send({data:reg});
+    buscar_producto.then(reg => {
+        res.status(200).send({data:reg});
+    });
 }
 
 const agregar_imagen_galeria_admin = async function(req,res){
@@ -185,12 +215,15 @@ const agregar_imagen_galeria_admin = async function(req,res){
     let name = img_path.split('\\');
     let imagen_name = name[2];
 
-    let reg =await Producto.findByIdAndUpdate({_id:id},{ $push: {galeria:{
+    let actualiza_producto = Promise.resolve(Producto.findByIdAndUpdate({_id:id},{ $push: {galeria:{
         imagen: imagen_name,
         _id: data._id
-    }}});
+    }}}));
 
-    res.status(200).send({data:reg});
+    actualiza_producto.then(reg => {
+        res.status(200).send({data:reg});
+    })
+
 }
 
 const eliminar_imagen_galeria_admin = async function(req,res){
@@ -198,30 +231,42 @@ const eliminar_imagen_galeria_admin = async function(req,res){
     let id = req.params['id'];
     let data = req.body;
 
-    let reg =await Producto.findByIdAndUpdate({_id:id},{$pull: {galeria: {_id: data._id}}});
-    res.status(200).send({data:reg});
+    let buscar_producto = Promise.resolve(Producto.findByIdAndUpdate({_id:id},{$pull: {galeria: {_id: data._id}}}));
+
+    buscar_producto.then(reg => {
+        res.status(200).send({data:reg});
+    })
 }
 
 //---METODOS PUBLICOS---------------------------
 const listar_productos_publico = async function(req,res){
     let filtro = req.params['filtro'];
 
-    let reg = await Producto.find({estado: "Publicado",titulo: new RegExp(filtro, 'i')}).sort({createdAt:-1});
-    res.status(200).send({data: reg});
+    let buscar_productos = Promise.resolve(Producto.find({estado: "Publicado",titulo: new RegExp(filtro, 'i')}).sort({createdAt:-1}));
+
+    buscar_productos.then(reg => {
+        res.status(200).send({data: reg});
+
+    });
 }
 
 const obtener_productos_slug_publico = async function(req,res){
     let slug = req.params['slug'];
 
-    let reg = await Producto.findOne({slug: slug});
-    res.status(200).send({data: reg});
+    let buscar_producto = Promise.resolve(Producto.findOne({slug: slug}));
+    buscar_producto.then(reg => {
+        res.status(200).send({data: reg});
+    })
+
 }
 
 const listar_productos_recomendados_publico = async function(req,res){
     let categoria = req.params['categoria'];
 
-    let reg = await Producto.find({categoria: categoria}).sort({createdAt:-1}).limit(8);
-    res.status(200).send({data: reg});
+    let buscar_prod = Promise.resolve(Producto.find({categoria: categoria}).sort({createdAt:-1}).limit(8));
+    buscar_prod.then(reg => {
+        res.status(200).send({data: reg});
+    });
 }
 
 

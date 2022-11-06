@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { MessageBox } from '../../utils/MessageBox';
+import { ValidatonsIniciarSesion } from '../../validations/ValidatonsIniciarSesion';
 
 
 @Component({
@@ -29,10 +30,9 @@ export class LoginComponent implements OnInit {
 
     }
   }
-
-//se valida los datos del login y si hay algun error en el formulario mandara un mensaje
   login(loginForm){
-    if(!loginForm.valid){MessageBox.messageError('Los datos del formulario no son validos'); return;}
+    //se valida los datos del login y si hay algun error en el formulario mandara un mensaje
+    if(!ValidatonsIniciarSesion.login(loginForm.form.value)){return;}
 
     let data={
       email: this.user.email,
@@ -41,8 +41,8 @@ export class LoginComponent implements OnInit {
 
     this._adminService.login_admin(data).subscribe(
       response =>{
-        if(response.data == undefined){MessageBox.messageError(response.message); return;}
-
+        if(!response.data){return MessageBox.messageError(response.message);}
+        
         this.usuario = response.data;
 
         localStorage.setItem('token',response.token);

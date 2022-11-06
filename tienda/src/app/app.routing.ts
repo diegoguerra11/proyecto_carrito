@@ -12,6 +12,7 @@ import { DireccionesComponent } from './components/usuario/direcciones/direccion
 import { IndexPedidosComponent } from './components/usuario/pedidos/index-pedidos/index-pedidos.component';
 import { PedidosDetallesComponent } from "./components/usuario/pedidos/pedidos-detalles/pedidos-detalles.component";
 import { VerificarPagoComponent } from "./components/verificar-pago/verificar-pago.component";
+import { EditDireccionComponent } from "./components/usuario/edit-direccion/edit-direccion.component";
 
 const appRoute : Routes = [
     {path: '', component: InicioComponent},
@@ -19,6 +20,7 @@ const appRoute : Routes = [
 
     {path: 'cuenta/perfil', component: PerfilComponent, canActivate: [AuthGuard]},
     {path: 'cuenta/direcciones', component: DireccionesComponent, canActivate: [AuthGuard]},
+    {path: "cuenta/direcciones/:id", component:EditDireccionComponent, canActivate: [AuthGuard]},
     {path: 'cuenta/pedidos', component: IndexPedidosComponent, canActivate: [AuthGuard]},
     {path: 'cuenta/pedidos/:id', component: PedidosDetallesComponent, canActivate: [AuthGuard]},
     {path: 'carrito', component: CarritoComponent, canActivate: [AuthGuard]},
