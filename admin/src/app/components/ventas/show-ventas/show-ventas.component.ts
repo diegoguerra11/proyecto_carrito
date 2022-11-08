@@ -102,12 +102,12 @@ export class ShowVentasComponent implements OnInit {
     }
   }
 
-  eliminar(id:any){
+  cancelar(id:any){
     this.load_del = true;
-    this._adminService.eliminar_orden_admin(id,this.token).subscribe(
+    this._adminService.cancelar_orden_admin(id,this.token).subscribe(
       response=>{
-        MessageBox.messageSuccess('El pedido fue eliminada correctamente.');
-        $('#openEliminar').modal('hide');
+        MessageBox.messageSuccess('El pedido fue cancelado correctamente.');
+        $('#openCancelar').modal('hide');
         $('.modal-backdrop').remove();
         this._router.navigate(['/panel/ventas']);
         this.load_del = false;

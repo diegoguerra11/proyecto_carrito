@@ -128,11 +128,11 @@ const marcar_finalizado_orden = async function(req,res){
     );
 }
 
-const eliminar_orden_admin = async function(req,res){
+const cancelar_orden_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     let id = req.params['id'];
 
-    let buscar_venta = Promise.resolve(Venta.findOneAndRemove({_id:id}));
+    let buscar_venta = Promise.resolve(Venta.findOneAndUpdate({_id:id}, {estado:'Cancelado'}));
 
     buscar_venta.then(venta =>{
         Promise.resolve(Dventa.remove({venta:id})).then(    
@@ -340,7 +340,7 @@ module.exports ={
     confirmar_pago_orden,
     obtener_detalles_ordenes_cliente,
     marcar_envio_orden,
-    eliminar_orden_admin,
+    cancelar_orden_admin,
     marcar_finalizado_orden,
     agregar_nueva_variedad_admin, 
     eliminar_variedad_admin,
