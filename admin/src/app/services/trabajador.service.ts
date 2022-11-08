@@ -24,5 +24,13 @@ export class TrabajadorService {
     return this._http.post(this.url+'registrar_trabajador_admin/', data, {headers:headers});
   }
 
-  
+  obtener_trabajador_admin(id, token): Observable<any> {
+    let headers = new HttpHeaders({'Content-Type':'application/json', 'Authorization': token});
+    return this._http.get(this.url+'obtener_trabajador_admin/'+id,{headers: headers});
+  }
+
+  actualizar_trabajador_admin(id, data, token):Observable<any> {
+    let headers = new HttpHeaders({'Content-Type':'Application/json', 'Authorization':token});
+    return this._http.put(this.url+'actualizar_trabajador_admin/'+id, data, {headers: headers});
+  }
 }

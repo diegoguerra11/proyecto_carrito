@@ -43,7 +43,45 @@ const registrar_trabajador_admin = async function(req, res) {
     }
 }   
 
+const obtener_trabajador_admin = async function(req, res) {
+    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+
+    let id = req.params['id'];
+
+    try {
+        let buscar_trabajador = Promise.resolve(Admin.findById({_id: id}));
+
+        buscar_trabajador.then(trabajador => {
+            res.status(200).send({data: trabajador});
+        });
+
+    }catch(error){
+        res.status(200).send({data:undefined, message:'Error en el servidor'});
+    }
+}
+
+const actualizar_trabajador_admin = async function(req, res) {
+    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+
+    let id = req.params['id'];
+    let data = req.body;
+
+    try {
+        let actualizar_trabajador = Promise.resolve(Admin.findByIdAndUpdate({_id: id}, data));
+
+        actualizar_trabajador.then(
+            trabajador => {
+                res.status(200).send({data:trabajador});
+            } 
+        )
+    }catch(error){
+        res.status(200).send({data:undefined, message:'Error en el servidor'});
+    }
+}
+
 module.exports = {
     listar_trabajadores_filtro_admin,
-    registrar_trabajador_admin
+    registrar_trabajador_admin,
+    obtener_trabajador_admin,
+    actualizar_trabajador_admin
 }
