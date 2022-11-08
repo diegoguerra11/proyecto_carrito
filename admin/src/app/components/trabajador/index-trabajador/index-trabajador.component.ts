@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminService } from '../../../services/admin.service';
 import { TrabajadorService } from '../../../services/trabajador.service';
-
+import { MessageBox } from '../../../../../../tienda/src/app/Utils/MessageBox';
+declare let $:any;
 @Component({
   selector: 'app-index-trabajador',
   templateUrl: './index-trabajador.component.html',
@@ -50,6 +51,28 @@ export class IndexTrabajadorComponent implements OnInit {
       response => {
         this.trabajadores = response.data;
         this.load_data = false;
+      }
+    )
+  }
+
+  deshabilitar(idTrabajador){
+    this._trabajadorService.desactivar_trabajador_admin(idTrabajador, this.token).subscribe(
+      response => {
+        $('#disable-'+idTrabajador).modal('hide');
+        $('.modal-backdrop').removeClass('show');
+        this.listar_cliente();
+        MessageBox.messageSuccess('Se desactivó correctamente al trabajador ' + idTrabajador);
+      }
+    )
+  }
+
+  habilitar(idTrabajador){
+    this._trabajadorService.activar_trabajador_admin(idTrabajador, this.token).subscribe(
+      response => {
+        $('#enable-'+idTrabajador).modal('hide');
+        $('.modal-backdrop').removeClass('show');
+        this.listar_cliente();
+        MessageBox.messageSuccess('Se Activó correctamente al trabajador ' + idTrabajador);
       }
     )
   }
