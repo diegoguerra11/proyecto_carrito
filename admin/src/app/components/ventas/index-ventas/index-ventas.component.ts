@@ -12,7 +12,7 @@ export class IndexVentasComponent implements OnInit {
   public const_ventas : Array<any>=[];
   public token = localStorage.getItem('token');
   public page = 1;
-  public pageSize = 24;
+  public pageSize = 25;
   public filtro = '';
   public desde :any = undefined;
   public hasta :any = undefined;
