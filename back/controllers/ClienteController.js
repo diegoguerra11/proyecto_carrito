@@ -10,6 +10,7 @@ let Variedad = require('../models/Variedad');
 let Direccion = require("../models/direccion");
 let Producto = require("../models/producto");
 let mail = require('../helpers/mail');
+let Review = require('../models/review');
 const { promiseImpl } = require('ejs');
 
 const registro_cliente = async function(req,res){
@@ -509,7 +510,25 @@ const actualizar_direccion_cliente = async function(req,res){
         });  
     });
 } 
+/*****************************************RESEÑAS*************************************************/
 
+const emitir_review_producto_cliente  = async function(req,res){
+    if(req.user){
+        let data = req.body; // almacena el cuerpo del formulario
+        let reg = await Review.create(data); // manda la data
+        res.status(200.).send({data:reg}); // manda la data al frontend
+    } else {
+        res.status(500).send({message: 'No Access'});
+    }
+}
+
+const obtener_review_producto_cliente  = async function(req,res){
+    let id = req.params['id'];
+    let reg = await Review.find({producto:id}).sort({createdAt: 1});
+    res.status(200).send({data:reg});
+}
+
+// Exportaciones de métodos
 module.exports = {
     actualizar_direccion_cliente,
     registro_cliente,
@@ -536,4 +555,6 @@ module.exports = {
     registro_compra_cliente,
     consultarIDPago,
     recibir_direccion_cliente,
+    emitir_review_producto_cliente,
+    obtener_review_producto_cliente
 }

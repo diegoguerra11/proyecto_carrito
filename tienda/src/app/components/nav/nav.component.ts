@@ -74,7 +74,8 @@ export class NavComponent implements OnInit {
    } 
   }
   
-  
+
+  // obtiene el carrito del cliente y calcula el precio
   obtener_carrito(){
     this._clienteService.obtener_carrito_cliente(this.user_lc._id,this.token).subscribe(
       response=>{
@@ -84,6 +85,7 @@ export class NavComponent implements OnInit {
     );
   }
 
+  // si el token esta vacio calcula el carrito o lo obtiene, caso contrario manda this a la funcion obtener_carrito
   ngOnInit(): void {
     if(this.token == null){
       this.socket.on('new-carrito-add',(data)=>{
@@ -108,6 +110,8 @@ export class NavComponent implements OnInit {
 
    
   }
+
+  // abre el menu
   openMenu(){
     let clase = $('#modalMenu').attr('class');
     console.log(clase);
@@ -117,6 +121,7 @@ export class NavComponent implements OnInit {
       $('#modalMenu').removeClass('active');
     }
   }
+
   openCart(){
     let clase = $('#modalCarrito').attr('class');
     console.log(clase);
@@ -126,6 +131,8 @@ export class NavComponent implements OnInit {
       $('#modalCarrito').removeClass('active');
     }
   }
+
+  // recarga y limpia
   logout(){
     window.location.reload();
     localStorage.clear();
@@ -142,6 +149,7 @@ export class NavComponent implements OnInit {
     }
   }
 
+  // calcula el precio del carrito sin descuento dependiendo si es en soles o dolares
   calcular_carrito(){
     this.subtotal = 0;
     if(this.user_lc != undefined){
@@ -171,6 +179,7 @@ export class NavComponent implements OnInit {
     }
   }
 
+  // elimina un producto del carrito y actualiza el total del carrito
   eliminar_item(id:any){
     this._clienteService.eliminar_carrito_cliente(id,this.token).subscribe(
       response=>{
@@ -181,6 +190,8 @@ export class NavComponent implements OnInit {
       }
     );
   }
+
+  // elimina un producto del carrito y actualiza el total del carrito
   eliminar_item_guest(item:any){
     this.carrito_logout.splice(item._id,1);
     console.log("miau");
@@ -188,7 +199,7 @@ export class NavComponent implements OnInit {
     if(this.carrito_logout.length >= 1){
       
       localStorage.setItem('cart',JSON.stringify(this.carrito_logout));
-    }
+    } 
     if(this.currency == 'PEN'){
       let monto = item.producto.precio*item.cantidad;
       this.subtotal = this.subtotal -monto;

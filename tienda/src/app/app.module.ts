@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from "@angular/forms";
 import { HttpClient, HttpClientModule }  from "@angular/common/http";
 import { NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap"
+import { RatingModule } from 'ng-starrating';
 
 import { routing } from './app.routing';
 
@@ -47,7 +48,8 @@ import { EditDireccionComponent } from './components/usuario/edit-direccion/edit
     FormsModule,
     HttpClientModule,
     routing,
-    NgbPaginationModule
+    NgbPaginationModule,
+    RatingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

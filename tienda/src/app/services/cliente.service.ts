@@ -202,4 +202,13 @@ export class ClienteService {
     return this._http.get(this.url + 'recibir_direccion_cliente/' + id ,{headers:headers});
   }
 
+  //RESEÑAS
+  emitir_review_producto_cliente(data: any, token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.post(this.url+'emitir_review_producto_cliente',data,{headers:headers});
+  }
+  obtener_review_producto_cliente(id:any):Observable<any>{
+    let headers = new HttpHeaders().set('Content-Type','application/json');
+    return this._http.get(this.url+'obtener_review_producto_cliente/'+id,{headers:headers});
+  } 
 }

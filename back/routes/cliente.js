@@ -42,4 +42,8 @@ api.get('/obtener_detalles_ordenes_cliente/:id', auth.auth, clienteController.ob
 api.get('/consultarIDPago/:id',auth.auth,clienteController.consultarIDPago);
 api.post('/registro_compra_cliente',auth.auth,clienteController.registro_compra_cliente);
 
+//REVIEWS
+api.post('/emitir_review_producto_cliente', auth.auth,clienteController.emitir_review_producto_cliente);
+api.get('/obtener_review_producto_cliente/:id', clienteController.obtener_review_producto_cliente);
+
 module.exports = api;
