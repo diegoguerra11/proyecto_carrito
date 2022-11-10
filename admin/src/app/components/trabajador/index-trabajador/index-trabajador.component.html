@@ -37,6 +37,7 @@
                     <th>Nombres</th>
                     <th>Apellidos</th>
                     <th>Correo</th>
+                    <th>Rol</th>
                     <th>Estado</th>
                     <th>Opciones</th>
                 </tr>
@@ -57,6 +58,7 @@
                     <td>{{item.nombres}}</td>
                     <td>{{item.apellidos}}</td>
                     <td>{{item.email}}</td>
+                    <td>{{item.rol}}</td>
                     <td class="text-{{item.estado ? 'success' : 'danger' }}" >{{item.estado ? 'ACTIVO': 'INACTIVO'}}</td>
                     <td>
                     <div class="btn-group dropdown d-inline-block mb-3 mr-2">

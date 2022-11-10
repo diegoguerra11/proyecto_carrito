@@ -14,6 +14,7 @@ export class EditTrabajadorComponent implements OnInit {
 
   public trabajador: any = {};
   public id;
+  public roles:any = [];
   public token;
   public load_btn = false;
   public load_data = true;
@@ -28,6 +29,7 @@ export class EditTrabajadorComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.obtener_roles();
     this.obtener_trabajador();
   }
 
@@ -53,8 +55,9 @@ export class EditTrabajadorComponent implements OnInit {
 
     this._trabajadorService.actualizar_trabajador_admin(this.id, this.trabajador, this.token).subscribe(
       response => {
-        MessageBox.messageSuccess('Trabajdor actualizado correctamente');
         this.load_btn = false;
+        if(!response.data){return MessageBox.messageError(response.message);}
+        MessageBox.messageSuccess('Trabajdor actualizado correctamente');
         this._router.navigate(['/panel/trabajadores']);
       },
       error => {
@@ -62,6 +65,14 @@ export class EditTrabajadorComponent implements OnInit {
       }
     )
   
+  }
+
+  obtener_roles() {
+    this._trabajadorService.get_Roles().subscribe(
+      response => {
+        this.roles = response;
+      }
+    )
   }
 
 }

@@ -43,4 +43,8 @@ export class TrabajadorService {
     let headers = new HttpHeaders({'Content-Type':'Application/json', 'Authorization':token});
     return this._http.put(this.url+'activar_trabajador_admin/'+id, null, {headers: headers});
   }
+
+  get_Roles():Observable<any>{
+    return this._http.get('./assets/roles.json');
+  }
 }

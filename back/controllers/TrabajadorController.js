@@ -28,16 +28,19 @@ const registrar_trabajador_admin = async function(req, res) {
     let data = req.body;
 
     try {
+        let validacion = await validaciones_trabajador(data.email, data.dni);
+        if(validacion) {return res.status(200).send({message: validacion});}
+
         bcrypt.hash('Contra123',null,null, async function(err,hash){
             if(!hash){return res.status(500).send({message:'ErrorServer', data:undefined});}
             data.password = hash;
-            data.rol = 'vendedor';
             let crear_trabajador = Promise.resolve(Admin.create(data));
             crear_trabajador.then(reg => {
                 res.status(200).send({data: reg});
             })
-            .catch(() => {throw ex});
+            .catch((ex) => {throw ex});
         });
+
     } catch(ex) {
         res.status(500).send({data: undefined, message: 'Error server'});
     }
@@ -67,8 +70,11 @@ const actualizar_trabajador_admin = async function(req, res) {
     let data = req.body;
 
     try {
-        let actualizar_trabajador = Promise.resolve(Admin.findByIdAndUpdate({_id: id}, data));
+        let validacion = await validaciones_trabajador(data.email, data.dni);
+        if(validacion) {return res.status(200).send({message: validacion});}
 
+        let actualizar_trabajador = Promise.resolve(Admin.findByIdAndUpdate({_id: id}, data));
+        
         actualizar_trabajador.then(
             trabajador => {
                 res.status(200).send({data:trabajador});
@@ -113,6 +119,16 @@ const activar_trabajador_admin = async function(req,res) {
     }catch(error){
         res.status(200).send({data:undefined, message:'Error en el servidor'});
     }
+}
+
+const validaciones_trabajador = async function(email, dni) {
+    let existe_numero_documento = await Admin.exists({dni: dni})
+
+    if(existe_numero_documento) {return 'El numero de documento ya se encuentra en la base de datos';}
+
+    let existe_correo_electronico = await Admin.exists({email: email});
+    if(existe_correo_electronico) {return 'El correo electronico ya se encuentra en la base de datos';}
+    return null;
 }
 
 module.exports = {

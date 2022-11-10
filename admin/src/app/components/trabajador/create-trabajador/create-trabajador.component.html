@@ -32,11 +32,7 @@
                     <label for="validationCustom01" class="form-label">Teléfono</label>
                     <input class="form-control" type="text" placeholder="Telefono" required name="telefono" [(ngModel)]="trabajador.telefono">
                 </div>
-                <!-- <div class="col-md-4 form-group">
-                    <label for="validationCustom01" class="form-label">Fecha nacimiento</label>
-                    <input class="form-control" type="date" required name="f_nacimiento" [(ngModel)]="trabajador.f_nacimiento">
-                </div> -->
-                <div class="col-md-4">
+                <div class="col-md-4 form-group">
                     <label for="validationCustom01" class="form-label">Tipo de Documento</label>
                     <select name="tipoDocumento" required [(ngModel)]="trabajador.tipoDocumento" class="form-control custom-select" >
                         <option value="" selected disabled>Seleccionar</option>
@@ -45,18 +41,17 @@
                         <option value="pasaporte">Pasaporte</option>
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 form-group">
                     <label for="validationCustom01" class="form-label">Número de Documento</label>
-                    <input type="text" required class="form-control form-control-lg" name="numeroDocumento" [(ngModel)]="trabajador.dni" placeholder="Número de Documento"/>
+                    <input type="text" required class="form-control" name="numeroDocumento" [(ngModel)]="trabajador.dni" placeholder="Número de Documento"/>
                 </div>
-                <!-- <div class="col-md-4">
-                    <label for="validationCustom01" class="form-label">Género</label>
-                    <select class="form-control custom-select" name="genero" required [(ngModel)]="trabajador.genero">
-                        <option value="" disabled selected>Seleccionar</option>
-                        <option value="Masculino">Masculino</option>
-                        <option value="Femenino">Femenino</option>
+                <div class="col-md-4 form-group">
+                    <label for="validationCustom01" class="form-label">Roles</label>
+                    <select name="rol" [(ngModel)]="trabajador.rol" class="form-control custom-select">
+                        <option value="" disabled>seleccionar</option>
+                        <option  *ngFor="let rol of roles" value="{{rol.nombre}}">{{ rol.nombre }}</option>
                     </select>
-                </div> -->
+                </div>
             </div>            
         </div>
         <div class="card-footer">
