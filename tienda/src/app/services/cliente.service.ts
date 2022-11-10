@@ -13,7 +13,7 @@ export class ClienteService {
 
   constructor(
     private _http: HttpClient,
-  ) { 
+  ) {
     this.url = GLOBAL.url;
 
   }
@@ -64,7 +64,7 @@ export class ClienteService {
       localStorage.clear();
       return false;
     }
-    
+
     return true;
   }
 
@@ -73,7 +73,7 @@ export class ClienteService {
     return this._http.get(this.url+'obtener_config_publico',{headers:headers});
 
   }
-  
+
   listar_productos_publico(filtro:any):Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
     return this._http.get(this.url+'listar_productos_publico/'+filtro,{headers:headers});
@@ -151,6 +151,11 @@ export class ClienteService {
     return this._http.get(this.url+'obtener_detalles_ordenes_cliente/'+id,{headers:headers});
   }
 
+  verBoleta(id: any, token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.get(this.url+'verBoleta/'+id,{headers:headers});
+  }
+
   //culqi
   get_token_culqi(data:any):Observable<any>{
     let headers = new HttpHeaders()
@@ -158,7 +163,7 @@ export class ClienteService {
     .set('Authorization','Bearer pk_test_0b07aceaa3de8c43');
     return this._http.post('https://secure.culqi.com/v2/tokens',data,{headers:headers});
   }
-  
+
   get_charge_culqi(data:any):Observable<any>{
     let headers = new HttpHeaders()
     .set('Content-Type','application/json')
@@ -175,7 +180,7 @@ export class ClienteService {
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.get(this.url+'validar_cupon_admin/'+cupon,{headers:headers});
   }
-  
+
   disminuir_cupon(cupon:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.get(this.url+'disminuir_cupon/'+cupon,{headers:headers});
@@ -198,7 +203,7 @@ export class ClienteService {
   }
   recibir_direccion_cliente(id:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
-  
+
     return this._http.get(this.url + 'recibir_direccion_cliente/' + id ,{headers:headers});
   }
 
