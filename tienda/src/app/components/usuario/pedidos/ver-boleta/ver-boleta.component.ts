@@ -17,6 +17,8 @@ export class VerBoletaComponent implements OnInit {
   public detalles: Array<any> = [];
   public load_data = true;
   public id: any;
+  public cliente:any = {};
+  public direccion:any = {};
   public totalstar=5;
   public review : any={};
 
@@ -33,13 +35,13 @@ export class VerBoletaComponent implements OnInit {
 
         this._clienteService.verBoleta(this.id, this.token).subscribe(
           response => {
-            if(!response.data){
-              this.orden = undefined;
-            }
             this.orden = response.data;
-            this.detalles = response.detalles;
+            if(response.data){
+              this.detalles = response.detalles;
+              this.cliente = response.data.cliente;
+              this.direccion = response.data.direccion;
+            }
             this.load_data = false;
-            console.log(response.data);
           }
         );
       }

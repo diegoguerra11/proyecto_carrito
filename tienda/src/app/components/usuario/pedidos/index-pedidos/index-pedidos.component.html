@@ -41,7 +41,6 @@
 
 
                   <table class="table table-bordered">
-                    <caption></caption>
                     <thead class="thead-dark">
                       <tr>
                         <th>Nro de orden</th>
@@ -63,8 +62,6 @@
                         <td><span class="badge badge-info">{{ item.estado }}</span></td>
                         <td> <span class="text-dark pl-1">S/.{{ item.total_pagar }}</span></td>
                         <td *ngIf="item.estado=='Finalizado'"><a [routerLink]="['verBoleta',item._id]">Boleta </a></td>
-                        <td>
-                        </td>
                        </tr>
                       </tbody>
                     </ng-container>
