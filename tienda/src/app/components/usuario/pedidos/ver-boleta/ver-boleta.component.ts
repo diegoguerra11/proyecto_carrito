@@ -52,3 +52,72 @@ export class VerBoletaComponent implements OnInit {
   }
 
 }
+
+// <div class="col align-item-center mb-4 pb-1 pb-sm-3">
+// <div class="row justify-content-center">
+//   <h1 class="h1">Mi Cuenta</h1>
+// </div>
+
+// <div class="col ml-auto" *ngIf="orden">
+//     <div class="d-flex align-items-center justify-content-between mb-4 pb-sm-2">
+//       <h1 class="h2 mb-0">Mi Orden #{{ id.toUpperCase() }}</h1>
+
+//     </div>
+
+//     <div class="row">
+//       <div class="col-12 mb-4">
+//         <div class="card card-body py-3 box-shadow ">
+//           <div class="row">
+//             <div class="col-lg-6">
+//               <table class="table mb-0">
+//                 <caption></caption>
+//                 <tbody>
+//                    <tr>
+//                     <th class="border-0 py-2 pl-0">Cliente:</th>
+//                     <td class="border-0 py-2 px-0 text-muted">{{ cliente.nombres+' '+cliente.apellidos}}</td>
+//                   </tr>
+//                    <tr>
+//                     <th class="border-0 py-2 pl-0">Documento:</th>
+//                     <td class="border-0 py-2 px-0 text-muted">{{ cliente.numeroDocumento }}</td>
+//                   </tr>
+//                   <tr>
+//                     <th class="border-0 py-2 pl-0">Telefono:</th>
+//                     <td class="border-0 py-2 px-0 text-muted">{{ cliente.telefono }}</td>
+//                   </tr>
+//                   <tr>
+//                     <th class="border-0 py-2 pl-0">Dirección:</th>
+//                     <td class="border-0 py-2 px-0 text-muted">{{direccion.direccion}}</td>
+//                   </tr>
+//                   <tr>
+//                     <th class="border-0 py-2 pl-0">Tipo:</th>
+//                     <td class="border-0 py-2 px-0 text-muted">Boleta</td>
+//                   </tr>
+//                   <tr>
+//                     <th class="border-0 py-2 pl-0">Método de pago:</th>
+//                     <td class="border-0 py-2 px-0 text-muted">{{ orden.metodo_pago }}</td>
+//                   </tr>
+//                   <tr>
+//                     <th class="border-0 py-2 pl-0">Fecha de compra</th>
+//                     <td class="border-0 py-2 px-0 text-muted">{{ orden.createdAt | date }}</td>
+//                   </tr>
+
+//                 </tbody>
+//               </table>
+//             </div>
+
+//             </div>
+//           </div>
+
+//         </div>
+//       </div>
+//       <div class="col-12">
+//       </div>
+//     </div>
+// </div>
+
+// <div class="col ml-auto" *ngIf="!orden">
+//   <div class="col-lg-12 col-md-5">
+//     <h3 class="h6 mb-2 text-uppercase">No se encontro la venta</h3>
+//     <h2 class="h1 pb-lg-3">Es posible que sea un error</h2>
+//   </div>
+// </div>
