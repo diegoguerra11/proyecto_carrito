@@ -11,7 +11,7 @@ import { GLOBAL } from '../../../../../../../admin/src/app/services/GLOBAL';
 export class VerBoletaComponent implements OnInit {
 
   public url: any;
-  public igv: any;
+  // public igv: any;
   public token: any;
   public orden: any = [];
   public detalles: Array<any> = [];
@@ -21,6 +21,9 @@ export class VerBoletaComponent implements OnInit {
   public direccion:any = {};
   public totalstar=5;
   public review : any={};
+  public hayCupon = false;
+  public valorCupon = 0;
+  public IGV=0;
 
   constructor(
     private _clienteService: ClienteService,
@@ -36,17 +39,44 @@ export class VerBoletaComponent implements OnInit {
         this._clienteService.verBoleta(this.id, this.token).subscribe(
           response => {
             this.orden = response.data;
-            if(response.data){
-              this.detalles = response.detalles;
+            this.detalles = response.detalles;
               this.cliente = response.data.cliente;
               this.direccion = response.data.direccion;
-            }
-            this.load_data = false;
+              if(!response.data){
+                this.orden = undefined;
+              } else {
+                this._clienteService.obtener_cupon_cliente(this.orden["cupon"],this.token).subscribe(
+                  response=>{
+                    console.log(response.data);
+                    if (response.data == undefined) {
+                      this.hayCupon = false;
+                    }else{
+                      this.hayCupon = true;
+                      this.valorCupon = this.getValorCupon(response.data["tipo"], response.data["valor"], this.orden.subtotal);
+
+                    }
+
+                  }
+                );
+
+              }
           }
         );
       }
     )
   }
+
+  getValorCupon(cupon:any, valorCupon:any, subtotal:any){
+    let descuento = 0;
+    if(cupon == 'Valor Fijo'){
+      descuento =valorCupon;
+    }
+    if (cupon == 'Porcentaje'){
+      descuento =Math.round((subtotal *valorCupon)/100);
+    }
+    return descuento;
+  }
+
 
   ngOnInit(): void {
   }

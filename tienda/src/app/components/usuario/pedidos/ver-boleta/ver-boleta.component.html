@@ -88,6 +88,7 @@
             <caption></caption>
             <thead>
               <tr>
+                <th></th>
                 <th>Producto</th>
                 <th>Cantidad</th>
                 <th>Envio</th>
@@ -98,11 +99,29 @@
             </thead>
             <tbody class="font-size-base">
               <tr *ngFor="let item of detalles">
-                  <td> <span class="text-dark pl-1">{{ item.producto.titulo }}</span></td>
-                  <td> <span class="text-dark pl-1">{{ item.cantidad }}</span></td>
-                  <td> <span class="text-dark pl-1">{{ orden.currency == 'PEN' ? 'S/.' : '$.' }}{{ orden.envio_precio }}</span></td>
-                  <td> <span class="text-dark pl-1">{{ orden.currency == 'PEN' ? 'S/.' : '$.' }}{{ orden.subtotal }}</span></td>
-                  <td> <span class="text-dark pl-1">{{ orden.currency == 'PEN' ? 'S/.' : '$.' }}{{ orden.total_pagar}}</span></td>
+                <td>
+                </td>
+                  <td> <span class="text-dark pl-1">{{item.producto.titulo }}</span></td>
+                  <td> <span class="text-dark pl-1">{{item.cantidad }}</span></td>
+                  <td> <span class="text-dark pl-1">{{orden.currency == 'PEN' ? 'S/.' : '$.' }}{{ orden.envio_precio }}</span></td>
+                  <td> <span class="text-dark pl-1">{{orden.currency == 'PEN' ? 'S/.' : '$.' }}{{ orden.subtotal }}</span></td>
+                  <td> <span class="text-dark pl-1">{{orden.currency == 'PEN' ? 'S/.' : '$.' }}{{ orden.total_pagar}}</span></td>
+                 </tr>
+                 <tr>
+                  <div>
+                    <td> <span class="text-dark pl-1"> Descuento:</span></td>
+                  </div>
+                  <td>
+                  </td>
+                  <td>
+                  </td>
+                  <td>
+                  </td>
+                  <td>
+                  </td>
+                  <td>
+                    <span class="text-dark pl-1">{{ orden.currency == 'PEN' ? 'S/.' : '$.' }}{{valorCupon }}</span>
+                  </td>
                  </tr>
                  <tr>
                   <td>
@@ -116,6 +135,7 @@
                   </td>
                   <td>
                   </td>
+                  <td></td>
                   <td><span class="text-dark pl-1">{{ orden.currency == 'PEN' ? 'S/.' : '$.' }}{{ orden.total_pagar}}</span></td>
                 </tr>
             </tbody>
