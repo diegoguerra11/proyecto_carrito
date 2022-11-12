@@ -31,7 +31,6 @@ export class IndexReviewComponent implements OnInit {
   init_data(){
     this._clienteService.obtener_reviews_cliente(localStorage.getItem('_id'), this.token).subscribe(
       response=>{
-        console.log(response);
         this.reviews=response.data;
         this.load_data=false;
       }

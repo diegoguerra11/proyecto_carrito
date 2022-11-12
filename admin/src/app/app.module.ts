@@ -30,7 +30,7 @@ import { IndexVentasComponent } from './components/ventas/index-ventas/index-ven
 import { ShowVentasComponent } from './components/ventas/show-ventas/show-ventas.component';
 import { IndexTrabajadorComponent } from './components/trabajador/index-trabajador/index-trabajador.component';
 import { CreateTrabajadorComponent } from './components/trabajador/create-trabajador/create-trabajador.component';
-import { UpdateTrabajadorComponent } from './components/trabajador/update-trabajador/update-trabajador.component';
+import { EditTrabajadorComponent } from './components/trabajador/edit-trabajador/edit-trabajador.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +56,7 @@ import { UpdateTrabajadorComponent } from './components/trabajador/update-trabaj
     ShowVentasComponent,
     IndexTrabajadorComponent,
     CreateTrabajadorComponent,
-    UpdateTrabajadorComponent,
+    EditTrabajadorComponent,
   ],
   imports: [
     BrowserModule,

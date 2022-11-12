@@ -22,7 +22,7 @@ import { CreateVentasComponent } from "./components/ventas/create-ventas/create-
 import { ShowVentasComponent } from "./components/ventas/show-ventas/show-ventas.component";
 import { IndexTrabajadorComponent } from './components/trabajador/index-trabajador/index-trabajador.component';
 import { CreateTrabajadorComponent } from './components/trabajador/create-trabajador/create-trabajador.component';
-import { UpdateTrabajadorComponent } from './components/trabajador/update-trabajador/update-trabajador.component';
+import { EditTrabajadorComponent } from './components/trabajador/edit-trabajador/edit-trabajador.component';
 
 
 const appRoute : Routes = [
@@ -38,7 +38,7 @@ const appRoute : Routes = [
 
         {path: 'trabajadores', component:IndexTrabajadorComponent, canActivate: [AdminGuard]},
         {path: 'trabajadores/registro', component:CreateTrabajadorComponent, canActivate: [AdminGuard]},
-        {path: 'trabajadores/:id', component:UpdateTrabajadorComponent, canActivate: [AdminGuard]},
+        {path: 'trabajadores/:id', component:EditTrabajadorComponent, canActivate: [AdminGuard]},
 
         {path: 'productos/registro', component: CreateProductoComponent,canActivate: [AdminGuard]},
         {path: 'productos', component: IndexProductoComponent,canActivate: [AdminGuard]},

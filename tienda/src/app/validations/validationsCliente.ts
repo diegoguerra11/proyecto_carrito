@@ -81,6 +81,23 @@ export class ValidatonsCliente {
         }
 
         return true;
+    }
 
+    static actualizarContrasenia(form:any) {
+        if(!form.newPassword){
+            MessageBox.messageError('El campo nueva contraseña es obligatorio');
+            return false;
+        }
+        if(!form.confirmPassword){
+            MessageBox.messageError('El campo nueva contraseña es obligatorio');
+            return false;
+        }
+
+        if(form.newPassword != form.confirmPassword) {
+            MessageBox.messageError('La contrsañas no coinciden');
+            return false;
+        }
+
+        return true;
     }
 }

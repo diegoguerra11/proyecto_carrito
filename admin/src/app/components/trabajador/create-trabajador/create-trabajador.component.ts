@@ -14,6 +14,7 @@ export class CreateTrabajadorComponent implements OnInit {
 
   public trabajador: any = {};
   public token;
+  public roles: any = [];
   public load_btn = false;
 
   constructor(
@@ -25,7 +26,7 @@ export class CreateTrabajadorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // TODO No hace falta iniciar con métodos 
+    this.obtener_roles();
   }
 
   registro(registroForm) {
@@ -43,6 +44,7 @@ export class CreateTrabajadorComponent implements OnInit {
           nombres: '',
           apellidos: '',
           telefono: '',
+          numeroDocumento: '',
           dni: '',
           email: ''
         }
@@ -54,6 +56,14 @@ export class CreateTrabajadorComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  obtener_roles() {
+    this._trabajadorService.get_Roles().subscribe(
+      response => {
+        this.roles = response;
+      }
+    )
   }
 
 }

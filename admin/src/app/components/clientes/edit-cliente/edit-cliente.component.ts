@@ -34,16 +34,11 @@ export class EditClienteComponent implements OnInit {
 
         this._clienteService.obtener_cliente_admin(this.id,this.token).subscribe(
           response =>{
-            if (response.data == undefined) {
-              this.cliente = undefined;
-              this.load_data = false;
-            }else{
-              this.cliente = response.data;
-              this.load_data = false;
-            }
+            this.cliente = response.data ? response.data : undefined
+            this.load_data = false;
           },
           error => {
-              console.log(error);
+            console.log(error);
           }
         );
       }
@@ -51,23 +46,16 @@ export class EditClienteComponent implements OnInit {
   }
 //actualiza los clientes y valida si los datos cambiados de los clientes son correctos
   actualizar(updateForm){
-    if (updateForm.valid) {
-      if(!ValidatonsCliente.verificarCliente(updateForm.form.value)){return;}
-      this.load_btn = true;
-      this._clienteService.actualizar_cliente_admin(this.id,this.cliente,this.token).subscribe(
-        response => {
-          MessageBox.messageSuccess("Cliente Actualizado correctamente");
-
-          this.load_btn = false;
-
-          this._router.navigate(['/panel/clientes']);
-        }, error=>{
-          console.log(error);
-
-        }
-      );
-    } else {
-      MessageBox.messageError("Debe completar todos los campos");  
-    }
+    if(!ValidatonsCliente.verificarCliente(updateForm.form.value)){return;}
+    this.load_btn = true;
+    this._clienteService.actualizar_cliente_admin(this.id,this.cliente,this.token).subscribe(
+      response => {  
+        MessageBox.messageSuccess("Cliente Actualizado correctamente");       
+        this.load_btn = false;
+        this._router.navigate(['/panel/clientes']);
+      }, error=>{
+        console.log(error);   
+      }
+    );
   }
 }

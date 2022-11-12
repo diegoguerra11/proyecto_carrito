@@ -4,41 +4,11 @@ export class ValidatonsCliente {
     static verificarCliente(form: any) {
         let numerico = /^\d+$/;
         
-        if(!form.nombres) {
-            MessageBox.messageError('El campo nombres es obligatorio');
-            return false;
-        }
+        if(!this.obligatorios){return false;}
+
         if(form.nombres.match(numerico)) {
             MessageBox.messageError('El campo nombres debe ser alfabetico');
             return false;
-        }
-        if(!form.apellidos) {
-          MessageBox.messageError('El campo apellidos es obligatorio');
-          return false;
-        }
-        if(!form.email) {
-          MessageBox.messageError('El campo correo electronico es obligatorio');
-          return false;
-        }
-        if(!form.telefono) {
-          MessageBox.messageError('El campo telefono es obligatorio');
-          return false;
-        }
-        if(!form.f_nacimiento) {
-          MessageBox.messageError('El campo fecha de nacimiento es obligatorio');
-          return false;
-        }
-        if(!form.tipoDocumento) {
-          MessageBox.messageError('El campo tipo de documento es obligatorio');
-          return false;
-        }
-        if(!form.numeroDocumento) {
-          MessageBox.messageError('El campo numero de documento es obligatorio');
-          return false;
-        }
-        if(!form.genero) {
-          MessageBox.messageError('El campo genero es obligatorio');
-          return false;
         }
         if(form.telefono && !form.telefono.match(numerico)) {
             MessageBox.messageError('El campo telefono debe ser numerico');
@@ -67,4 +37,40 @@ export class ValidatonsCliente {
 
         return true;
     }
+
+    private static obligatorios(form: any) {
+      if(!form.nombres) {
+        MessageBox.messageError('El campo nombres es obligatorio');
+        return false;
+      }
+      if(!form.apellidos) {
+        MessageBox.messageError('El campo apellidos es obligatorio');
+        return false;
+      }
+      if(!form.email) {
+        MessageBox.messageError('El campo correo electronico es obligatorio');
+        return false;
+      }
+      if(!form.telefono) {
+        MessageBox.messageError('El campo telefono es obligatorio');
+        return false;
+      }
+      if(!form.f_nacimiento) {
+        MessageBox.messageError('El campo fecha de nacimiento es obligatorio');
+        return false;
+      }
+      if(!form.tipoDocumento) {
+        MessageBox.messageError('El campo tipo de documento es obligatorio');
+        return false;
+      }
+      if(!form.numeroDocumento) {
+        MessageBox.messageError('El campo numero de documento es obligatorio');
+        return false;
+      }
+      if(!form.genero) {
+        MessageBox.messageError('El campo genero es obligatorio');
+        return false;
+      }
+      return true;
+    } 
 }

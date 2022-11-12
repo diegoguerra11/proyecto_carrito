@@ -105,9 +105,10 @@
                       </td>
                       <td>
                         <span class="badge badge-warning" *ngIf="item.estado == 'En espera'">{{item.estado}}</span>
-                        <span class="badge badge-success" *ngIf="item.estado == 'Procesando'">{{item.estado}}</span>
+                        <span class="badge badge-primary" *ngIf="item.estado == 'Procesando'">{{item.estado}}</span>
                         <span class="badge badge-info" *ngIf="item.estado == 'Enviado'">{{item.estado}}</span>
-                        <span class="badge badge-danger" *ngIf="item.estado == 'Finalizado'">{{item.estado}}</span>
+                        <span class="badge badge-success" *ngIf="item.estado == 'Finalizado'">{{item.estado}}</span>
+                        <span class="badge badge-danger" *ngIf="item.estado == 'Cancelado'">{{item.estado}}</span>
                       </td>
                       <td>
                         <div class="dropdown">
