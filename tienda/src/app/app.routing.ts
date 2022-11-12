@@ -13,6 +13,7 @@ import { IndexPedidosComponent } from './components/usuario/pedidos/index-pedido
 import { PedidosDetallesComponent } from "./components/usuario/pedidos/pedidos-detalles/pedidos-detalles.component";
 import { VerificarPagoComponent } from "./components/verificar-pago/verificar-pago.component";
 import { EditDireccionComponent } from "./components/usuario/edit-direccion/edit-direccion.component";
+import { IndexReviewComponent } from "./components/usuario/reviews/index-review/index-review.component";
 
 const appRoute : Routes = [
     {path: '', component: InicioComponent},
@@ -24,6 +25,8 @@ const appRoute : Routes = [
     {path: 'cuenta/pedidos', component: IndexPedidosComponent, canActivate: [AuthGuard]},
     {path: 'cuenta/pedidos/:id', component: PedidosDetallesComponent, canActivate: [AuthGuard]},
     {path: 'carrito', component: CarritoComponent, canActivate: [AuthGuard]},
+
+    {path: 'cuenta/reviews', component: IndexReviewComponent, canActivate: [AuthGuard]},
 
     {path: 'verificar-pago/:tipo/:direccion/:cupon/:envio/:tipo_descuento/:valor_descuento/:total_pagar/:subtotal', component: VerificarPagoComponent},
 

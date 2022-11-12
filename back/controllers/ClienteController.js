@@ -528,6 +528,16 @@ const obtener_review_producto_cliente  = async function(req,res){
     res.status(200).send({data:reg});
 }
 
+const obtener_reviews_cliente  = async function(req,res){
+    if(req.user){
+        let id = req.params['id'];
+        let reg = await Review.find({cliente:id}).populate('cliente'); // manda la data
+        res.status(200.).send({data:reg}); // manda la data al frontend
+    } else {
+        res.status(500).send({message: 'No Access'});
+    }
+}
+
 // Exportaciones de métodos
 module.exports = {
     actualizar_direccion_cliente,
@@ -556,5 +566,6 @@ module.exports = {
     consultarIDPago,
     recibir_direccion_cliente,
     emitir_review_producto_cliente,
-    obtener_review_producto_cliente
+    obtener_review_producto_cliente,
+    obtener_reviews_cliente
 }

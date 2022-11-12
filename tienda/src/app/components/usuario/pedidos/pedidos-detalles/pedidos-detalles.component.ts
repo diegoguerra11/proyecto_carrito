@@ -102,7 +102,7 @@ export class PedidosDetallesComponent implements OnInit {
   }
 
   onRate($event:{oldValue:number, newValue:number, starRating:StarRatingComponent}){
-    console.log($event.newValue);
+    this.totalstar = $event.newValue;
   }
 
   emitir(id:any){
