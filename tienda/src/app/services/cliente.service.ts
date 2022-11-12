@@ -23,6 +23,16 @@ export class ClienteService {
     return this._http.post(this.url+'login_cliente',data,{headers:headers});
   }
 
+  confirmar_correo(user:any):Observable<any>{
+    let headers = new HttpHeaders().set('Content-Type','application/json');
+    return this._http.post(this.url+'confirmar_correo',user,{headers:headers});
+  }
+
+  cambiar_contrasenia(user:any):Observable<any> {
+    let headers = new HttpHeaders().set('Content-Type','application/json');
+    return this._http.put(this.url+'cambiar_contrasenia',user,{headers:headers});
+  }
+
   getToken(){
     return localStorage.getItem('token');
   }

@@ -510,8 +510,42 @@ const actualizar_direccion_cliente = async function(req,res){
     });
 } 
 
+const confirmar_correo = async function(req, res) {
+    let correo = req.body.email;
+    let buscar_correo = Promise.resolve(Cliente.exists({email: correo}));
+
+    buscar_correo.then(existe => {
+        if(!existe){return res.status(200).send({message: 'El correo ingresado no existe'});}
+
+        mail.enviar_confirmacion_contrasenia(correo, '/mails/email_recuperar_contrasenia.html', 'Recuperacion de contraseña');
+
+        return res.status(200).send({message: 'Se envio el correo'});
+    })
+}
+
+const cambiar_contrasenia = async function(req, res) {
+    const {email, password} = req.body;
+
+    let buscar_correo = Promise.resolve(Cliente.findOne({email: email}));
+
+    buscar_correo.then(
+        cliente => {
+            bcrypt.hash(password,null,null, async function(err,hash){
+                let reg = Promise.resolve(Cliente.findByIdAndUpdate({_id: cliente._id},{
+                    password: hash,
+                }));
+
+                reg.then(
+                    data => {res.status(200).send({data: data});}
+                );
+            });
+        }
+    )
+}
+
 module.exports = {
     actualizar_direccion_cliente,
+    confirmar_correo,
     registro_cliente,
     login_cliente,
     listar_clientes_filtro_admin,
@@ -536,4 +570,5 @@ module.exports = {
     registro_compra_cliente,
     consultarIDPago,
     recibir_direccion_cliente,
+    cambiar_contrasenia
 }

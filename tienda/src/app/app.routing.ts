@@ -13,6 +13,7 @@ import { IndexPedidosComponent } from './components/usuario/pedidos/index-pedido
 import { PedidosDetallesComponent } from "./components/usuario/pedidos/pedidos-detalles/pedidos-detalles.component";
 import { VerificarPagoComponent } from "./components/verificar-pago/verificar-pago.component";
 import { EditDireccionComponent } from "./components/usuario/edit-direccion/edit-direccion.component";
+import { RecuperarContraseniaComponent } from './components/recuperar-contrasenia/recuperar-contrasenia.component';
 
 const appRoute : Routes = [
     {path: '', component: InicioComponent},
@@ -23,6 +24,9 @@ const appRoute : Routes = [
     {path: "cuenta/direcciones/:id", component:EditDireccionComponent, canActivate: [AuthGuard]},
     {path: 'cuenta/pedidos', component: IndexPedidosComponent, canActivate: [AuthGuard]},
     {path: 'cuenta/pedidos/:id', component: PedidosDetallesComponent, canActivate: [AuthGuard]},
+    {path: 'recuperar_contrasenia/:estado', component: RecuperarContraseniaComponent},
+    {path: 'recuperar_contrasenia/:estado/:email', component: RecuperarContraseniaComponent},
+        
     {path: 'carrito', component: CarritoComponent, canActivate: [AuthGuard]},
 
     {path: 'verificar-pago/:tipo/:direccion/:cupon/:envio/:tipo_descuento/:valor_descuento/:total_pagar/:subtotal', component: VerificarPagoComponent},

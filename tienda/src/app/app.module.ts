@@ -22,6 +22,7 @@ import { IndexPedidosComponent } from './components/usuario/pedidos/index-pedido
 import { PedidosDetallesComponent } from './components/usuario/pedidos/pedidos-detalles/pedidos-detalles.component';
 import { VerificarPagoComponent } from './components/verificar-pago/verificar-pago.component';
 import { EditDireccionComponent } from './components/usuario/edit-direccion/edit-direccion.component';
+import { RecuperarContraseniaComponent } from './components/recuperar-contrasenia/recuperar-contrasenia.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { EditDireccionComponent } from './components/usuario/edit-direccion/edit
     PedidosDetallesComponent,
     VerificarPagoComponent,
     EditDireccionComponent,
+    RecuperarContraseniaComponent,
   ],
   imports: [
     BrowserModule,

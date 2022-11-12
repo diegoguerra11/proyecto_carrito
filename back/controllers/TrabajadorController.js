@@ -28,7 +28,7 @@ const registrar_trabajador_admin = async function(req, res) {
     let data = req.body;
 
     try {
-        let validacion = await validaciones_trabajador(data.email, data.dni);
+        let validacion = await validaciones_trabajador(data.email, data.dni, null);
         if(validacion) {return res.status(200).send({message: validacion});}
 
         bcrypt.hash('Contra123',null,null, async function(err,hash){
@@ -70,7 +70,7 @@ const actualizar_trabajador_admin = async function(req, res) {
     let data = req.body;
 
     try {
-        let validacion = await validaciones_trabajador(data.email, data.dni);
+        let validacion = await validaciones_trabajador(data.email, data.dni, id);
         if(validacion) {return res.status(200).send({message: validacion});}
 
         let actualizar_trabajador = Promise.resolve(Admin.findByIdAndUpdate({_id: id}, data));
@@ -121,12 +121,12 @@ const activar_trabajador_admin = async function(req,res) {
     }
 }
 
-const validaciones_trabajador = async function(email, dni) {
-    let existe_numero_documento = await Admin.exists({dni: dni})
+const validaciones_trabajador = async function(email, dni, id) {
+    let existe_numero_documento = await Admin.exists({dni: dni, _id: {$ne: id}})
 
     if(existe_numero_documento) {return 'El numero de documento ya se encuentra en la base de datos';}
 
-    let existe_correo_electronico = await Admin.exists({email: email});
+    let existe_correo_electronico = await Admin.exists({email: email, _id: {$ne: id}});
     if(existe_correo_electronico) {return 'El correo electronico ya se encuentra en la base de datos';}
     return null;
 }
