@@ -2,10 +2,15 @@ import { MessageBox } from '../Utils/MessageBox';
 
 export class ValidatonsCliente {
     static actualizarCliente(form: any) {
+        let escontraseña=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%?&])[A-Za-z\d$@$!%?&]{8,15}/;
         let numerico = /^[0-9]+$/;
         const fecha = new Date(form.f_nacimiento);
         const timeDiff = Math.abs(Date.now() - fecha.getTime());
-        
+
+        if(!form.password.match(escontraseña)) {
+            MessageBox.messageError('El campo contraseña es invalido');
+            return false;
+        }
         if(!form.nombres) {
             MessageBox.messageError('El campo nombres es obligatorio');
             return false;
@@ -48,9 +53,14 @@ export class ValidatonsCliente {
     }
 
     static registrarCliente(form:any){
+      let escontraseña=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%?&])[A-Za-z\d$@$!%?&]{8,15}/;
         let numerico = /^[0-9]+$/;
         let esCorreo = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
+        if(!form.password.match(escontraseña)) {
+          MessageBox.messageError('El campo contraseña es invalido');
+          return false;
+      }
         if(!form.nombres){
             MessageBox.messageError('El campo nombre es obligatorio');
             return false;
