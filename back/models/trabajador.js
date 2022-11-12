@@ -15,4 +15,4 @@ let AdminSchema = Schema({
     estado: {type: Boolean, default:true, required:true}
 });
 
-module.exports =  mongoose.model('admin',AdminSchema);
+module.exports =  mongoose.model('trabajador',AdminSchema);
