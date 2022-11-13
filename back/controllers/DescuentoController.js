@@ -1,7 +1,6 @@
 let Descuento = require('../models/descuento');
 let fs = require('fs');
 let path = require('path');
-const descuento = require('../models/descuento');
 
 const registro_descuento_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
