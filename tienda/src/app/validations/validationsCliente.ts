@@ -7,8 +7,8 @@ export class ValidatonsCliente {
         const fecha = new Date(form.f_nacimiento);
         const timeDiff = Math.abs(Date.now() - fecha.getTime());
 
-        if(!form.password.match(escontraseña)) {
-            MessageBox.messageError('El campo contraseña es invalido');
+        if(form.newPassword && !form.newPassword.match(escontraseña)) {
+            MessageBox.messageError('El campo contraseña debe tener como minimo una mayúscula, un numero y un caracter especial');
             return false;
         }
         if(!form.nombres) {
@@ -53,14 +53,9 @@ export class ValidatonsCliente {
     }
 
     static registrarCliente(form:any){
-      let escontraseña=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%?&])[A-Za-z\d$@$!%?&]{8,15}/;
+        let escontraseña=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%?&])[A-Za-z\d$@$!%?&]{8,15}/;
         let numerico = /^[0-9]+$/;
         let esCorreo = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-
-        if(!form.password.match(escontraseña)) {
-          MessageBox.messageError('El campo contraseña es invalido');
-          return false;
-      }
         if(!form.nombres){
             MessageBox.messageError('El campo nombre es obligatorio');
             return false;
@@ -70,8 +65,8 @@ export class ValidatonsCliente {
             return false;
         }
         if(!form.apellidos){
-          MessageBox.messageError('El campo apellido es obligatorio');
-          return false;
+            MessageBox.messageError('El campo apellido es obligatorio');
+            return false;
         }
         if(form.apellidos.match(numerico)) {
             MessageBox.messageError('El campo apellido debe ser alfabetico');
@@ -86,18 +81,31 @@ export class ValidatonsCliente {
             return false;
         }
         if(!form.password){
-          MessageBox.messageError('El campo password es obligatorio');
-          return false;
+            MessageBox.messageError('El campo password es obligatorio');
+            return false;
+        }
+
+        if(!form.password.match(escontraseña)) {
+            MessageBox.messageError('El campo contraseña es invalido');
+            return false;
         }
 
         return true;
     }
 
     static actualizarContrasenia(form:any) {
+        let escontraseña=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%?&])[A-Za-z\d$@$!%?&]{8,15}/;
+
         if(!form.newPassword){
             MessageBox.messageError('El campo nueva contraseña es obligatorio');
             return false;
         }
+
+        if(!form.newPassword.match(escontraseña)) {
+            MessageBox.messageError('El campo nueva contraseña debe tener como minimo una mayúscula, un numero y un caracter especial');
+            return false;
+        }
+
         if(!form.confirmPassword){
             MessageBox.messageError('El campo nueva contraseña es obligatorio');
             return false;
