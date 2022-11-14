@@ -22,7 +22,6 @@ import { ConfigComponent } from './components/config/config.component';
 import { VariedadProductoComponent } from './components/productos/variedad-producto/variedad-producto.component';
 import { GaleriaProductoComponent } from './components/productos/galeria-producto/galeria-producto.component';
 
-import { CreateVentasComponent } from './components/ventas/create-ventas/create-ventas.component';
 import { IndexVentasComponent } from './components/ventas/index-ventas/index-ventas.component';
 import { ShowVentasComponent } from './components/ventas/show-ventas/show-ventas.component';
 import { IndexTrabajadorComponent } from './components/trabajador/index-trabajador/index-trabajador.component';
@@ -45,7 +44,6 @@ import { EditTrabajadorComponent } from './components/trabajador/edit-trabajador
     ConfigComponent,
     VariedadProductoComponent,
     GaleriaProductoComponent,
-    CreateVentasComponent,
     IndexVentasComponent,
     ShowVentasComponent,
     IndexTrabajadorComponent,

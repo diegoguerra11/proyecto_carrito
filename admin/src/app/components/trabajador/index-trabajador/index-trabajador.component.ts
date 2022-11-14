@@ -58,10 +58,11 @@ export class IndexTrabajadorComponent implements OnInit {
   deshabilitar(idTrabajador){
     this._trabajadorService.desactivar_trabajador_admin(idTrabajador, this.token).subscribe(
       response => {
+        
         $('#disable-'+idTrabajador).modal('hide');
         $('.modal-backdrop').removeClass('show');
         this.listar_cliente();
-        MessageBox.messageSuccess('Se desactivó correctamente al trabajador ' + idTrabajador);
+        MessageBox.messageSuccess('Se desactivó correctamente al trabajador ' + response.data.nombres+ " " + response.data.apellidos);
       }
     )
   }
@@ -72,7 +73,7 @@ export class IndexTrabajadorComponent implements OnInit {
         $('#enable-'+idTrabajador).modal('hide');
         $('.modal-backdrop').removeClass('show');
         this.listar_cliente();
-        MessageBox.messageSuccess('Se Activó correctamente al trabajador ' + idTrabajador);
+        MessageBox.messageSuccess('Se Activó correctamente al trabajador ' + response.data.nombres + " " + response.data.apellidos);
       }
     )
   }
