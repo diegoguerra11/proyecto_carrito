@@ -29,27 +29,48 @@
         <div class="col ml-auto">
           <div class="d-flex align-items-center justify-content-between mb-4 pb-sm-2">
             <h1 class="h2 mb-0">Mis ordenes</h1>
-            
+
           </div>
 
           <!-- Orders accordion -->
           <div class="accordion-alt" *ngIf="!load_data" id="orders">
             <!-- Order -->
-            <ng-container *ngIf="ordenes.length > 0">
-              <div class="card border-bottom" *ngFor="let item of ordenes | slice: (page-1)*pageSize : (page-1) * pageSize + pageSize;">
+
+              <div class="card border-bottom" >
                 <div class="card-header accordion-heading py-1">
-                  <a [routerLink]="['/cuenta/pedidos',item._id]"class="d-flex flex-wrap justify-content-between py-3" data-toggle="collapse" aria-expanded="false">
-                    <span class="pr-2"># {{ item._id.toUpperCase() }}</span>
-                    <span class="font-size-sm text-muted text-nowrap px-2">
-                      <i class="cxi-clock font-size-base align-middle mt-n1 mr-1" aria-hidden="true"></i>
-                      {{ item.createdAt | date }}
-                    </span>
-                    <span class="badge badge-info">{{ item.estado }}</span>
-                    <span class="text-dark pl-1">S/.{{ item.total_pagar }}</span>
-                  </a>
+
+
+                  <table class="table table-bordered">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th>Nro de orden</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Monto</th>
+                        <th>Boleta</th>
+                      </tr>
+                    </thead>
+                    <ng-container *ngIf="!load_data">
+                      <tbody *ngFor="let item of ordenes | slice: (page-1)*pageSize : (page-1) * pageSize + pageSize;">
+                        <tr>
+                        <td><a [routerLink]="['/cuenta/pedidos',item._id]"class="d-flex flex-wrap justify-content-between py-3" data-toggle="collapse" aria-expanded="false">
+                          <span class="pr-2"># {{ item._id.toUpperCase() }}</span></a></td>
+                        <td><span class="font-size-sm text-muted text-nowrap px-2">
+                          <i class="cxi-clock font-size-base align-middle mt-n1 mr-1" aria-hidden="true"></i>
+                          {{ item.createdAt | date }}
+                        </span></td>
+                        <td><span class="badge badge-info">{{ item.estado }}</span></td>
+                        <td> <span class="text-dark pl-1">S/.{{ item.total_pagar }}</span></td>
+                        <td *ngIf="item.estado=='Finalizado'"><a [routerLink]="['verBoleta',item._id]">Boleta </a></td>
+                       </tr>
+                      </tbody>
+                    </ng-container>
+                  </table>
+
+
                 </div>
               </div>
-            </ng-container>
+
 
             <ng-container *ngIf="ordenes.length == 0">
               <div class="card border-bottom">
@@ -69,13 +90,13 @@
               </div>
             </div>
           </div>
-        
+
           <ngb-pagination
             [(page)]="page"
             [pageSize]="pageSize"
             [collectionSize]="ordenes.length"
           ></ngb-pagination>
-        </div>  
+        </div>
       </div>
     </div>
   </section>

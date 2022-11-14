@@ -33,7 +33,7 @@ export class NavComponent implements OnInit {
     private _clienteService: ClienteService,
     private _guestService: GuestService,
     private _router: Router,
-  ) { 
+  ) {
     this.token = localStorage.getItem('token');
     this.id = localStorage.getItem('_id');
     this.url = GLOBAL.url;
@@ -45,10 +45,10 @@ export class NavComponent implements OnInit {
     )
     if(this.user_lc == undefined){
       let ls_cart = localStorage.getItem('cart');
-      
+
       if(ls_cart != null){
         this.carrito_logout = JSON.parse(ls_cart);
-        
+
         this.calcular_carrito();
       }else{
         this.carrito_logout = [];
@@ -63,7 +63,7 @@ export class NavComponent implements OnInit {
         if(localStorage.getItem('user_data')){
           this.user_lc = JSON.parse(localStorage.getItem('user_data')!);
 
-          this.obtener_carrito();         
+          this.obtener_carrito();
         }else{
           this.user_lc = undefined;
         }
@@ -73,11 +73,9 @@ export class NavComponent implements OnInit {
         this.user = undefined;
       }
     );
-   } 
+   }
   }
   
-
-  // obtiene el carrito del cliente y calcula el precio
   obtener_carrito(){
     this._clienteService.obtener_carrito_cliente(this.user_lc._id,this.token).subscribe(
       response=>{
@@ -99,18 +97,18 @@ export class NavComponent implements OnInit {
           }else{
             this.carrito_logout = [];
           }
-          
+
         }else{
           this.obtener_carrito();
         }
-        
+
       });
     }
     else{this.socket.on('new-carrito', this.obtener_carrito.bind(this));
 
     this.socket.on('new-carrito-add', this.obtener_carrito.bind(this));}
 
-   
+
   }
 
   // abre el menu
@@ -188,7 +186,7 @@ export class NavComponent implements OnInit {
         MessageBox.messageError('Se eliminó el producto correctamente.');
         this.socket.emit('delete-carrito',{data:response.data});
         console.log(response);
-        
+
       }
     );
   }
@@ -198,7 +196,7 @@ export class NavComponent implements OnInit {
     this.carrito_logout.splice(item._id,1);
     localStorage.removeItem('cart');
     if(this.carrito_logout.length >= 1){
-      
+
       localStorage.setItem('cart',JSON.stringify(this.carrito_logout));
     } 
     if(this.currency == 'PEN'){

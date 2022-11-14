@@ -33,6 +33,7 @@ export class LoginComponent implements OnInit {
 
 //se valida los datos del login y si hay algun error en el formulario mandara un mensaje
   login(loginForm){
+    //se valida los datos del login y si hay algun error en el formulario mandara un mensaje
     if(!ValidatonsIniciarSesion.login(loginForm.form.value)){return;}
 
     let data={

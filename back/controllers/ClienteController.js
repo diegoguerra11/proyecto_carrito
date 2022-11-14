@@ -263,6 +263,21 @@ const obtener_detalles_ordenes_cliente = async function(req,res){
     }
 }
 
+const verBoleta = async function(req,res){
+    if(!req.user){return res.status(500).send({message: 'NoAccess', data: undefined});}
+
+    let id = req.params['id'];
+        
+        let buscar_venta = Promise.resolve(Venta.findById({_id: id}).populate('direccion').populate('cliente'));
+        buscar_venta.then(venta => {
+            let buscar_detalles = Promise.resolve (Dventa.find({venta: id}).populate('producto').populate('variedad'));
+            buscar_detalles.then(detalles => {
+                res.status(200).send({data:venta, detalles: detalles});
+            });
+        }).catch(() => {throw error});
+    
+}
+
 /*****************************************DIRECCIONES*************************************************/
 
 //Función para registrar la dirección del cliente. El cliente podrá registrar su dirección que será utilizada para realizar sus compras.
@@ -629,6 +644,7 @@ module.exports = {
     registro_compra_cliente,
     consultarIDPago,
     recibir_direccion_cliente,
+    verBoleta,
     emitir_review_producto_cliente,
     obtener_review_producto_cliente,
     obtener_reviews_cliente,

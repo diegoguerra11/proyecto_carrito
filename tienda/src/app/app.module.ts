@@ -23,6 +23,7 @@ import { IndexPedidosComponent } from './components/usuario/pedidos/index-pedido
 import { PedidosDetallesComponent } from './components/usuario/pedidos/pedidos-detalles/pedidos-detalles.component';
 import { VerificarPagoComponent } from './components/verificar-pago/verificar-pago.component';
 import { EditDireccionComponent } from './components/usuario/edit-direccion/edit-direccion.component';
+import { VerBoletaComponent } from './components/usuario/pedidos/ver-boleta/ver-boleta.component';
 import { IndexReviewComponent } from './components/usuario/reviews/index-review/index-review.component';
 import { RecuperarContraseniaComponent } from './components/recuperar-contrasenia/recuperar-contrasenia.component';
 
@@ -43,6 +44,7 @@ import { RecuperarContraseniaComponent } from './components/recuperar-contraseni
     PedidosDetallesComponent,
     VerificarPagoComponent,
     EditDireccionComponent,
+    VerBoletaComponent,
     IndexReviewComponent,
     RecuperarContraseniaComponent
   ],
