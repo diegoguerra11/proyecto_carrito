@@ -8,7 +8,7 @@ export class ValidatonsCliente {
         const timeDiff = Math.abs(Date.now() - fecha.getTime());
 
         if(!form.password.match(escontraseña)) {
-            MessageBox.messageError('El campo contraseña es invalido');
+            MessageBox.messageError('La contraseña tener una mayuscula, un numero y un signo');
             return false;
         }
         if(!form.nombres) {
@@ -58,7 +58,7 @@ export class ValidatonsCliente {
         let esCorreo = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
         if(!form.password.match(escontraseña)) {
-          MessageBox.messageError('El campo contraseña es invalido');
+          MessageBox.messageError('La contraseña tener una mayuscula, un numero y un signo');
           return false;
       }
         if(!form.nombres){
