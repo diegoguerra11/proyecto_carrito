@@ -52,11 +52,7 @@
                                 </div>
                               </div>
                         </div>
-                        <div class="col">
-                            <a class="btn btn-primary btn-block" [routerLink]="['/panel/ventas/create']" routerLinkActive="router-link-active"  style="cursor: pointer;">
-                                Nueva venta
-                            </a>
-                        </div>
+                        
                     </div>
                     <div class="row">
                         <div class="col">
@@ -105,9 +101,10 @@
                       </td>
                       <td>
                         <span class="badge badge-warning" *ngIf="item.estado == 'En espera'">{{item.estado}}</span>
-                        <span class="badge badge-success" *ngIf="item.estado == 'Procesando'">{{item.estado}}</span>
+                        <span class="badge badge-primary" *ngIf="item.estado == 'Procesando'">{{item.estado}}</span>
                         <span class="badge badge-info" *ngIf="item.estado == 'Enviado'">{{item.estado}}</span>
-                        <span class="badge badge-danger" *ngIf="item.estado == 'Finalizado'">{{item.estado}}</span>
+                        <span class="badge badge-success" *ngIf="item.estado == 'Finalizado'">{{item.estado}}</span>
+                        <span class="badge badge-danger" *ngIf="item.estado == 'Cancelado'">{{item.estado}}</span>
                       </td>
                       <td>
                         <div class="dropdown">

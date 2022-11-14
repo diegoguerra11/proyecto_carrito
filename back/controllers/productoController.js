@@ -2,6 +2,8 @@
 
 let Producto = require('../models/producto');
 let Inventario = require('../models/inventario');
+let Trabajador = require('../models/trabajador');
+let Variedad = require('../models/Variedad');
 let fs = require('fs');
 let path = require('path');
 
@@ -74,7 +76,6 @@ const obtener_producto_admin = async function (req,res){
     }
 }
 
-
 const actualizar_producto_admin = async function (req,res){
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
     let id = req.params['id'];
@@ -142,7 +143,7 @@ const listar_inventario_producto_admin = async function(req,res){
       
     let id = req.params['id'];
 
-    let buscar_inventario = Promise.resolve(Inventario.find({producto: id}).populate('admin').sort({createdAt: -1}));
+    let buscar_inventario = Promise.resolve(Inventario.find({producto: id}).sort({createdAt: -1}));
 
     buscar_inventario.then(reg => {
         res.status(200).send({data:reg});
@@ -182,11 +183,34 @@ const registro_inventario_producto_admin = async function(req,res){
     
     let data = req.body;
 
-    let crear_inventario = Promise.resolve(Inventario.create(data));
+    let buscar_trabajador = Promise.resolve(Trabajador.findById({_id: data.trabajador}));
 
-    crear_inventario.then(reg => {
-        res.status(200).send({data:reg});
-    });
+    buscar_trabajador.then(
+        admin => {
+            data.trabajador = admin.nombres+' '+admin.apellidos;
+            let actualizar_variedad = Promise.resolve(actualizar_variedad_admin(data.producto, data.variedad, data.cantidad))
+            actualizar_variedad.then(
+                () => {
+                    let crear_inventario = Promise.resolve(Inventario.create(data));
+            
+                    crear_inventario.then(reg => {
+                        res.status(200).send({data:reg});
+                    });
+                }
+            );
+            
+        }
+    )  
+}
+
+const actualizar_variedad_admin = async function(producto, valor, cantidad) {
+    let buscar_variedad = Promise.resolve(Variedad.findOne({producto: producto, valor: valor}));
+
+    buscar_variedad.then(
+        variedad => {
+            let actualizar_variedad = Promise.resolve(Variedad.findByIdAndUpdate({_id: variedad._id}, {stock: cantidad + variedad.stock}));
+        }
+    )
 }
 
 const actualizar_producto_variedades_admin = async function (req,res){
@@ -268,7 +292,6 @@ const listar_productos_recomendados_publico = async function(req,res){
         res.status(200).send({data: reg});
     });
 }
-
 
 module.exports = {
     registro_producto_admin,

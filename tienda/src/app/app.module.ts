@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from "@angular/forms";
 import { HttpClient, HttpClientModule }  from "@angular/common/http";
-import { NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap"
+import { NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
+import { RatingModule } from 'ng-starrating';
 
 import { routing } from './app.routing';
 
@@ -23,6 +24,8 @@ import { PedidosDetallesComponent } from './components/usuario/pedidos/pedidos-d
 import { VerificarPagoComponent } from './components/verificar-pago/verificar-pago.component';
 import { EditDireccionComponent } from './components/usuario/edit-direccion/edit-direccion.component';
 import { VerBoletaComponent } from './components/usuario/pedidos/ver-boleta/ver-boleta.component';
+import { IndexReviewComponent } from './components/usuario/reviews/index-review/index-review.component';
+import { RecuperarContraseniaComponent } from './components/recuperar-contrasenia/recuperar-contrasenia.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +45,8 @@ import { VerBoletaComponent } from './components/usuario/pedidos/ver-boleta/ver-
     VerificarPagoComponent,
     EditDireccionComponent,
     VerBoletaComponent,
+    IndexReviewComponent,
+    RecuperarContraseniaComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +54,8 @@ import { VerBoletaComponent } from './components/usuario/pedidos/ver-boleta/ver-
     FormsModule,
     HttpClientModule,
     routing,
-    NgbPaginationModule
+    NgbPaginationModule,
+    RatingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
