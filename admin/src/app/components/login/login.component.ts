@@ -30,6 +30,8 @@ export class LoginComponent implements OnInit {
 
     }
   }
+
+//se valida los datos del login y si hay algun error en el formulario mandara un mensaje
   login(loginForm){
     //se valida los datos del login y si hay algun error en el formulario mandara un mensaje
     if(!ValidatonsIniciarSesion.login(loginForm.form.value)){return;}
@@ -41,8 +43,8 @@ export class LoginComponent implements OnInit {
 
     this._adminService.login_admin(data).subscribe(
       response =>{
-        if(!response.data){return MessageBox.messageError(response.message);}
-        
+        if(response.data == undefined){MessageBox.messageError(response.message); return;}
+
         this.usuario = response.data;
 
         localStorage.setItem('token',response.token);

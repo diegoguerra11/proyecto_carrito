@@ -147,10 +147,10 @@
               <li class="mb-0"><span class="text-muted">{{item.producto.titulo_variedad}}: </span>{{item.variedad.valor}}</li>
             </ul>
             <div class="d-flex align-items-center">
-              <input type="number" class="form-control form-control-sm bg-light mr-3" readonly style="width: 4.5rem;" value="{{item.cantidad}}">
-            <div class="text-nowrap">
-                <span style="font-size: 1.2rem !important;" class="font-size-xs text-muted">S/.{{item.producto.precio}}</span>
-              </div>
+              <input (keyup)="agregarStock(item, item.cantidad)" type="text" class="form-control form-control-sm bg-light mr-3" style="width: 4.5rem;" id="stock" value="{{item.cantidad}}" [(ngModel)]="item.cantidad">
+                <div class="text-nowrap">
+                  <span style="font-size: 1.2rem !important;" class="font-size-xs text-muted">S/.{{item.producto.precio}}</span>
+                </div>
             </div>
           </div>
           <div class="nav-muted mr-n2">
@@ -205,26 +205,27 @@
 </ng-container>
 
     
-  <!-- Body -->
-  <div class="cs-offcanvas-body">
-    <!-- Item -->
-    <div class="media p-4 border-bottom mx-n4" *ngFor="let item of carrito_logout">
-      <a  [routerLink]="['/productos/',item.producto.slug]" style="min-width: 80px;">
-        <img [src]="url +'obtener_portada/'+item.producto.portada" width="80" alt="Product thumb">
-      </a>
-      <div class="media-body pl-3">
-        <div class="d-flex justify-content-between">
-          <div class="pr-2">
-            <h3 class="font-size-sm mb-3">
-              <a  [routerLink]="['/productos/',item.producto.slug]"  class="nav-link font-weight-bold">{{item.producto.titulo}}</a>
-            </h3>
-            <ul class="list-unstyled font-size-xs mt-n2 mb-2">
-              <li class="mb-0"><span class="text-muted">{{item.producto.titulo_variedad}}: </span>{{item.variedad.variedad}}</li>
-            </ul>
-            <div class="d-flex align-items-center">
-              <input type="number" class="form-control form-control-sm bg-light mr-3" readonly style="width: 4.5rem;" value="{{item.cantidad}}">
+<!-- Body -->
+<div class="cs-offcanvas-body">
+  <!-- Item -->
+  <div class="media p-4 border-bottom mx-n4" *ngFor="let item of carrito_logout">
+    <a  [routerLink]="['/productos/',item.producto.slug]" style="min-width: 80px;">
+      <img [src]="url +'obtener_portada/'+item.producto.portada" width="80" alt="Product thumb">
+    </a>
+    <div class="media-body pl-3">
+      <div class="d-flex justify-content-between">
+        <div class="pr-2">
+          <h3 class="font-size-sm mb-3">
+            <a  [routerLink]="['/productos/',item.producto.slug]"  class="nav-link font-weight-bold">{{item.producto.titulo}}</a>
+          </h3>
+          <ul class="list-unstyled font-size-xs mt-n2 mb-2">
+            <li class="mb-0">
+              <span class="text-muted">{{item.producto.titulo_variedad}}: </span> {{item.variedad.variedad}}
+            </li>
+          </ul>
+          <div class="d-flex align-items-center">
+            <input type="text" (keyup)="agregarStock(item, item.cantidad)" class="form-control form-control-sm bg-light mr-3" style="width: 4.5rem;" value="{{item.cantidad}}" [(ngModel)]="item.cantidad">
             <div class="text-nowrap">
-
                 <span style="font-size: 1.2rem !important;" class="font-size-xs text-muted">S/.{{item.producto.precio}}</span>
               </div>
             </div>
@@ -237,13 +238,11 @@
         </div>
       </div>
     </div>
-
   </div>
 
 
-    <ng-container *ngIf="carrito_logout.length >=1">
-    
-      <!-- Footer -->
+  <ng-container *ngIf="carrito_logout.length >=1">   
+    <!-- Footer -->
     <div class="cs-offcanvas-cap flex-column border-top">
       <div class="d-flex align-items-center justify-content-between mb-3 pb-1">
         <span class="text-muted mr-2">Subtotal:</span>
@@ -254,6 +253,6 @@
         Checkout
       </a>
     </div>
-    </ng-container>
-    
-  </div>
+  </ng-container>
+  
+</div>

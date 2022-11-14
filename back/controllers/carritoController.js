@@ -8,7 +8,7 @@ const agregar_carrito_cliente = async function(req,res){
 
     let existe_en_carrito = Promise.resolve(Carrito.exists({
         cliente:data.cliente,
-        producto:data.producto
+        variedad:data.variedad
     }));
 
     existe_en_carrito.then(existe => {
@@ -63,18 +63,31 @@ const obtener_carrito_cliente = async function(req,res){
 const actualizar_cantidad_carrito_cliente = async function(req, res) {
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
-    let id = req.param['id'];
-    let cantidad = req.param['cantidad'];
+    let id = req.params['id'];
+    let cantidad = req.params['cantidad'];
 
     let filter = {_id: id};
     let newvalues = { $set: { cantidad: cantidad} };
 
-    let crear_carrito_cliente = Promise.resolve(Carrito.updateOne(filter, newvalues));
+    let buscar_carrito = Promise.resolve(Carrito.findById(filter));
 
-    crear_carrito_cliente.then(carrito_cliente => {
-        res.status(200).send({data: carrito_cliente});
-    })
+    try {
+        buscar_carrito.then(item => {
+            let buscar_variedad = Promise.resolve(Variedad.findById({_id: item.variedad}));
+    
+            buscar_variedad.then(variedad => {
+                if(variedad.stock < cantidad) {return res.status(200).send({message: 'La cantidad colocada es mayor al stock del producto'});}
+                let actualizar_carrito_cliente = Promise.resolve(Carrito.findByIdAndUpdate(filter, newvalues));
+    
+                actualizar_carrito_cliente.then(carrito_cliente => {
+                    res.status(200).send({data: carrito_cliente});
+                }).catch(error => {throw error;})
+            }).catch(error => {throw error;})
+        }).catch(error => {throw error;});
 
+    } catch(error) {
+        return res.status(500).send({message: 'Error en el servidor'});
+    }
 }
 
 const eliminar_carrito_cliente = async function(req,res){

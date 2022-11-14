@@ -15,6 +15,8 @@ api.delete('/eliminar_cliente_admin/:id',auth.auth, clienteController.eliminar_c
 //Cliente
 api.post('/registro_cliente',clienteController.registro_cliente);
 api.post('/login_cliente', clienteController.login_cliente);
+api.post('/confirmar_correo', clienteController.confirmar_correo);
+api.put('/cambiar_contrasenia', clienteController.cambiar_contrasenia);
 api.get('/listar_clientes_tienda',auth.auth,clienteController.listar_clientes_tienda);
 api.get('/listar_clientes_filtro_admin/:tipo/:filtro?',auth.auth, clienteController.listar_clientes_filtro_admin);
 api.get('/obtener_cliente_guest/:id',auth.auth,clienteController.obtener_cliente_guest);
@@ -42,5 +44,10 @@ api.get('/obtener_detalles_ordenes_cliente/:id', auth.auth, clienteController.ob
 api.get('/verBoleta/:id', auth.auth, clienteController.verBoleta);
 api.get('/consultarIDPago/:id',auth.auth,clienteController.consultarIDPago);
 api.post('/registro_compra_cliente',auth.auth,clienteController.registro_compra_cliente);
+
+//REVIEWS
+api.post('/emitir_review_producto_cliente', auth.auth,clienteController.emitir_review_producto_cliente);
+api.get('/obtener_review_producto_cliente/:id', clienteController.obtener_review_producto_cliente);
+api.get('/obtener_reviews_cliente/:id', auth.auth, clienteController.obtener_reviews_cliente);
 
 module.exports = api;

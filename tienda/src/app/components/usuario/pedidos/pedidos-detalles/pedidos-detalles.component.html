@@ -141,6 +141,33 @@
                                 <ul class="list-unstyled font-size-xs mt-n2 mb-2">
                                   <li class="mb-0"><span class="text-muted">{{ item.producto.titulo_variedad }}:</span>{{ item.variedad.valor }}</li>
                                 </ul>
+                                <a *ngIf="!item.estado" (click)="openModal(item)" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#review-'+item._id" class="text-primary">
+                                  [Emitir reseña]</a>
+                                <span *ngIf="item.estado" class="badge badge-warning">Comentario emitido</span>
+                                <div class="modal fade" id="review-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+                                  <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h4 class="modal-title">Emitir reseña</h4>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <div class="row">
+                                          <div class="col-sm-12 form-group">
+                                            <label for="ac-fn">Reseña</label>
+                                            <textarea required class="form-control" placeholder="¿Qué te pareció el producto?" name="review" [(ngModel)]="review.review" rows="3"></textarea>
+                                          </div>
+                                        </div>
+                                        <star-rating [value]=totalstar size="45px" checkedcolor="gold" uncheckedcolor="gray" [totalstars]=totalstar
+                                        (rate)="onRate($event)"></star-rating>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cerrar</button>
+                                        <button class="btn btn-primary btn-shadow btn-sm" type="button" (click)="emitir(item._id)">Enviar</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </td>

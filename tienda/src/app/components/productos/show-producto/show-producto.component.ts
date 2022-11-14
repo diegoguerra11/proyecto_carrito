@@ -177,9 +177,9 @@ export class ShowProductoComponent implements OnInit {
       let arrayTemporalCarrito = JSON.parse(ls_carrito_guest);
       for (let index = 0; index < arrayTemporalCarrito.length; index++) {
         const element = arrayTemporalCarrito[index];
-        productoEnCarrito = data.producto["_id"] == element.producto["_id"];
+        productoEnCarrito = data.variedad['id'] == element.variedad["id"];
       }
-      if(productoEnCarrito) {MessageBox.messageError('Producto Ingresado previamente en el carrito'); return;}
+      if(productoEnCarrito) {return MessageBox.messageError('Producto Ingresado previamente en el carrito');}
       let arr_carrito = JSON.parse(ls_carrito_guest);
       localStorage.removeItem('cart');
       arr_carrito.push(data);

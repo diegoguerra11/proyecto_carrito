@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { GLOBAL } from '../../../../../admin/src/app/services/GLOBAL';
 import { io } from "socket.io-client";
 import { MessageBox } from 'src/app/Utils/MessageBox';
+import { ValidationsProducto } from '../../validations/validationsProducto';
+import { GuestService } from 'src/app/services/guest.service';
 
 
 declare let $:any;
@@ -29,6 +31,7 @@ export class NavComponent implements OnInit {
 
   constructor(
     private _clienteService: ClienteService,
+    private _guestService: GuestService,
     private _router: Router,
   ) {
     this.token = localStorage.getItem('token');
@@ -50,9 +53,8 @@ export class NavComponent implements OnInit {
       }else{
         this.carrito_logout = [];
       }
-    }
-
-
+    } 
+    
    if (this.token) {
     this._clienteService.obtener_cliente_guest(this.id,this.token).subscribe(
       response=>{
@@ -73,7 +75,7 @@ export class NavComponent implements OnInit {
     );
    }
   }
-
+  
   obtener_carrito(){
     this._clienteService.obtener_carrito_cliente(this.user_lc._id,this.token).subscribe(
       response=>{
@@ -83,6 +85,7 @@ export class NavComponent implements OnInit {
     );
   }
 
+  // si el token esta vacio calcula el carrito o lo obtiene, caso contrario manda this a la funcion obtener_carrito
   ngOnInit(): void {
     if(this.token == null){
       this.socket.on('new-carrito-add',(data)=>{
@@ -107,6 +110,8 @@ export class NavComponent implements OnInit {
 
 
   }
+
+  // abre el menu
   openMenu(){
     let clase = $('#modalMenu').attr('class');
     console.log(clase);
@@ -116,6 +121,7 @@ export class NavComponent implements OnInit {
       $('#modalMenu').removeClass('active');
     }
   }
+
   openCart(){
     let clase = $('#modalCarrito').attr('class');
     console.log(clase);
@@ -125,6 +131,8 @@ export class NavComponent implements OnInit {
       $('#modalCarrito').removeClass('active');
     }
   }
+
+  // recarga y limpia
   logout(){
     window.location.reload();
     localStorage.clear();
@@ -141,6 +149,7 @@ export class NavComponent implements OnInit {
     }
   }
 
+  // calcula el precio del carrito sin descuento dependiendo si es en soles o dolares
   calcular_carrito(){
     this.subtotal = 0;
     if(this.user_lc != undefined){
@@ -170,24 +179,26 @@ export class NavComponent implements OnInit {
     }
   }
 
+  // elimina un producto del carrito y actualiza el total del carrito
   eliminar_item(id:any){
     this._clienteService.eliminar_carrito_cliente(id,this.token).subscribe(
       response=>{
-         MessageBox.messageError('Se eliminó el producto correctamente.');
+        MessageBox.messageError('Se eliminó el producto correctamente.');
         this.socket.emit('delete-carrito',{data:response.data});
         console.log(response);
 
       }
     );
   }
+
+  // elimina un producto del carrito y actualiza el total del carrito
   eliminar_item_guest(item:any){
     this.carrito_logout.splice(item._id,1);
-    console.log("miau");
     localStorage.removeItem('cart');
     if(this.carrito_logout.length >= 1){
 
       localStorage.setItem('cart',JSON.stringify(this.carrito_logout));
-    }
+    } 
     if(this.currency == 'PEN'){
       let monto = item.producto.precio*item.cantidad;
       this.subtotal = this.subtotal -monto;
@@ -197,4 +208,28 @@ export class NavComponent implements OnInit {
     }
   }
 
+  agregarStock(item:any, stock:any) {
+    if(!ValidationsProducto.agregarStock(stock)){return;}
+    
+    if(this.token){
+      this._guestService.actualizar_cantidad_carrito_cliente(item._id, stock, this.token).subscribe(
+        (response: any) => {
+          if(!response.data){return MessageBox.messageError(response.message);}
+          MessageBox.messageSuccess('Se actualizó la cantidad correctamente');
+          this.obtener_carrito();
+        }
+      )
+    } else {
+      if(parseInt(stock) > parseInt(item.variedad.stock)){
+        return MessageBox.messageError('La cantidad disponibles es: '+item.variedad.stock)
+      }
+      this.carrito_logout.forEach(element => {
+        if(element.producto == item._id) {
+          element.cantidad = parseInt(stock);
+        }
+      });
+      localStorage.setItem('cart', JSON.stringify(this.carrito_logout)); 
+    }
+    this.calcular_carrito();
+  }
 }

@@ -45,8 +45,7 @@
         <div class="col-md-9">
           <label class="col-md-3 col-form-label font-weight-medium" for="text-input">Variedades</label>
           <div class="input-group">
-            <input class="form-control" type="text" placeholder="Nueva variedad" name="nueva_variedad" [(ngModel)]="nueva_variedad">
-            <input class="form-control" type="number" placeholder="Stock" name="stock" [(ngModel)]="stock">
+            <input class="form-control mr-5" type="text" placeholder="Nueva variedad" name="nueva_variedad" [(ngModel)]="nueva_variedad">
             <button class="btn btn-primary" type="button" (click)="agregar_variedad()">Agregar</button>
           </div>
         </div>
@@ -57,7 +56,6 @@
               <thead class="thead-dark">
                 <tr>
                   <th>Título</th>
-                  <th>Stock</th>
                   <th>Eliminar</th>
                 </tr>
               </thead>
@@ -74,7 +72,6 @@
                 <tbody *ngFor="let item of variedades; let indice = index">
                   <tr>
                     <td>{{item.valor}}</td>
-                    <td>{{item.stock}}</td>
                     <td><a style="cursor: pointer;" class="text-danger" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#delete-'+item._id">[Eliminar]</a></td>
                     <div class="modal fade" id="delete-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
                       <div class="modal-dialog modal-dialog-centered" role="document">

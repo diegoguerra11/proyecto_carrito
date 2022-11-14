@@ -58,7 +58,10 @@ export class ValidatonsTrabajador {
             MessageBox.messageError('El campo numero de documento es obligatorio');
             return false;
         }
-
+        if(!form.rol) {
+            MessageBox.messageError('El campo rol es obligatorio');
+            return false;
+        }
         return true;
     }
 }
