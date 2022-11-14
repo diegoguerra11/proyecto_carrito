@@ -3,6 +3,8 @@
 //Declaración de variables.
 let Producto = require('../models/producto');
 let Inventario = require('../models/inventario');
+let Trabajador = require('../models/trabajador');
+let Variedad = require('../models/Variedad');
 let fs = require('fs');
 let path = require('path');
 
@@ -149,7 +151,7 @@ const listar_inventario_producto_admin = async function(req,res){
       
     let id = req.params['id'];
 
-    let buscar_inventario = Promise.resolve(Inventario.find({producto: id}).populate('admin').sort({createdAt: -1}));
+    let buscar_inventario = Promise.resolve(Inventario.find({producto: id}).sort({createdAt: -1}));
 
     buscar_inventario.then(reg => {
         res.status(200).send({data:reg});
@@ -198,7 +200,6 @@ const registro_inventario_producto_admin = async function(req,res){
     });
 }
 
-//Función para actualizar los productos por variedad en Admin. El administrador podrá actualizar los títulos de los productos y las variedades existentes en la tienda.
 const actualizar_producto_variedades_admin = async function (req,res){
     if(!req.user || req.user.rol != 'admin'){return res.status(500).send({message: 'NoAccess'});}
     
@@ -285,7 +286,7 @@ const listar_productos_recomendados_publico = async function(req,res){
     });
 }
 
-//Exportación de las funciones.
+
 module.exports = {
     registro_producto_admin,
     listar_productos_admin,

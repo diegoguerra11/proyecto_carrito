@@ -1,7 +1,7 @@
 <app-sidebar></app-sidebar>
 
 <div class="border-bottom pt-5 mt-2 mb-5">
-    <h1 class="mt-2 mt-md-4 mb-3 pt-5">trabajadores</h1>
+    <h1 class="mt-2 mt-md-4 mb-3 pt-5">Trabajadores</h1>
     <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
       <p class="text-muted">Este módulo lista todos los trabajadores de la tienda.</p>
       <p class="font-size-sm font-weight-medium pl-md-4">
@@ -37,6 +37,8 @@
                     <th>Nombres</th>
                     <th>Apellidos</th>
                     <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
                     <th>Opciones</th>
                 </tr>
                 </thead>
@@ -56,30 +58,50 @@
                     <td>{{item.nombres}}</td>
                     <td>{{item.apellidos}}</td>
                     <td>{{item.email}}</td>
+                    <td>{{item.rol}}</td>
+                    <td class="text-{{item.estado ? 'success' : 'danger' }}" >{{item.estado ? 'ACTIVO': 'INACTIVO'}}</td>
                     <td>
                     <div class="btn-group dropdown d-inline-block mb-3 mr-2">
                         <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" 
                         aria-expanded="false">OPCIONES</button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" [routerLink]="['/panel/trabajadores',item._id]" >Editar trabajador</a>                          
-                            <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#delete-'+item._id">Eliminar trabajador</a>
+                            <a *ngIf="item.estado" class="dropdown-item" [routerLink]="['/panel/trabajadores',item._id]" >Editar trabajador</a>                          
+                            <a *ngIf="item.estado" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#disable-'+item._id">Deshabilitar trabajador</a>
+                            <a *ngIf="!item.estado" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#enable-'+item._id">Habilitar trabajador</a>
                         </div>
                     </div>
-                    <div class="modal fade" id="delete-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+                    <div class="modal fade" id="disable-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Eliminar, {{item.nombres}} {{item.apellidos}}</h4>
-                                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Desea eliminar este trabajador?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
-                                <!-- <button class="btn btn-primary btn-shadow btn-sm" (click)="eliminar(item._id)" type="button">Si, eliminar</button> -->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Deshabilitar, {{item.nombres}} {{item.apellidos}}</h4>
+                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Desea deshabilitar este trabajador?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                                    <button class="btn btn-primary btn-shadow btn-sm" (click)="deshabilitar(item._id)" type="button">Si, deshabilitar</button>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="modal fade" id="enable-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Habilitar, {{item.nombres}} {{item.apellidos}}</h4>
+                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Desea hablitar este trabajador?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                                    <button class="btn btn-primary btn-shadow btn-sm" (click)="habilitar(item._id)" type="button">Si, habilitar</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     </td>

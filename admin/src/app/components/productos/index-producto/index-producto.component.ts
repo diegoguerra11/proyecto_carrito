@@ -23,15 +23,16 @@ export class IndexProductoComponent implements OnInit {
   public url;
   public page=1;
   public pageSize = 20;
-  
+
   public load_estado = false;
   public load_btn = false;
 
-  constructor(
+  constructor(//inyecta los servidores
     private _productoService : ProductoService,
     public _adminService : AdminService
 
-  ){ 
+  ){
+    //llama al token que se inicialize con el servicio
     this.token = localStorage.getItem('token');
     this.url = GLOBAL.url;
   }
@@ -39,8 +40,9 @@ export class IndexProductoComponent implements OnInit {
   ngOnInit(): void {
     this.init_data();
   }
-  
+
   init_data(){
+//se obtiene la lista de los imputs productos del html al index producto ts
     this._productoService.listar_productos_admin(this.filtro,this.token).subscribe(
       response =>{
         this.productos = response.data;
@@ -52,7 +54,7 @@ export class IndexProductoComponent implements OnInit {
             categoria:element.categoria,
             nventas: element.nventas
           });
-        });     
+        });
 
         this.load_data = false;
       },
@@ -63,6 +65,7 @@ export class IndexProductoComponent implements OnInit {
   }
 
   filtrar(){
+    //filtra el titulo del producto que pongas
     if(this.filtro){
       this._productoService.listar_productos_admin(this.filtro,this.token).subscribe(
         response=>{
@@ -73,17 +76,17 @@ export class IndexProductoComponent implements OnInit {
           console.log(error);
         }
       )
-    }else{
+    }else{//si usas el boton y no hay un titulo de producto te saldra un mensaje
       MessageBox.messageError('Ingrese un filtro para buscar.');
-      
+
     }
   }
-
+//resetea la casilla titulo del producto
   resetear(){
     this.filtro = '';
     this.init_data();
   }
-
+//se elimina un producto gracias al id
   eliminar(id){
     this.load_btn = true;
     this._productoService.eliminar_producto_admin(id,this.token).subscribe(
@@ -97,14 +100,14 @@ export class IndexProductoComponent implements OnInit {
 
         this.init_data();
       },
-      error=>{
+      error=>{//en caso de que no se pueda eliminar el producto saldra un mensaje
        MessageBox.messageError('Ocurrió un error en el servidor.');
         console.log(error);
         this.load_btn = false;
       }
     )
   }
-
+//se exporta la lista de productos en un excel
   download_excel(){
     let workbook = new Workbook();
     let worksheet = workbook.addWorksheet("Reporte de productos");
@@ -135,7 +138,7 @@ export class IndexProductoComponent implements OnInit {
       fs.saveAs(blob, fname+'-'+new Date().valueOf()+'.xlsx');
     });
   }
-
+//se cambia el estado de un producto
   cambiar_vs(id:any,vs:any){
     console.log(this.productos);
     this.load_estado = true;
@@ -148,10 +151,10 @@ export class IndexProductoComponent implements OnInit {
         this.load_estado = false;
         this.init_data();
 
-      },
+      },//en caso de que no se pueda cambiar el estado saldria un mensaje
       error=>{
         MessageBox.messageError( 'Ocurrió un error en el servidor.');
-      
+
         console.log(error);
         this.load_btn = false;
       }

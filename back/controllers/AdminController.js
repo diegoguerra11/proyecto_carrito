@@ -1,7 +1,6 @@
 'use strict'
 
-//Declaración de variables.
-let Admin = require('../models/admin');
+let Trabajador = require('../models/trabajador');
 let Venta = require('../models/Venta');
 let Variedad = require('../models/Variedad');
 let Producto = require('../models/producto');
@@ -16,7 +15,7 @@ const registro_admin = async function(req, res){
 
     if(!data.password){return res.status(200).send({message:'El campo contraseña es obligatorio', data:undefined});}
 
-    let existe_correo = Promise.resolve(Admin.exists({email: data.email}));
+    let existe_correo = Promise.resolve(Trabajador.exists({email: data.email}));
 
     existe_correo.then(existe => {
         if(existe){return res.status(200).send({message:'El correo ya existe en la base de datos', data:undefined});}
@@ -24,7 +23,7 @@ const registro_admin = async function(req, res){
         bcrypt.hash(data.password,null,null, async function(err,hash){
             if(!hash){return res.status(500).send({message:'ErrorServer', data:undefined});}
             data.password = hash;
-            let reg = await Admin.create(data);
+            let reg = await Trabajador.create(data);
             res.status(200).send({data:reg});
         });
     });
@@ -34,17 +33,17 @@ const registro_admin = async function(req, res){
 const login_admin = async function(req, res){
     let data = req.body;
 
-    let buscar_admin = Promise.resolve(Admin.findOne({email:data.email}));
+    let buscar_Trabajador = Promise.resolve(Trabajador.findOne({email:data.email}));
 
-    buscar_admin.then(admin => {
-        if(!admin){return res.status(200).send({message: 'No se encontro el correo', data:undefined});}  
+    buscar_Trabajador.then(Trabajador => {
+        if(!Trabajador){return res.status(200).send({message: 'No se encontro el correo', data:undefined});}  
 
-        bcrypt.compare(data.password, admin.password,async function(error, check){
+        bcrypt.compare(data.password, Trabajador.password,async function(error, check){
             if(!check){return res.status(200).send({message: 'La contraseña no coincide', data: undefined});}
 
             res.status(200).send({
-                data: admin,
-                token: jwt.createToken(admin)
+                data: Trabajador,
+                token: jwt.createToken(Trabajador)
             });
         });
     });  
@@ -137,12 +136,11 @@ const marcar_finalizado_orden = async function(req,res){
     );
 }
 
-//Función para eliminar una orden de pedido. El usuario puede eliminar una orden de pedido si ya no desea continuar con la compra.
 const eliminar_orden_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     let id = req.params['id'];
 
-    let buscar_venta = Promise.resolve(Venta.findOneAndRemove({_id:id}));
+    let buscar_venta = Promise.resolve(Venta.findOneAndUpdate({_id:id}, {estado:'Cancelado'}));
 
     buscar_venta.then(venta =>{
         Promise.resolve(Dventa.remove({venta:id})).then(    
@@ -359,11 +357,11 @@ module.exports ={
     confirmar_pago_orden,
     obtener_detalles_ordenes_cliente,
     marcar_envio_orden,
-    eliminar_orden_admin,
+    cancelar_orden_admin,
     marcar_finalizado_orden,
     agregar_nueva_variedad_admin, 
     eliminar_variedad_admin,
     actualizar_producto_variedades_admin,
     pedido_compra_cliente,
-    cambiar_vs_producto_admin
+    cambiar_vs_producto_admin,
 }

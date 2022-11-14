@@ -23,30 +23,30 @@ export class VariedadProductoComponent implements OnInit {
   public load_btn = false;
   public url;
   public load_del = false;
-  constructor(
+  constructor(//inyecta los servidores
     private _route : ActivatedRoute,
     private _productoService : ProductoService,
     private _adminService : AdminService
-  ){ 
+  ){ //llama al token que se inicialize con el servicio
     this.token = localStorage.getItem('token');
     this.url = GLOBAL.url;
     this._route.params.subscribe(
       params => {
         this.id = params['id'];
- 
+ //obtiene los productos
         this._productoService.obtener_producto_admin(this.id,this.token).subscribe(
           response=>{
             if(response.data == undefined){
               this.producto = undefined;
             }else{
-              this.producto = response.data;        
+              this.producto = response.data;
             }
 
-           
+
           },
           error=>{console.log(error);}
         );
-      
+
       }
     );
   }
@@ -57,11 +57,11 @@ export class VariedadProductoComponent implements OnInit {
         this.id = params['id'];
         this.load_data = true;
         this.listar_variedades();
-        
+
       }
     );
   }
-
+//lista las variedades
   listar_variedades(){
     this._adminService.listar_variedades_admin(this.id,this.token).subscribe(
       response=>{
@@ -70,22 +70,22 @@ export class VariedadProductoComponent implements OnInit {
       }
     );
   }
-
+//verifica la variedad agregada y si la validacion encuentra un error saltara un mensaje
   agregar_variedad(){
     if(!this.nueva_variedad){
       return MessageBox.messageError('El campo de la variedad debe ser completado');
     }
-
+//obtiene los datos del index del html
     let data = {
       producto: this.id,
       valor:this.nueva_variedad,
       stock: this.stock
     }
-
+//si todo esta correcto saltara un mensaje
     this.load_agregar = true;
     this._adminService.agregar_nueva_variedad_admin(data,this.token).subscribe(
       response=>{
-       
+
         MessageBox.messageSuccess('Se agregó la nueva variedad');
         this.load_agregar = false;
         this.listar_variedades();
@@ -94,7 +94,7 @@ export class VariedadProductoComponent implements OnInit {
 
     this.nueva_variedad = '';
   }
-
+//elimina una variedad
   eliminar_variedad(id:any){
     this.load_del = true;
     this._adminService.eliminar_variedad_admin(id,this.token).subscribe(
@@ -107,17 +107,17 @@ export class VariedadProductoComponent implements OnInit {
         this.listar_variedades();
 
       },
-      error=>{
+      error=>{//en caso no pueda eliminar saltara un mensajje
         MessageBox.messageError('Ocurrió un error en el servidor');
         console.log(error);
         this.load_btn = false;
       }
     )
   }
-
+//se  actualiza una variedad
   actualizar(){
     if(this.producto.titulo_variedad){
-      //actualizar
+
       this.load_btn = true;
       this._adminService.actualizar_producto_variedades_admin({
         titulo_variedad: this.producto.titulo_variedad
@@ -128,7 +128,7 @@ export class VariedadProductoComponent implements OnInit {
           this.load_btn = false;
         }
       );
-    }else{
+    }else{//en caso de que falte algo saltara un mensaje
       MessageBox.messageError('Debe completar el título de la variedad');
       this.load_btn = false;
     }

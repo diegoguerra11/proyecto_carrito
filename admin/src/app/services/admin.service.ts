@@ -129,9 +129,9 @@ export class AdminService {
     return this._http.put(this.url+'marcar_finalizado_orden/'+id,data,{headers:headers});
   }
 
-  eliminar_orden_admin(id:any,token:any):Observable<any>{
+  cancelar_orden_admin(id:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
-    return this._http.delete(this.url+'eliminar_orden_admin/'+id,{headers:headers});
+    return this._http.put(this.url+'cancelar_orden_admin/'+id,null,{headers:headers});
   }
   marcar_envio_orden(id:any,data:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});

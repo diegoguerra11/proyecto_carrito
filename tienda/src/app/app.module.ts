@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from "@angular/forms";
 import { HttpClient, HttpClientModule }  from "@angular/common/http";
-import { NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap"
+import { NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
+import { RatingModule } from 'ng-starrating';
 
 import { routing } from './app.routing';
 
@@ -22,6 +23,8 @@ import { IndexPedidosComponent } from './components/usuario/pedidos/index-pedido
 import { PedidosDetallesComponent } from './components/usuario/pedidos/pedidos-detalles/pedidos-detalles.component';
 import { VerificarPagoComponent } from './components/verificar-pago/verificar-pago.component';
 import { EditDireccionComponent } from './components/usuario/edit-direccion/edit-direccion.component';
+import { IndexReviewComponent } from './components/usuario/reviews/index-review/index-review.component';
+import { RecuperarContraseniaComponent } from './components/recuperar-contrasenia/recuperar-contrasenia.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +43,8 @@ import { EditDireccionComponent } from './components/usuario/edit-direccion/edit
     PedidosDetallesComponent,
     VerificarPagoComponent,
     EditDireccionComponent,
+    IndexReviewComponent,
+    RecuperarContraseniaComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +52,8 @@ import { EditDireccionComponent } from './components/usuario/edit-direccion/edit
     FormsModule,
     HttpClientModule,
     routing,
-    NgbPaginationModule
+    NgbPaginationModule,
+    RatingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

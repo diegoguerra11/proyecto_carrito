@@ -11,6 +11,7 @@ let Variedad = require('../models/Variedad');
 let Direccion = require("../models/direccion");
 let Producto = require("../models/producto");
 let mail = require('../helpers/mail');
+let Review = require('../models/review');
 const { promiseImpl } = require('ejs');
 
 //Función para registro de cliente. El programa solicitará un usuario y contraseña, los cuales serán necesarios para el inicio de sesión.
@@ -538,10 +539,72 @@ const actualizar_direccion_cliente = async function(req,res){
         });  
     });
 } 
+/*****************************************RESEÑAS*************************************************/
+
+const emitir_review_producto_cliente  = async function(req,res){
+    if(req.user){
+        let data = req.body; // almacena el cuerpo del formulario
+        let reg = await Review.create(data); // manda la data
+        res.status(200.).send({data:reg}); // manda la data al frontend
+    } else {
+        res.status(500).send({message: 'No Access'});
+    }
+}
+
+const obtener_review_producto_cliente  = async function(req,res){
+    let id = req.params['id'];
+    let reg = await Review.find({producto:id}).sort({createdAt: 1});
+    res.status(200).send({data:reg});
+}
+
+const obtener_reviews_cliente  = async function(req,res){
+    if(req.user){
+        let id = req.params['id'];
+        let reg = await Review.find({cliente:id}).populate('cliente'); // manda la data
+        res.status(200.).send({data:reg}); // manda la data al frontend
+    } else {
+        res.status(500).send({message: 'No Access'});
+    }
+}
+
+// Exportaciones de métodos
+const confirmar_correo = async function(req, res) {
+    let correo = req.body.email;
+    let buscar_correo = Promise.resolve(Cliente.exists({email: correo}));
+
+    buscar_correo.then(existe => {
+        if(!existe){return res.status(200).send({message: 'El correo ingresado no existe'});}
+
+        mail.enviar_confirmacion_contrasenia(correo, '/mails/email_recuperar_contrasenia.html', 'Recuperacion de contraseña');
+
+        return res.status(200).send({data: correo, message: 'Se envio el correo'});
+    })
+}
+
+const cambiar_contrasenia = async function(req, res) {
+    const {email, password} = req.body;
+
+    let buscar_correo = Promise.resolve(Cliente.findOne({email: email}));
+
+    buscar_correo.then(
+        cliente => {
+            bcrypt.hash(password,null,null, async function(err,hash){
+                let reg = Promise.resolve(Cliente.findByIdAndUpdate({_id: cliente._id},{
+                    password: hash,
+                }));
+
+                reg.then(
+                    data => {res.status(200).send({data: data});}
+                );
+            });
+        }
+    )
+}
 
 //Exportación de las funciones.
 module.exports = {
     actualizar_direccion_cliente,
+    confirmar_correo,
     registro_cliente,
     login_cliente,
     listar_clientes_filtro_admin,
@@ -566,4 +629,8 @@ module.exports = {
     registro_compra_cliente,
     consultarIDPago,
     recibir_direccion_cliente,
+    emitir_review_producto_cliente,
+    obtener_review_producto_cliente,
+    obtener_reviews_cliente,
+    cambiar_contrasenia
 }

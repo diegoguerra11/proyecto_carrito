@@ -2,7 +2,6 @@
 let Descuento = require('../models/descuento');
 let fs = require('fs');
 let path = require('path');
-const descuento = require('../models/descuento');
 
 //Función para el registro de descuentos en Admin. El administrador podrá registrar un descuento a un producto para que sea visto en la página y el catálogo de la tienda.
 const registro_descuento_admin = async function(req,res){

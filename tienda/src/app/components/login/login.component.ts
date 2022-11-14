@@ -67,6 +67,7 @@ export class LoginComponent implements OnInit {
     );
   }
 
+  // registra los productos segun el producto, cliente, cantidad y variedad en el carrito
   registrarProductos(cliente: any, productos: any, token: any){ 
     productos.map((producto: any) => {
       let data = {
@@ -82,6 +83,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  // registra al cliente por email y contraseña, los guarda en la base de datos y muestra mensaje satisfactorio
   registrar(loginForm:any) {
 
     if(!ValidatonsCliente.registrarCliente(loginForm.form.value)){return;}

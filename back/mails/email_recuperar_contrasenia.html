@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="estilos.css" />
+    <title>Email de Comfirmación</title>
+  </head>
+  <body>
+    <div id="factura">
+        <div>
+            <table class="tabla-general">
+                <caption></caption>
+                <thead>
+                    <th id="presentacion" colspan = "2">    
+                        <div id= "logo" style="color: #127c5f; font-size: 80px !important;">
+                            <strong>Naly</strong>
+                        </div>               
+                        <tr>
+                            <td colspan = "2">
+                                <h1>
+                                    Confirmacion de identidad
+                                </h1>
+                            </td>
+                        </tr>
+                    </th>     
+                </thead>      
+                <tbody>
+                    <tr>
+                        <td>
+                            <button>
+                                <a href="http://localhost:4200/recuperar_contrasenia/confirmado/<%= correo; %>">Entrar al enlace para recuperar contraseña</a>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>         
+        </div>
+      </div>
+  </body>
+</html>

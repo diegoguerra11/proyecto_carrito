@@ -1,7 +1,7 @@
 'use strict'
 
 let Cliente = require('../models/cliente');
-let Admin = require('../models/admin');
+let Admin = require('../models/trabajador');
 let Venta = require('../models/Venta');
 let Variedad = require('../models/Variedad');
 let Producto = require('../models/producto');
