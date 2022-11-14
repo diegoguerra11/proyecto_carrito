@@ -136,16 +136,14 @@ const marcar_finalizado_orden = async function(req,res){
     );
 }
 
-const eliminar_orden_admin = async function(req,res){
+const cancelar_orden_admin = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     let id = req.params['id'];
 
     let buscar_venta = Promise.resolve(Venta.findOneAndUpdate({_id:id}, {estado:'Cancelado'}));
 
     buscar_venta.then(venta =>{
-        Promise.resolve(Dventa.remove({venta:id})).then(    
-            res.status(200).send({data:venta})
-        );
+        res.status(200).send({data:venta})
     });
 }
 
