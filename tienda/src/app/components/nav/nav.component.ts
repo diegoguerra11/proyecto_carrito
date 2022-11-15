@@ -231,5 +231,6 @@ export class NavComponent implements OnInit {
       localStorage.setItem('cart', JSON.stringify(this.carrito_logout)); 
     }
     this.calcular_carrito();
+    MessageBox.messageSuccess('Se actualizó correctamente la cantidad');
   }
 }
