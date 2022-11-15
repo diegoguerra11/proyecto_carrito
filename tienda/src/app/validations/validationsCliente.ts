@@ -86,7 +86,7 @@ export class ValidatonsCliente {
         }
 
         if(!form.password.match(escontraseña)) {
-            MessageBox.messageError('El campo contraseña es invalido');
+            MessageBox.messageError('El campo nueva contraseña debe tener como minimo una mayúscula, un numero y un caracter especial');
             return false;
         }
 
