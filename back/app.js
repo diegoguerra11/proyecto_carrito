@@ -14,25 +14,22 @@ let io = require('socket.io')(server,{
 io.on('connection', function(socket){
     socket.on('delete-carrito',function(data){
         io.emit('new-carrito',data);
-        console.log(data);
-        console.log("socket");
     });
 
     socket.on('add-carrito-add',function(data){
         io.emit('new-carrito-add',data);
-        console.log(data);
-        console.log("socket-add");
     });
 });
 
 let descuento_route = require('./routes/descuento');
 let cliente_route = require('./routes/cliente');
+let trabajador_route = require('./routes/trabajador');
 let admin_route = require('./routes/admin');
 let producto_route = require('./routes/producto');
 let cupon_route = require ('./routes/cupon');
 let config_route = require ('./routes/config');
 let carrito_route = require ('./routes/carrito');
-
+let vendedor_route = require("./routes/vendedor");
 
 const cors = require('cors');
 
@@ -61,12 +58,14 @@ app.use((req,res,next)=>{
 });
 
 app.use('/api',cliente_route);
+app.use('/api',trabajador_route);
 app.use('/api',admin_route);
 app.use('/api',producto_route);
 app.use('/api',cupon_route);
 app.use('/api',config_route);
 app.use('/api',carrito_route);
 app.use('/api',descuento_route);
+app.use("/api", vendedor_route);
 
 
 module.exports = app;

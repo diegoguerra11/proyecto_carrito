@@ -28,7 +28,7 @@ export class ShowVentasComponent implements OnInit {
   public tracking = '';
   public pago : any = {};
 
-  constructor(
+  constructor(//inyecta los servidores
     private _route:ActivatedRoute,
     private _adminService:AdminService,
     private _router:Router
@@ -47,7 +47,7 @@ export class ShowVentasComponent implements OnInit {
       }
     );
   }
-
+//obtiene detalles de las ordenes de clientes
   init_data(){
     this._adminService.obtener_detalles_ordenes_cliente(this.id,this.token).subscribe(
       response=>{
@@ -56,6 +56,7 @@ export class ShowVentasComponent implements OnInit {
           if(this.venta.metodo_pago=='Tarjeta de crédito'){
             this._adminService.obtenerPago(this.venta.transaccion).subscribe(
               response=>{
+                console.log(response);
                 this.pago = response;
               }
             );
@@ -70,7 +71,7 @@ export class ShowVentasComponent implements OnInit {
       }
     );
   }
-
+//marca el cierre de la venta
   finalzar(id:any){
     this.load_final = true;
     this._adminService.marcar_finalizado_orden(id,{data:''},this.token).subscribe(
@@ -83,7 +84,7 @@ export class ShowVentasComponent implements OnInit {
       }
     );
   }
-
+//marca la orden como enviada
   enviar(id:any){
     if(this.tracking){
       this.load_send = true;
@@ -101,19 +102,19 @@ export class ShowVentasComponent implements OnInit {
     }
   }
 
-  eliminar(id:any){
+  cancelar(id:any){
     this.load_del = true;
-    this._adminService.eliminar_orden_admin(id,this.token).subscribe(
+    this._adminService.cancelar_orden_admin(id,this.token).subscribe(
       response=>{
-        MessageBox.messageSuccess('El pedido fue eliminada correctamente.');
-        $('#openEliminar').modal('hide');
+        MessageBox.messageSuccess('El pedido fue cancelado correctamente.');
+        $('#openCancelar').modal('hide');
         $('.modal-backdrop').remove();
         this._router.navigate(['/panel/ventas']);
         this.load_del = false;
       }
     );
   }
-
+//confirma que haya llegado el pago
   confirmar_pago(id:any){
     this.load_conf_pago = true;
     this._adminService.confirmar_pago_orden(id,{data:''},this.token).subscribe(

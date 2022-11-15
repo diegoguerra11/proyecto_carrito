@@ -10,8 +10,15 @@
 
       <li class="nav-item">
         <a class="nav-link py-0">
-          <i class="cxi-profile align-middle mt-n1 mr-2"></i>
+          <i class="cxi-profile align-middle mt-n1 mr-2" aria-hidden="true"></i>
           Cuenta
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a (click)="logout()" class="nav-link py-0">
+          <i class="cxi-logout align-middle mt-n1 mr-2" aria-hidden="true"></i>
+            Cerrar Sesión
         </a>
       </li>
 
@@ -36,22 +43,19 @@
       </button>
     </div>
     <div class="d-flex d-lg-none align-items-center py-4 px-3 border-bottom border-light">
-      <a class="btn btn-primary btn-block mr-3 px-4" href="index.html"><i class="cxi-eye mt-n1 mr-2"></i>Preview</a>
-      <a class="btn btn-success btn-block mt-0 px-4" href="../components/typography.html"><i class="cxi-layouts mt-n1 mr-2"></i>Components</a>
+      <a class="btn btn-primary btn-block mr-3 px-4" href="index.html"><i class="cxi-eye mt-n1 mr-2" aria-hidden="true"></i>Preview</a>
+      <a class="btn btn-success btn-block mt-0 px-4" href="../components/typography.html"><i class="cxi-layouts mt-n1 mr-2" aria-hidden="true"></i>Components</a>
     </div>
     <div class="cs-offcanvas-body px-0 pt-4 pb-grid-gutter" data-simplebar data-simplebar-inverse>
       <h6 class="font-size-lg text-light px-4 mt-2 mb-3">Opciones</h6>
       <hr class="hr-gradient hr-light mb-2 opacity-25">
       <nav class="nav nav-light">
         <a class="nav-link px-4" [routerLink]="['/inicio']" routerLinkActive="active" >Inicio</a>
-        <a class="nav-link px-4" [routerLink]="['/panel/clientes']" routerLinkActive="active">Cliente</a>
+        <a class="nav-link px-4" [routerLink]="['/panel/trabajadores']" routerLinkActive="active">Trabajadores</a>
         <a class="nav-link px-4" [routerLink]="['/panel/productos']" routerLinkActive="active">Productos</a>
         <a class="nav-link px-4" [routerLink]="['/panel/cupones']" routerLinkActive="active">Cupones</a>
         <a class="nav-link px-4" [routerLink]="['/panel/ventas']" routerLinkActive="active">Ventas</a>
         <a class="nav-link px-4" [routerLink]="['/panel/configuraciones']" routerLinkActive="active">Configuraciones</a>
-
-
-
       </nav>
     </div>
   </aside>

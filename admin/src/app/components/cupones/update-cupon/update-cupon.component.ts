@@ -22,15 +22,15 @@ export class UpdateCuponComponent implements OnInit {
   public load_data = true;
 
 
-  constructor(
+  constructor(//se inyecta los servidores
     private _cuponService : CuponService,
     private _router: Router,
     private _route : ActivatedRoute
-  ) {
+  ) {//llama al token que se inicialize con el servicio
     this.token = localStorage.getItem('token');
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {//se obtiene los cupones
     this._route.params.subscribe(
       params => {
         this.id = params['id'];
@@ -50,7 +50,7 @@ export class UpdateCuponComponent implements OnInit {
       }
     )
   }
-
+//valida si los datos actualizadoa estan correctos
   actualizar(actualizarForm){
     if(!ValidatonsCupon.verificarCupon(actualizarForm.form.value)){return;}
     console.log(this.cupon);

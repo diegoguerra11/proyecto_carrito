@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from "@angular/forms";
 import { HttpClient, HttpClientModule }  from "@angular/common/http";
-import { NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap"
+import { NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
+import { RatingModule } from 'ng-starrating';
 
 import { routing } from './app.routing';
 
@@ -21,6 +22,10 @@ import { DireccionesComponent } from './components/usuario/direcciones/direccion
 import { IndexPedidosComponent } from './components/usuario/pedidos/index-pedidos/index-pedidos.component';
 import { PedidosDetallesComponent } from './components/usuario/pedidos/pedidos-detalles/pedidos-detalles.component';
 import { VerificarPagoComponent } from './components/verificar-pago/verificar-pago.component';
+import { EditDireccionComponent } from './components/usuario/edit-direccion/edit-direccion.component';
+import { VerBoletaComponent } from './components/usuario/pedidos/ver-boleta/ver-boleta.component';
+import { IndexReviewComponent } from './components/usuario/reviews/index-review/index-review.component';
+import { RecuperarContraseniaComponent } from './components/recuperar-contrasenia/recuperar-contrasenia.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +43,10 @@ import { VerificarPagoComponent } from './components/verificar-pago/verificar-pa
     IndexPedidosComponent,
     PedidosDetallesComponent,
     VerificarPagoComponent,
+    EditDireccionComponent,
+    VerBoletaComponent,
+    IndexReviewComponent,
+    RecuperarContraseniaComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +54,8 @@ import { VerificarPagoComponent } from './components/verificar-pago/verificar-pa
     FormsModule,
     HttpClientModule,
     routing,
-    NgbPaginationModule
+    NgbPaginationModule,
+    RatingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -16,7 +16,7 @@ export class UpdateProductoComponent implements OnInit {
 
   public producto:any = {};
   public config:any = {};
-  public imgSelect! : String | ArrayBuffer;
+  public imgSelect! : string | ArrayBuffer;
   public load_btn = false;
   public id;
   public token;
@@ -24,22 +24,22 @@ export class UpdateProductoComponent implements OnInit {
   public file : File = undefined!;
   public config_global: any = {};
 
-  constructor(
+  constructor(//inyecta los servidores
     private _route : ActivatedRoute,
     private _productoService: ProductoService,
     private _adminService: AdminService,
     private _router : Router
-  ){ 
-    this.config = {
+  ){
+    this.config = {//tiene un alto de 500 pixeles
       height: 500
-    }
+    }//llama al token que se inicialize con el servicio
     this.token = localStorage.getItem('token') || [];
     this.url = GLOBAL.url;
     this._adminService.obtener_config_publico().subscribe(
       response => {
         this.config_global = response.data;
-      
-        
+
+
       }
     )
   }
@@ -48,7 +48,7 @@ export class UpdateProductoComponent implements OnInit {
     this._route.params.subscribe(
       params=>{
         this.id = params ['id'];
-       
+//obtiene los productos
         this._productoService.obtener_producto_admin(this.id,this.token).subscribe(
           response => {
             if(response.data == undefined){
@@ -60,17 +60,17 @@ export class UpdateProductoComponent implements OnInit {
           },
           error => {
             console.log(error);
-            
-          }     
+
+          }
         );
-        
+
       }
     );
   }
-
+//actuzaliza los productos y valida los datos cambiados
   actualizar(actualizarForm){
     if(actualizarForm.valid){
-      
+
       let data : any = {};
 
       if(this.file != undefined){
@@ -87,7 +87,7 @@ export class UpdateProductoComponent implements OnInit {
       this.load_btn = true;
       this._productoService.actualizar_producto_admin(data, this.id, this.token).subscribe(
         response => {
-          
+
           MessageBox.messageSuccess('Se actualizó correctamente el nuevo producto');
 
           this.load_btn = false;
@@ -96,16 +96,16 @@ export class UpdateProductoComponent implements OnInit {
         error => {
           console.log(error);
           this.load_btn = false;
-          
+
         }
       )
 
-    }else{
+    }else{//en caso que no las validaciones encuntren algun error saltara un mensaje
       MessageBox.messageError('Los datos del formulario no son válidos');
       this.load_btn = false;
     }
   }
-
+//verifica si hay una imagen de envio
   fileChangeEvent(event:any):void{
     let file;
     if(event.target.files && event.target.files[0]){
@@ -115,32 +115,32 @@ export class UpdateProductoComponent implements OnInit {
       MessageBox.messageError('No hay un imagen de envío');
     }
 
-    if(file.size <= 4000000){
+    if(file.size <= 4000000){//verifica que sea una imagen y que no pese mas de 4 mb
       if(file.type == 'image/png' || file.type == 'image/webp'|| file.type == 'image/jpg' || file.type == 'image/gif' || file.type == 'image/jpeg'){
 
         const reader = new FileReader();
         reader.onload = e => this.imgSelect = reader.result!;
-       
+
 
         reader.readAsDataURL(file);
-          
+
         $('#input-portada').text(file.name);
         this.file = file;
-        
-      }else{
+
+      }else{//en caso de que el archivo no se una imagen saltara un mensaje
         MessageBox.messageError('El archivo debe ser una imagen');
         $('#input-portada').text('Seleccionar imagen');
         this.imgSelect ='assets/img/01.jpg';
         this.file = undefined!;
        }
-
+//en caso de que la imagen pese mas de 4 mb saltara un mensaje
     }else{
       MessageBox.messageError('La imagen no puede superar los 4 MB');
       $('#input-portada').text('Seleccionar imagen');
       this.imgSelect ='assets/img/01.jpg';
       this.file = undefined!;
-    } 
-    
-    
+    }
+
+
   }
 }

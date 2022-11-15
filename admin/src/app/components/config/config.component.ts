@@ -3,7 +3,7 @@ import { AdminService } from '../../services/admin.service';
 import { v4 as uuidv4 } from 'uuid';
 import { GLOBAL } from 'src/app/services/GLOBAL';
 import { MessageBox } from '../../utils/MessageBox';
-import { validationsConfig } from '../../validations/validationsConfig';
+import { ValidationsConfig } from '../../validations/validationsConfig';
 
 declare let $:any;
 
@@ -82,7 +82,7 @@ export class ConfigComponent implements OnInit {
   
     let file = <File>event.target.files[0];
 
-    if(!validationsConfig.verificarImagen(file)) {
+    if(!ValidationsConfig.verificarImagen(file)) {
       $('#input-portada').text('Seleccionar imagen');
       this.imgSelect ='assets/img/01.jpg';
       this.file = undefined!;

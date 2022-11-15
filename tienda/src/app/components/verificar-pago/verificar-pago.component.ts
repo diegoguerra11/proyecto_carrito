@@ -38,7 +38,7 @@ export class VerificarPagoComponent implements OnInit {
     this.venta.cliente = this.idcliente;
     this.token = localStorage.getItem('token');
    }
-
+   //Se realiza el pago de todo
   ngOnInit(): void {
     this._route.params.subscribe(
       params=>{
@@ -81,6 +81,12 @@ export class VerificarPagoComponent implements OnInit {
                           this.venta.envio_precio = this.envio;
                           this.venta.detalles = this.dventa;
                           this.venta.metodo_pago = 'Tarjeta de crédito';
+                          this._clienteService.disminuir_cupon(this.venta.cupon, this.token).subscribe(
+                            response=>{
+                              console.log("miau");
+                              console.log(response);
+                            }
+                          );
                           this._clienteService.registro_compra_cliente(this.venta,this.token).subscribe(
                             response=>{
                               this._router.navigate(['/cuenta/pedidos',response.data._id]);
@@ -97,7 +103,9 @@ export class VerificarPagoComponent implements OnInit {
               );
             }
           )
-        }else{
+        }
+        
+        else{
           this.load = false;
         }
       }

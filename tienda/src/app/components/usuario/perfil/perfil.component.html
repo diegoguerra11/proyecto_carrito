@@ -6,7 +6,7 @@
     <div class="container">
       <ol class="breadcrumb breadcrumb-alt mb-0">
         <li class="breadcrumb-item">
-          <a [routerLink]="['/']"><i class="cxi-home"></i></a>
+          <a [routerLink]="['/']"><i class="cxi-home" aria-hidden="true"></i></a>
         </li>
 
         <li class="breadcrumb-item active" aria-current="page">Mi Perfil</li>
@@ -30,10 +30,7 @@
             class="row pb-2 pb-lg-0 justify-content-center align-item-center"
           >
             <!-- Content -->
-            <form
-              #actualizarForm="ngForm"
-              (ngSubmit)="actualizar(actualizarForm)"
-            >
+            <form #actualizarForm="ngForm" (ngSubmit)="actualizar(actualizarForm)">
               <div class="row pb-3">
                 <div class="col-sm-6">
                   <label for="validationCustom01" class="form-label">Tipo de Documento</label>
@@ -91,7 +88,9 @@
                     class="form-control form-control-lg"
                     autocomplete="new-password"
                     placeholder="Nueva Contraseña"
+                    name="newPassword"
                     id="input_password"
+                    [(ngModel)]="newPassword"
                   />
                 </div>
                 <div class="col-sm-6 form-group">

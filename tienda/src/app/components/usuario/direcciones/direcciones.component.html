@@ -5,7 +5,7 @@
   <nav class="bg-secondary mb-3" aria-label="breadcrumb">
     <div class="container">
       <ol class="breadcrumb breadcrumb-alt mb-0">
-        <li class="breadcrumb-item"><a [routerLink]="['/']"><i class="cxi-home"></i></a></li>
+        <li class="breadcrumb-item"><a [routerLink]="['/']" ><i class="cxi-home" aria-hidden="true"></i></a></li>
         <li class="breadcrumb-item active" aria-current="page">Mis direcciones</li>
       </ol>
     </div>
@@ -115,6 +115,7 @@
                             <span class="d-block mb-3 font-size-sm text-muted">{{ item.zip }}</span>
                             <a class="badge badge-primary" *ngIf="item.principal">Dirección de envío</a>
                             <a class="badge badge-success" style="cursor: pointer" *ngIf="!item.principal" (click)="establecer_principal(item._id)">Establecer principal</a>
+                            <a class="badge badge-warning" style="cursor: pointer" (click)="actualizarDireccion(item._id)">Actualizar dirección</a>
                             <a class="badge badge-danger" style="cursor: pointer" (click)="eliminarDireccion(item._id)">Eliminar dirección</a>
                           </div>
                           <div class="col">

@@ -12,7 +12,7 @@
         <div class="input-group-overlay ml-4 d-lg-block d-none order-lg-3" style="max-width: 21rem;">
           <input class="form-control appended-form-control" type="text" placeholder="Buscar Productos...">
           <div class="input-group-append-overlay">
-            <span class="input-group-text"><i class="cxi-search lead align-middle"></i></span>
+            <span class="input-group-text"><i class="cxi-search lead align-middle" aria-hidden="true" ></i></span>
           </div>
         </div>
         <!-- Toolbar -->
@@ -22,7 +22,7 @@
             <ng-container *ngIf="user_lc == undefined">
               <li class="nav-item d-lg-block d-none mb-0">
                 <a [routerLink]="['/login']" routerLinkActive="active"  class="nav-tool">
-                  <i class="cxi-profile nav-tool-icon"></i>
+                  <i class="cxi-profile nav-tool-icon" aria-hidden="true" ></i>
                   <span class="nav-tool-label">Iniciar sesión</span>
                 </a>
               </li>
@@ -31,23 +31,23 @@
             <ng-container *ngIf="user_lc">
               <li class="nav-item d-lg-block d-none dropdown">
                 <a class="nav-tool dropdown-toggle" toggle="dropdown" style="cursor: pointer;">
-                  <i class="cxi-profile nav-tool-icon"></i>
+                  <i class="cxi-profile nav-tool-icon" aria-hidden="true" ></i>
                   <span class="nav-tool-label">{{user_lc.nombres}}</span>
                 </a>
                 <div class="dropdown-menu">
                   
                   <a [routerLink]="['/cuenta/perfil']" routerLinkActive="active"  class="dropdown-item">
-                    <i class="cxi-profile me-2"></i>
+                    <i class="cxi-profile me-2" aria-hidden="true" ></i>
                     Perfil
-                    <!-- <span class="badge rounded-pill bg-danger ms-2">3</span> -->
+                    
                   </a>
                   <a href="#" class="dropdown-item">
-                    <i class="ci-comment me-2"></i>
+                    <i class="ci-comment me-2" aria-hidden="true" ></i>
                     Messages
                     <span class="badge rounded-pill bg-success ms-2"></span>
                   </a>
                   <a (click)="logout()" class="dropdown-item" style="cursor: pointer;">
-                    <i class="cxi-logout mr-2"></i>
+                    <i class="cxi-logout mr-2" aria-hidden="true" ></i>
                     Cerrar Sesión
                     <span class="badge rounded-pill bg-warning ms-2"></span>
                   </a>
@@ -59,13 +59,13 @@
             
             <li class="nav-item align-self-center mb-0" *ngIf="user_lc != undefined">
               <a style="cursor: pointer;" class="nav-tool pr-lg-0" (click)="op_modalcart()">
-                <i class="cxi-cart nav-tool-icon"></i>
+                <i class="cxi-cart nav-tool-icon" aria-hidden="true" ></i>
                 <span class="badge badge-success align-middle mt-n1 ml-2 px-2 py-1 font-size-xs">{{carrito_arr.length}}</span>
               </a>
             </li>
             <li class="nav-item align-self-center mb-0" *ngIf="user_lc == undefined">
               <a style="cursor: pointer;" class="nav-tool pr-lg-0" (click)="op_modalcart()">
-                <i class="cxi-cart nav-tool-icon"></i>
+                <i class="cxi-cart nav-tool-icon" aria-hidden="true" ></i>
                 <span class="badge badge-success align-middle mt-n1 ml-2 px-2 py-1 font-size-xs">{{carrito_logout.length}}</span>
               </a>
             </li>
@@ -84,7 +84,7 @@
             <input type="text" class="form-control prepended-form-control rounded-0 border-0" placeholder="Buscar Productos...">
             <div class="input-group-prepend-overlay">
               <span class="input-group-text">
-                <i class="cxi-search font-size-lg align-middle mt-n1"></i>
+                <i class="cxi-search font-size-lg align-middle mt-n1" aria-hidden="true" ></i>
               </span>
             </div>
           </div>
@@ -97,7 +97,7 @@
               <a [routerLink]="['/productos']" routerLinkActive="active"  class="nav-link dropdown-toggle" data-toggle="dropdown">Tienda</a>
               <ul class="dropdown-menu">
                 <li *ngFor="let item of config_global.categorias"><a [routerLink]="['/productos/categoria/',item.titulo.toLowerCase()]" routerLinkActive="router-link-active"  class="dropdown-item">
-                  <i class="{{item.icono}}"> &nbsp;</i>{{item.titulo}}</a></li>
+                  <i class="{{item.icono}}" aria-hidden="true"> &nbsp;</i>{{item.titulo}}</a></li>
               </ul>
             </li>
           </ul>
@@ -147,16 +147,15 @@
               <li class="mb-0"><span class="text-muted">{{item.producto.titulo_variedad}}: </span>{{item.variedad.valor}}</li>
             </ul>
             <div class="d-flex align-items-center">
-              <input type="number" class="form-control form-control-sm bg-light mr-3" readonly style="width: 4.5rem;" value="{{item.cantidad}}">
-            <div class="text-nowrap">
-              <!-- <strong class="text-danger"></strong> -->
-                <span style="font-size: 1.2rem !important;" class="font-size-xs text-muted">S/.{{item.producto.precio}}</span>
-              </div>
+              <input (keyup)="agregarStock(item, item.cantidad)" type="text" class="form-control form-control-sm bg-light mr-3" style="width: 4.5rem;" id="stock" value="{{item.cantidad}}" [(ngModel)]="item.cantidad">
+                <div class="text-nowrap">
+                  <span style="font-size: 1.2rem !important;" class="font-size-xs text-muted">S/.{{item.producto.precio}}</span>
+                </div>
             </div>
           </div>
           <div class="nav-muted mr-n2">
             <a class="nav-link px-2 mt-n2" title="Quitar" style="cursor: pointer;" (click)="eliminar_item(item._id)">
-              <i class="cxi-delete"></i>
+              <i class="cxi-delete" aria-hidden="true" ></i>
             </a>
           </div>
         </div>
@@ -173,7 +172,7 @@
         <span class="h5 mb-0">S/.{{subtotal}}</span>
       </div>
       <a [routerLink]="['/carrito']" class="btn btn-primary btn-lg btn-block">
-        <i class="cxi-credit-card font-size-lg mt-n1 mr-1"></i>
+        <i class="cxi-credit-card font-size-lg mt-n1 mr-1" aria-hidden="true" ></i>
         Checkout
       </a>
     </div>
@@ -206,55 +205,54 @@
 </ng-container>
 
     
-  <!-- Body -->
-  <div class="cs-offcanvas-body">
-    <!-- Item -->
-    <div class="media p-4 border-bottom mx-n4" *ngFor="let item of carrito_logout">
-      <a  [routerLink]="['/productos/',item.producto.slug]" style="min-width: 80px;">
-        <img [src]="url +'obtener_portada/'+item.producto.portada" width="80" alt="Product thumb">
-      </a>
-      <div class="media-body pl-3">
-        <div class="d-flex justify-content-between">
-          <div class="pr-2">
-            <h3 class="font-size-sm mb-3">
-              <a  [routerLink]="['/productos/',item.producto.slug]"  class="nav-link font-weight-bold">{{item.producto.titulo}}</a>
-            </h3>
-            <ul class="list-unstyled font-size-xs mt-n2 mb-2">
-              <li class="mb-0"><span class="text-muted">{{item.producto.titulo_variedad}}: </span>{{item.variedad.variedad}}</li>
-            </ul>
-            <div class="d-flex align-items-center">
-              <input type="number" class="form-control form-control-sm bg-light mr-3" readonly style="width: 4.5rem;" value="{{item.cantidad}}">
+<!-- Body -->
+<div class="cs-offcanvas-body">
+  <!-- Item -->
+  <div class="media p-4 border-bottom mx-n4" *ngFor="let item of carrito_logout">
+    <a  [routerLink]="['/productos/',item.producto.slug]" style="min-width: 80px;">
+      <img [src]="url +'obtener_portada/'+item.producto.portada" width="80" alt="Product thumb">
+    </a>
+    <div class="media-body pl-3">
+      <div class="d-flex justify-content-between">
+        <div class="pr-2">
+          <h3 class="font-size-sm mb-3">
+            <a  [routerLink]="['/productos/',item.producto.slug]"  class="nav-link font-weight-bold">{{item.producto.titulo}}</a>
+          </h3>
+          <ul class="list-unstyled font-size-xs mt-n2 mb-2">
+            <li class="mb-0">
+              <span class="text-muted">{{item.producto.titulo_variedad}}: </span> {{item.variedad.variedad}}
+            </li>
+          </ul>
+          <div class="d-flex align-items-center">
+            <input type="text" (keyup)="agregarStock(item, item.cantidad)" class="form-control form-control-sm bg-light mr-3" style="width: 4.5rem;" value="{{item.cantidad}}" [(ngModel)]="item.cantidad">
             <div class="text-nowrap">
-              <!-- <strong class="text-danger"></strong> -->
                 <span style="font-size: 1.2rem !important;" class="font-size-xs text-muted">S/.{{item.producto.precio}}</span>
               </div>
             </div>
           </div>
           <div class="nav-muted mr-n2">
             <a class="nav-link px-2 mt-n2" title="Quitar" style="cursor: pointer;" (click)="eliminar_item_guest(item)">
-              <i class="cxi-delete"></i>
+              <i class="cxi-delete" aria-hidden="true" ></i>
             </a>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 
 
-    <ng-container *ngIf="carrito_logout.length >=1">
-    
-      <!-- Footer -->
+  <ng-container *ngIf="carrito_logout.length >=1">   
+    <!-- Footer -->
     <div class="cs-offcanvas-cap flex-column border-top">
       <div class="d-flex align-items-center justify-content-between mb-3 pb-1">
         <span class="text-muted mr-2">Subtotal:</span>
         <span class="h5 mb-0">S/.{{subtotal}}</span>
       </div>
       <a [routerLink]="['/carrito']" class="btn btn-primary btn-lg btn-block">
-        <i class="cxi-credit-card font-size-lg mt-n1 mr-1"></i>
+        <i class="cxi-credit-card font-size-lg mt-n1 mr-1" aria-hidden="true" ></i>
         Checkout
       </a>
     </div>
-    </ng-container>
-    
-  </div>
+  </ng-container>
+  
+</div>

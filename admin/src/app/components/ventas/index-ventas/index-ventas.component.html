@@ -36,7 +36,7 @@
 
                 <!-- Title -->
                 <h4 class="card-header-title">
-                  Mostrando todos tus ventas {{ventas.length}}
+                  Mostrando todas las ventas: {{ventas.length}}
                 </h4>
 
               </div>
@@ -52,11 +52,7 @@
                                 </div>
                               </div>
                         </div>
-                        <div class="col">
-                            <a class="btn btn-primary btn-block" [routerLink]="['/panel/ventas/create']" routerLinkActive="router-link-active"  style="cursor: pointer;">
-                                Nueva venta
-                            </a>
-                        </div>
+                        
                     </div>
                     <div class="row">
                         <div class="col">
@@ -79,10 +75,11 @@
               </div>
               <div class="table-responsive">
                 <table class="table table-sm table-nowrap card-table">
+                  <caption></caption>
                   <thead>
                     <tr>
                       <th>Cliente</th>
-                      
+                      <th>Fecha</th>
                       <th>Monto</th>
                       <th>Metodo</th>
                       <th>Estado</th>
@@ -96,6 +93,9 @@
                         <small class="text-muted"> {{item._id}} </small>
                       </td>
                       <td>
+                        {{item.createdAt |date}}
+                      </td>
+                      <td>
                         <span *ngIf="item.currency == 'PEN'">{{item.total_pagar|currency:'PEN'}}</span>
                         <span *ngIf="item.currency == 'USD'">{{item.total_pagar|currency:'USD'}}</span>
                       </td>
@@ -104,9 +104,10 @@
                       </td>
                       <td>
                         <span class="badge badge-warning" *ngIf="item.estado == 'En espera'">{{item.estado}}</span>
-                        <span class="badge badge-success" *ngIf="item.estado == 'Procesando'">{{item.estado}}</span>
+                        <span class="badge badge-primary" *ngIf="item.estado == 'Procesando'">{{item.estado}}</span>
                         <span class="badge badge-info" *ngIf="item.estado == 'Enviado'">{{item.estado}}</span>
-                        <span class="badge badge-danger" *ngIf="item.estado == 'Finalizado'">{{item.estado}}</span>
+                        <span class="badge badge-success" *ngIf="item.estado == 'Finalizado'">{{item.estado}}</span>
+                        <span class="badge badge-danger" *ngIf="item.estado == 'Cancelado'">{{item.estado}}</span>
                       </td>
                       <td>
                         <div class="dropdown">

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageBox } from 'src/app/utils/MessageBox';
 import { CuponService } from '../../../services/cupon.service';
-
 declare let $:any;
 
 @Component({
@@ -20,16 +19,16 @@ export class IndexCuponComponent implements OnInit {
     public token;
 
 
-  constructor(
+  constructor(//se inyecta los servidores
     private _cuponService : CuponService
-  ) { 
+  ) { //llama al token que se inicialize con el servicio
     this.token = localStorage.getItem('token');
   }
 
   ngOnInit(): void {
    this.filtrar();
   }
-
+//se lista los cupones
   filtrar(){
     this._cuponService.listar_cupones_admin(this.filtro,this.token).subscribe(
       response=>{
@@ -38,7 +37,7 @@ export class IndexCuponComponent implements OnInit {
       }
     )
   }
-
+//se elimina un cupon
   eliminar(id){
     this._cuponService.eliminar_cupon_admin(id,this.token).subscribe(
       response=>{
@@ -54,7 +53,7 @@ export class IndexCuponComponent implements OnInit {
           }
         )
 
-        
+
       },
       error=>{
         console.log(error);

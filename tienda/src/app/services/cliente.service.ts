@@ -13,7 +13,7 @@ export class ClienteService {
 
   constructor(
     private _http: HttpClient,
-  ) { 
+  ) {
     this.url = GLOBAL.url;
 
   }
@@ -21,6 +21,16 @@ export class ClienteService {
   login_cliente(data:any):Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
     return this._http.post(this.url+'login_cliente',data,{headers:headers});
+  }
+
+  confirmar_correo(user:any):Observable<any>{
+    let headers = new HttpHeaders().set('Content-Type','application/json');
+    return this._http.post(this.url+'confirmar_correo',user,{headers:headers});
+  }
+
+  cambiar_contrasenia(user:any):Observable<any> {
+    let headers = new HttpHeaders().set('Content-Type','application/json');
+    return this._http.put(this.url+'cambiar_contrasenia',user,{headers:headers});
   }
 
   getToken(){
@@ -64,7 +74,7 @@ export class ClienteService {
       localStorage.clear();
       return false;
     }
-    
+
     return true;
   }
 
@@ -73,7 +83,7 @@ export class ClienteService {
     return this._http.get(this.url+'obtener_config_publico',{headers:headers});
 
   }
-  
+
   listar_productos_publico(filtro:any):Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
     return this._http.get(this.url+'listar_productos_publico/'+filtro,{headers:headers});
@@ -151,6 +161,11 @@ export class ClienteService {
     return this._http.get(this.url+'obtener_detalles_ordenes_cliente/'+id,{headers:headers});
   }
 
+  verBoleta(id: any, token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.get(this.url+'verBoleta/'+id,{headers:headers});
+  }
+
   //culqi
   get_token_culqi(data:any):Observable<any>{
     let headers = new HttpHeaders()
@@ -158,7 +173,7 @@ export class ClienteService {
     .set('Authorization','Bearer pk_test_0b07aceaa3de8c43');
     return this._http.post('https://secure.culqi.com/v2/tokens',data,{headers:headers});
   }
-  
+
   get_charge_culqi(data:any):Observable<any>{
     let headers = new HttpHeaders()
     .set('Content-Type','application/json')
@@ -175,7 +190,7 @@ export class ClienteService {
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.get(this.url+'validar_cupon_admin/'+cupon,{headers:headers});
   }
-  
+
   disminuir_cupon(cupon:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
     return this._http.get(this.url+'disminuir_cupon/'+cupon,{headers:headers});
@@ -192,5 +207,27 @@ export class ClienteService {
     return this._http.get(this.url+'obtener_cupon_cliente/'+cupon,{headers:headers});
 
   }
+  actualizar_direccion_cliente(id:any,data:any,token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.put(this.url+'actualizar_direccion_cliente/'+id,data,{headers:headers});
+  }
+  recibir_direccion_cliente(id:any,token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
 
+    return this._http.get(this.url + 'recibir_direccion_cliente/' + id ,{headers:headers});
+  }
+
+  //RESEÑAS
+  emitir_review_producto_cliente(data: any, token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.post(this.url+'emitir_review_producto_cliente',data,{headers:headers});
+  }
+  obtener_review_producto_cliente(id:any):Observable<any>{
+    let headers = new HttpHeaders().set('Content-Type','application/json');
+    return this._http.get(this.url+'obtener_review_producto_cliente/'+id,{headers:headers});
+  }
+  obtener_reviews_cliente(id: any, token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json','Authorization':token});
+    return this._http.get(this.url+'obtener_reviews_cliente/'+id,{headers:headers});
+  }
 }

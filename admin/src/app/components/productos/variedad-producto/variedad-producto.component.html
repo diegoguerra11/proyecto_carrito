@@ -5,7 +5,7 @@
   <h1 class="mt-2 mt-md-4 mb-3 pt-5">Productos</h1>
   <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
     <p class="text-muted">Este módulo establece las configuraciones del producto.</p>
-    <p class="font-size-sm font-weight-medium pl-md-4"><a class="text-nowrap" [routerLink]="['/panel/productos']">Regresar<i class="cxi-angle-right font-size-base align-middle ml-1"></i></a></p>
+    <p class="font-size-sm font-weight-medium pl-md-4"><a class="text-nowrap" [routerLink]="['/panel/productos']">Regresar<i class="cxi-angle-right font-size-base align-middle ml-1" aria-hidden="true"></i></a></p>
   </div>
 </div>
 
@@ -45,18 +45,17 @@
         <div class="col-md-9">
           <label class="col-md-3 col-form-label font-weight-medium" for="text-input">Variedades</label>
           <div class="input-group">
-            <input class="form-control" type="text" placeholder="Nueva variedad" name="nueva_variedad" [(ngModel)]="nueva_variedad">
-            <input class="form-control" type="number" placeholder="Stock" name="stock" [(ngModel)]="stock">
+            <input class="form-control mr-5" type="text" placeholder="Nueva variedad" name="nueva_variedad" [(ngModel)]="nueva_variedad">
             <button class="btn btn-primary" type="button" (click)="agregar_variedad()">Agregar</button>
           </div>
         </div>
         <div class="col-md-9">
           <div class="table-responsive mt-3">
             <table class="table table-sm" *ngIf="variedades">
+              <caption></caption>
               <thead class="thead-dark">
                 <tr>
                   <th>Título</th>
-                  <th>Stock</th>
                   <th>Eliminar</th>
                 </tr>
               </thead>
@@ -73,7 +72,6 @@
                 <tbody *ngFor="let item of variedades; let indice = index">
                   <tr>
                     <td>{{item.valor}}</td>
-                    <td>{{item.stock}}</td>
                     <td><a style="cursor: pointer;" class="text-danger" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#delete-'+item._id">[Eliminar]</a></td>
                     <div class="modal fade" id="delete-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
                       <div class="modal-dialog modal-dialog-centered" role="document">

@@ -38,7 +38,7 @@
           <div class="col-md-9">
             <a style="cursor: pointer;" (click)="agregar_cat()" class="mb-5">Agregar</a>
             <div class="table-responsive mt-3">
-              <table class="table table-sm" *ngIf="config.categorias">
+              <table class="table table-sm" *ngIf="config.categorias" aria-hidden="true">
                 <thead class="thead-dark">
                   <tr>
              
@@ -64,7 +64,7 @@
                         {{item.titulo}}
                       </td>      
                       <td>
-                       <i class="{{item.icono}}"></i> {{item.icono}}
+                       <i class="{{item.icono}}" aria-hidden="true"></i> {{item.icono}}
                       </td>    
                       <td>
                         <a style="cursor:pointer;" class="text-danger" (click)="eliminar_categoria(indice)">[Eliminar]</a>

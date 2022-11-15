@@ -2,13 +2,15 @@ import { MessageBox } from '../Utils/MessageBox';
 
 export class ValidatonsCliente {
     static actualizarCliente(form: any) {
+        let escontraseña=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%?&])[A-Za-z\d$@$!%?&]{8,15}/;
         let numerico = /^[0-9]+$/;
-        const fecha = new Date();
-        const añoActual =fecha.getFullYear();
-        const mesActual =fecha.getMonth()+1;
-        const diaActual =fecha.getDate();
+        const fecha = new Date(form.f_nacimiento);
+        const timeDiff = Math.abs(Date.now() - fecha.getTime());
 
-        
+        if(form.newPassword && !form.newPassword.match(escontraseña)) {
+            MessageBox.messageError('El campo contraseña debe tener como minimo una mayúscula, un numero y un caracter especial');
+            return false;
+        }
         if(!form.nombres) {
             MessageBox.messageError('El campo nombres es obligatorio');
             return false;
@@ -43,25 +45,17 @@ export class ValidatonsCliente {
             MessageBox.messageError('Número de pasaporte Inválido');
             return false;
         }
-        //Se puede mejorar ;)
-        if(+(form.f_nacimiento.split("-")[0])> (añoActual-18)){
-            MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
-            return false;
-        }
-        if(+(form.f_nacimiento.split("-")[1]) > mesActual){
-            MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
-            return false;
-        }
-        if(+(form.f_nacimiento.split("-")[2])> diaActual){
+        if(Math.floor((timeDiff / (1000 * 3600 * 24))/365) < 18) {
             MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
             return false;
         }
         return true;
     }
+
     static registrarCliente(form:any){
+        let escontraseña=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%?&])[A-Za-z\d$@$!%?&]{8,15}/;
         let numerico = /^[0-9]+$/;
         let esCorreo = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-
         if(!form.nombres){
             MessageBox.messageError('El campo nombre es obligatorio');
             return false;
@@ -71,27 +65,57 @@ export class ValidatonsCliente {
             return false;
         }
         if(!form.apellidos){
-          MessageBox.messageError('El campo apellido es obligatorio');
-          return false;
+            MessageBox.messageError('El campo apellido es obligatorio');
+            return false;
         }
-      if(form.apellidos.match(numerico)) {
-          MessageBox.messageError('El campo apellido debe ser alfabetico');
-          return false;
+        if(form.apellidos.match(numerico)) {
+            MessageBox.messageError('El campo apellido debe ser alfabetico');
+            return false;
         }
-      if(!form.email){
-        MessageBox.messageError('El campo email es obligatorio');
-        return false;
+        if(!form.email){
+            MessageBox.messageError('El campo email es obligatorio');
+            return false;
         }
         if(!form.email.match(esCorreo)) {
             MessageBox.messageError('Debe Ingresar un correo electrónico válido');
             return false;
         }
         if(!form.password){
-          MessageBox.messageError('El campo password es obligatorio');
-          return false;
-          }
+            MessageBox.messageError('El campo password es obligatorio');
+            return false;
+        }
+
+        if(!form.password.match(escontraseña)) {
+            MessageBox.messageError('El campo nueva contraseña debe tener como minimo una mayúscula, un numero y un caracter especial');
+            return false;
+        }
 
         return true;
+    }
 
+    static actualizarContrasenia(form:any) {
+        let escontraseña=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%?&])[A-Za-z\d$@$!%?&]{8,15}/;
+
+        if(!form.newPassword){
+            MessageBox.messageError('El campo nueva contraseña es obligatorio');
+            return false;
+        }
+
+        if(!form.newPassword.match(escontraseña)) {
+            MessageBox.messageError('El campo nueva contraseña debe tener como minimo una mayúscula, un numero y un caracter especial');
+            return false;
+        }
+
+        if(!form.confirmPassword){
+            MessageBox.messageError('El campo nueva contraseña es obligatorio');
+            return false;
+        }
+
+        if(form.newPassword != form.confirmPassword) {
+            MessageBox.messageError('La contrsañas no coinciden');
+            return false;
+        }
+
+        return true;
     }
 }

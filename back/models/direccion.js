@@ -1,5 +1,6 @@
 'use strict'
 
+//Modelo de dirección.
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
