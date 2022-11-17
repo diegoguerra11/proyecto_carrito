@@ -12,7 +12,7 @@ export class GuestService {
 
   constructor(
     private _http: HttpClient,
-  ) { 
+  ) {
     this.url = GLOBAL.url;
 
   }
@@ -25,6 +25,18 @@ export class GuestService {
   listar_productos_recomendados_publico(categoria:any):Observable<any>{
     let headers = new HttpHeaders().set('Content-Type','application/json');
     return this._http.get(this.url+'listar_productos_recomendados_publico/'+categoria,{headers:headers});
+  }
+
+
+  listar_productos_nuevos_publico():Observable<any>{
+    let headers = new HttpHeaders().set('Content-Type','application/json');
+    return this._http.get(this.url+'listar_productos_nuevos_publico/',{headers:headers});
+  }
+
+
+  listar_productos_masvendidos_publico():Observable<any>{
+    let headers = new HttpHeaders().set('Content-Type','application/json');
+    return this._http.get(this.url+'listar_productos_masvendidos_publico/',{headers:headers});
   }
 
   comprobar_carrito_cliente(data:any,token:any):Observable<any>{
@@ -69,7 +81,7 @@ export class GuestService {
     return this._http.post('https://api.mercadopago.com/checkout/preferences',data,{headers:headers});
   }
 
-  //Regiones 
+  //Regiones
   get_Regiones():Observable<any>{
     return this._http.get('./assets/regiones.json');
   }
