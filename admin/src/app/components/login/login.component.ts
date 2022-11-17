@@ -27,7 +27,6 @@ export class LoginComponent implements OnInit {
 
     if(this.token){
       this._router.navigate(['/']);
-
     }
   }
 
@@ -43,12 +42,13 @@ export class LoginComponent implements OnInit {
 
     this._adminService.login_admin(data).subscribe(
       response =>{
-        if(response.data == undefined){MessageBox.messageError(response.message); return;}
+        if(response.data == undefined){return MessageBox.messageError(response.message);}
 
         this.usuario = response.data;
 
         localStorage.setItem('token',response.token);
         localStorage.setItem('_id',response.data._id);
+        localStorage.setItem('rol',response.data.rol);
 
         this._router.navigate(['/inicio']);
 

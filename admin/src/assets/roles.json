@@ -1,5 +1,8 @@
 [
     {
         "nombre": "vendedor"
+    },
+    {
+        "nombre": "admin"
     }
 ]

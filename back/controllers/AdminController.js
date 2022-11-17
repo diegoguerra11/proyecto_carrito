@@ -35,15 +35,19 @@ const login_admin = async function(req, res){
 
     let buscar_Trabajador = Promise.resolve(Trabajador.findOne({email:data.email}));
 
-    buscar_Trabajador.then(Trabajador => {
-        if(!Trabajador){return res.status(200).send({message: 'No se encontro el correo', data:undefined});}  
+    buscar_Trabajador.then(trabajador => {
+        if(!trabajador){return res.status(200).send({message: 'No se encontro el correo'});}  
+        if(!trabajador.estado){return res.status(200).send({message:'Cuenta inactiva'});}
+        if(trabajador.rol != 'admin' && trabajador.rol != 'superAdmin'){
+            return res.status(200).send({message: 'Sin los permisos necesarios para acceder'});
+        }  
 
-        bcrypt.compare(data.password, Trabajador.password,async function(error, check){
-            if(!check){return res.status(200).send({message: 'La contraseña no coincide', data: undefined});}
+        bcrypt.compare(data.password, trabajador.password,async function(error, check){
+            if(!check){return res.status(200).send({message: 'La contraseña no coincide'});}
 
             res.status(200).send({
-                data: Trabajador,
-                token: jwt.createToken(Trabajador)
+                data: trabajador,
+                token: jwt.createToken(trabajador)
             });
         });
     });  
@@ -53,7 +57,7 @@ const login_admin = async function(req, res){
  const obtener_ventas_admin  = async function(req,res){
 
     //Restricción realizada a los usuarios: si no son usuarios con el rol de administrador, no podrán acceder a esta función.
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
     let desde = req.params['desde'];
     let hasta = req.params['hasta'];
@@ -348,7 +352,7 @@ const enviar_email = async function(venta, motivo) {
 const kpi_ganancias_mensuales_admin  = async function(req,res){
 
     //Restricción realizada a los usuarios: si no son usuarios con el rol de administrador, no podrán acceder a esta función.
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
    let enero = 0;
    let febrero = 0;
@@ -380,53 +384,53 @@ const kpi_ganancias_mensuales_admin  = async function(req,res){
             let createdAt_date = new Date(venta.createdAt);
             let mes = createdAt_date.getMonth()+1;
             if(createdAt_date.getFullYear() == current_year){
-            total_ganancia =total_ganancia+ venta.subtotal;
-            if(mes == current_month){
-                total_mes = total_mes + venta.subtotal;
+                total_ganancia =total_ganancia+ venta.subtotal;
+                if(mes == current_month){
+                    total_mes = total_mes + venta.subtotal;
+                }
+                if(mes == current_month-1){
+                    total_mes_anterior = total_mes_anterior + venta.subtotal;
+                }
+                switch (mes) {
+                    case 1:
+                        enero = enero + venta.subtotal;
+                        break;
+                    case 2:
+                        febrero = febrero + venta.subtotal;
+                        break;
+                    case 3:
+                        marzo = marzo + venta.subtotal;
+                        break;  
+                    case 4:
+                        abril = abril + venta.subtotal;
+                        break;
+                    case 5:
+                        mayo = mayo + venta.subtotal;
+                        break;
+                    case 6:
+                        junio =  junio + venta.subtotal;
+                        break;   
+                    case 7:
+                        julio = julio + venta.subtotal;
+                        break;
+                    case 8:
+                        agosto = agosto + venta.subtotal;
+                        break;
+                    case 9:
+                        septiembre = septiembre + venta.subtotal;
+                        break;  
+                    case 10:
+                        octubre = octubre + venta.subtotal;
+                        break;
+                    case 11:
+                        noviembre = noviembre + venta.subtotal;
+                        break;
+                    case 12:
+                        diciembre = diciembre + venta.subtotal;
+                        break; 
+                    
+                }
             }
-            if(mes == current_month-1){
-                total_mes_anterior = total_mes_anterior + venta.subtotal;
-            }
-            switch (mes) {
-                case 1:
-                    enero = enero + venta.subtotal;
-                    break;
-                case 2:
-                    febrero = febrero + venta.subtotal;
-                    break;
-                case 3:
-                    marzo = marzo + venta.subtotal;
-                    break;  
-                case 4:
-                    abril = abril + venta.subtotal;
-                    break;
-                case 5:
-                    mayo = mayo + venta.subtotal;
-                    break;
-                case 6:
-                    junio =  junio + venta.subtotal;
-                    break;   
-                case 7:
-                    julio = julio + venta.subtotal;
-                    break;
-                case 8:
-                    agosto = agosto + venta.subtotal;
-                    break;
-                case 9:
-                    septiembre = septiembre + venta.subtotal;
-                    break;  
-                case 10:
-                    octubre = octubre + venta.subtotal;
-                    break;
-                case 11:
-                    noviembre = noviembre + venta.subtotal;
-                    break;
-                case 12:
-                    diciembre = diciembre + venta.subtotal;
-                    break; 
-                
-            }
-        }
             
         }
 
@@ -448,8 +452,6 @@ const kpi_ganancias_mensuales_admin  = async function(req,res){
             total_mes:total_mes,
             cont_ventas:cont_ventas,
             total_mes_anterior:total_mes_anterior,
-
-        
         });
     });
 }

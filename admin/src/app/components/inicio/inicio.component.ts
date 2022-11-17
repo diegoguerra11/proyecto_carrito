@@ -8,19 +8,20 @@ import { AdminService } from 'src/app/services/admin.service';
   styleUrls: ['./inicio.component.css']
 })
 export class InicioComponent implements OnInit {
-public token;
-public total_ganancia = 0;
-public total_mes = 0;
-public cont_ventas= 0;
-public total_mes_anterior =0;
+  public token;
+  public total_ganancia = 0;
+  public total_mes = 0;
+  public cont_ventas= 0;
+  public total_mes_anterior =0;
+  
   constructor( private _adminService:AdminService, ) {
-   this.token = localStorage.getItem("token");
+    this.token = localStorage.getItem("token");
   }
 
-  ngOnInit(): void { /* TODO VACIO*/
+  ngOnInit(): void {
     this.init_data();
-    
   }
+
   init_data(){
     this._adminService.kpi_ganancias_mensuales_admin(this.token).subscribe(
       response => {
