@@ -85,27 +85,7 @@
   <section class="container pt-5 pt-lg-0">
       <div class="cs-carousel cs-nav-outside">
         <div class="cs-carousel-inner cs-carousel-inner-two" data-carousel-options=''>
-          <!-- Category -->
-          <a href="shop-catalog.html" class="d-block cs-image-scale cs-heading-highlight text-center">
-            <div class="cs-image-inner mb-3 rounded">
-              <img src="../../assets/img/ecommerce/home/categories/01.jpg" alt="Women’s">
-            </div>
-            <h3 class="h5 mb-1">Women’s</h3>
-          </a>
-          <!-- Category -->
-          <a href="shop-catalog.html" class="d-block cs-image-scale cs-heading-highlight text-center">
-            <div class="cs-image-inner mb-3 rounded">
-              <img src="../../assets/img/ecommerce/home/categories/02.jpg" alt="Men’s">
-            </div>
-            <h3 class="h5 mb-1">Men’s</h3>
-          </a>
-          <!-- Category -->
-          <a href="shop-catalog.html" class="d-block cs-image-scale cs-heading-highlight text-center">
-            <div class="cs-image-inner mb-3 rounded">
-              <img src="../../assets/img/ecommerce/home/categories/03.jpg" alt="Kids'">
-            </div>
-            <h3 class="h5 mb-1">Kids'</h3>
-          </a>
+
         </div>
       </div>
   </section>
@@ -184,7 +164,7 @@
             <div *ngFor="let item of mas_vendidos">
               <div class="card card-product mx-auto">
                 <div class="card-product-img">
-                  <a href="shop-single.html" class="card-img-top">
+                  <a  [routerLink]="['/productos/', item.slug]" routerLinkActive="router-link-active"  class="card-img-top">
                     <img [src]="url +'obtener_portada/'+item.portada" alt="Product image">
                   </a>
                   <div class="card-product-widgets-top">
@@ -202,7 +182,7 @@
                 </div>
                 <div class="card-body bg-0 pb-2">
                   <h3 class="card-product-title text-truncate mb-2">
-                    <a href="shop-single.html" class="nav-link">{{item.titulo}}</a>
+                    <a  class="nav-link">{{item.titulo}}</a>
                   </h3>
                   <div class="d-flex align-items-center">
                     <span class="h5 d-inline-block mb-0">S/.{{item.precio}}</span>
@@ -229,7 +209,7 @@
         }'>
 
           <!-- Category -->
-          <div class="pb-2" *ngForm="let item of categorias">
+          <div class="pb-2" *ngFor="let item of categorias">
             <a [routerLink]="['/productos/categoria/',item.titulo.toLowerCase()]" class="d-block cs-image-scale cs-heading-highlight text-center">
               <div class="cs-image-inner rounded-circle mx-auto mb-4" style="max-width: 180px;">
                 <img [src]="item.portada" alt="Category image">
@@ -243,29 +223,7 @@
       </div>
   </section>
 
-  <!-- Mobile app CTA -->
-  <section class="bg-dark">
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="col-md-5">
-            <img src="../../assets/img/ecommerce/home/mobile-app-illustration.png" class="d-block mx-auto my-4 mb-lg-0 mt-lg-n4" width="498" alt="Illustartion">
-          </div>
-          <div class="col-md-7 col-lg-6 pt-3 pb-5 pt-md-5 pb-md-4 ml-auto">
-            <h2 class="text-light text-center text-md-left pb-3">¡Disfruta de las compras móviles con nuestra aplicación Createx Store!</h2>
-            <div class="d-flex flex-wrap flex-sm-nowrap justify-content-center justify-content-md-start">
-              <a href="#" class="btn-market btn-apple mb-3 mx-2 ml-md-0 mr-md-3" role="button">
-                <span class="btn-market-subtitle">Descargar en el</span>
-                <span class="btn-market-title">App Store</span>
-              </a>
-              <a href="#" class="btn-market btn-google mb-3 mx-2 mx-md-0" role="button">
-                <span class="btn-market-subtitle">Descargar en el</span>
-                <span class="btn-market-title">Google Play</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-  </section>
+
 
   <!-- Services -->
   <section class="container pt-5 pb-2 pb-sm-5 py-md-5 py-lg-6">
@@ -303,7 +261,7 @@
         <div class="row">
           <div class="col-md-4 text-center text-md-left pb-2 pb-md-0 mb-4 mb-md-0">
             <p class="text-dark text-uppercase mb-2">Siguenos en Instagram</p>
-            <h2 class="h1 pb-2 pb-md-3">@createx_store</h2>
+            <h2 class="h1 pb-2 pb-md-3">@eN CONSTRUCCION</h2>
             <a href="#" class="btn btn-outline-primary btn-lg">
               <i class="cxi-instagram font-size-lg mr-1"></i>
               Siguenos en Instagram
@@ -314,18 +272,8 @@
               <div class="cs-carousel-inner cs-carousel-inner-six" data-carousel-options='{
 
               }'>
-                <!-- Image -->
-                <div>
-                  <img src="../../assets/img/ecommerce/home/instagram/01.jpg" alt="Image">
-                </div>
-                <!-- Image -->
-                <div>
-                  <img src="../../assets/img/ecommerce/home/instagram/02.jpg" alt="Image">
-                </div>
-                <!-- Image -->
-                <div>
-                  <img src="../../assets/img/ecommerce/home/instagram/03.jpg" alt="Image">
-                </div>
+
+
               </div>
             </div>
           </div>

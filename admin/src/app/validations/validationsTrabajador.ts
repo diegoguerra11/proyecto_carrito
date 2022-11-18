@@ -3,6 +3,7 @@ import { MessageBox } from '../utils/MessageBox';
 export class ValidatonsTrabajador {
     static verificarTrabajador(form: any) {
         let numerico = /^\d+$/;
+        let escontraseña=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%?&])[A-Za-z\d$@$!%?&]{8,15}/;
         
         if(!this.validarObligatorios(form)){return false;}
       
@@ -30,6 +31,11 @@ export class ValidatonsTrabajador {
             MessageBox.messageError('Número de pasaporte Inválido');
             return false;
         }
+        if(!form.password.match(escontraseña)) {
+            MessageBox.messageError('El campo contraseña debe tener como minimo una mayúscula, un numero y un caracter especial');
+            return false;
+        }
+
         return true;
     }
 
@@ -60,6 +66,10 @@ export class ValidatonsTrabajador {
         }
         if(!form.rol) {
             MessageBox.messageError('El campo rol es obligatorio');
+            return false;
+        }
+        if(!form.password) {
+            MessageBox.messageError('El campo contraseña es obligatorio');
             return false;
         }
         return true;

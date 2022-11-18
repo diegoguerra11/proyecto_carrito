@@ -36,7 +36,7 @@
 
                 <!-- Title -->
                 <h4 class="card-header-title">
-                  Mostrando todos tus ventas {{ventas.length}}
+                  Mostrando todas las ventas: {{ventas.length}}
                 </h4>
 
               </div>
@@ -79,7 +79,7 @@
                   <thead>
                     <tr>
                       <th>Cliente</th>
-                      
+                      <th>Fecha</th>
                       <th>Monto</th>
                       <th>Metodo</th>
                       <th>Estado</th>
@@ -91,6 +91,9 @@
                       <td>
                         <a class="text-primary">{{item.cliente.nombres}} {{item.cliente.apellidos}}</a><br>
                         <small class="text-muted"> {{item._id}} </small>
+                      </td>
+                      <td>
+                        {{item.createdAt |date}}
                       </td>
                       <td>
                         <span *ngIf="item.currency == 'PEN'">{{item.total_pagar|currency:'PEN'}}</span>

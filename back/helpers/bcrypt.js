@@ -1,5 +1,7 @@
 'use strict'
 
+//Aquí se muestra la función que realiza las excepciones ocurridas en el servidor.
+
 let bcrypt = require('bcrypt-nodejs');
 
 let new_pass;
