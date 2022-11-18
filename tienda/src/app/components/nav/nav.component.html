@@ -1,5 +1,8 @@
 <!-- Header (Topbar + Navbar) -->
 <header class="cs-header">
+  <head>
+    <link rel="stylesheet" href="nav.component.css">
+  </head>
   
     <!-- Navbar -->
     <!-- Remove "navbar-sticky" class to make navigation bar scrollable with the page -->
@@ -9,12 +12,27 @@
           <img src="assets/img/ecommerce/nalyLogo.svg" alt="Naly Logo" width="130">
         </a>
         <!-- Search desktop -->
+
+        
+        <div class="input-group-overlay ml-4 d-lg-block d-none order-lg-3" style="max-width: 21rem;">
+          <input class="form-control appended-form-control" type="text" placeholder="Buscar Productos..." id="producto">
+          <div class="input-group-append-overlay">
+            <span class="input-group-text">
+              
+              <a (click)="buscarProductos()" [routerLink]="['/productos']" routerLinkActive="active" class="cxi-search lead align-middle" aria-hidden="true"></a>
+            </span>
+          </div>
+        </div>
+
+        <!--
         <div class="input-group-overlay ml-4 d-lg-block d-none order-lg-3" style="max-width: 21rem;">
           <input class="form-control appended-form-control" type="text" placeholder="Buscar Productos...">
           <div class="input-group-append-overlay">
             <span class="input-group-text"><i class="cxi-search lead align-middle" aria-hidden="true" ></i></span>
           </div>
         </div>
+        -->
+        
         <!-- Toolbar -->
         <div class="d-flex align-items-center order-lg-3">
           <ul class="nav nav-tools flex-nowrap">
@@ -216,7 +234,7 @@
       <div class="d-flex justify-content-between">
         <div class="pr-2">
           <h3 class="font-size-sm mb-3">
-            <a  [routerLink]="['/productos/',item.producto.slug]"  class="nav-link font-weight-bold">{{item.producto.titulo}}</a>
+            <a  [routerLink]="['/productos/',item.producto.slug]" class="nav-link font-weight-bold">{{item.producto.titulo}}</a>
           </h3>
           <ul class="list-unstyled font-size-xs mt-n2 mb-2">
             <li class="mb-0">

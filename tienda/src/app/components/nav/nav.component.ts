@@ -29,6 +29,8 @@ export class NavComponent implements OnInit {
   public subtotal = 0;
   public socket = io('http://localhost:4201');
 
+  
+
   constructor(
     private _clienteService: ClienteService,
     private _guestService: GuestService,
@@ -234,4 +236,18 @@ export class NavComponent implements OnInit {
     }
     this.calcular_carrito();
   }
+
+  buscarProductos(){
+    const input=document.getElementById('producto') as HTMLInputElement;
+    localStorage.setItem('productoABuscar', input.value);
+    if (this.invertirCadena(window.location.href).substring(0,10)==="sotcudorp/"){
+      window.location.reload();
+    }
+  }
+  invertirCadena(cad:string) {
+    var separarCadena = cad.split("");
+    var invertirArreglo = separarCadena.reverse();
+    var unirArreglo = invertirArreglo.join("");
+    return unirArreglo;
+}
 }

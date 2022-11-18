@@ -262,6 +262,8 @@ const eliminar_imagen_galeria_admin = async function(req,res){
     })
 }
 
+
+
 //---METODOS PUBLICOS---------------------------
 const listar_productos_publico = async function(req,res){
     let filtro = req.params['filtro'];
