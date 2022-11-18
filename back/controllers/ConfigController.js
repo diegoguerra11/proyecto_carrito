@@ -37,7 +37,7 @@ const actualizar_config_admin = async function(req,res){
             correlativo: data.correlativo,
         }));
 
-        buscar_config.then(conf => {
+        reg.then(conf => {
             fs.stat('./uploads/configuraciones/'+conf.logo, function(err){
                 if(!err){
                     fs.unlink('./uploads/configuraciones/'+conf.logo, (error)=>{
