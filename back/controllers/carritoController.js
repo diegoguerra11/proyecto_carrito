@@ -78,23 +78,18 @@ const actualizar_cantidad_carrito_cliente = async function(req, res) {
 
     let buscar_carrito = Promise.resolve(Carrito.findById(filter));
 
-    try {
-        buscar_carrito.then(item => {
-            let buscar_variedad = Promise.resolve(Variedad.findById({_id: item.variedad}));
-    
-            buscar_variedad.then(variedad => {
-                if(variedad.stock < cantidad) {return res.status(200).send({message: 'La cantidad colocada es mayor al stock del producto'});}
-                let actualizar_carrito_cliente = Promise.resolve(Carrito.findByIdAndUpdate(filter, newvalues));
-    
-                actualizar_carrito_cliente.then(carrito_cliente => {
-                    res.status(200).send({data: carrito_cliente});
-                }).catch(error => {throw error;})
-            }).catch(error => {throw error;})
-        }).catch(error => {throw error;});
+    buscar_carrito.then(item => {
+        let buscar_variedad = Promise.resolve(Variedad.findById({_id: item.variedad}));
 
-    } catch(error) {
-        return res.status(500).send({message: 'Error en el servidor'});
-    }
+        buscar_variedad.then(variedad => {
+            if(variedad.stock < cantidad) {return res.status(200).send({message: 'La cantidad colocada es mayor al stock del producto'});}
+            let actualizar_carrito_cliente = Promise.resolve(Carrito.findByIdAndUpdate(filter, newvalues));
+
+            actualizar_carrito_cliente.then(carrito_cliente => {
+                res.status(200).send({data: carrito_cliente});
+            })
+        })
+    }).catch(res.status(500).send({message: 'Error en el servidor'}));
 }
 
 //Función para eliminar un producto del carrito. El cliente podrá eliminar los productos que desse del carrito.

@@ -9,6 +9,7 @@ let Dventa = require('../models/Dventa');
 let bcrypt = require('bcrypt-nodejs');
 let jwt = require('../helpers/jwt');
 let mail = require('../helpers/mail');
+const producto = require('../models/producto');
 
 
 const login_vendedor = async function(req, res){
@@ -157,12 +158,12 @@ const confirmar_pago_orden = async function(req,res) {
 const registro_compra_manual_cliente = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
-    let data = req.body;
+    let compra = req.body;
     let detalles = data.detalles;
-    console.log(data);
-    data.estado = 'Finalizado';
+
+    compra.estado = 'Finalizado';
     
-    let crear_venta = Promise.resolve(Venta.create(data));
+    let crear_venta = Promise.resolve(Venta.create(compra));
 
     crear_venta.then(venta => {   
 
@@ -171,12 +172,12 @@ const registro_compra_manual_cliente = async function(req,res){
             element.cliente = venta.cliente;
             Promise.resolve(Dventa.create(element)).then(() => {
                 let element_producto = Promise.resolve(Producto.findById({_id:element.producto}));
-                element_producto.then(data => {
-                    
-                    let new_stock = data.stock - element.cantidad;
-                    let new_ventas = data.nventas + 1;
+                element_producto.then(prod => {
+                    let new_stock = prod.stock - element.cantidad;
+                    let new_ventas = prod.nventas + 1;
                     let element_variedad = Promise.resolve(Variedad.findById({_id:element.variedad}));
-                    element_variedad.then(data =>{let new_stock_variedad = data.stock - element.cantidad;
+                    element_variedad.then(data => {
+                        let new_stock_variedad = data.stock - element.cantidad;
             
                         Promise.resolve(Producto.findByIdAndUpdate({_id: element.producto},{
                             stock: new_stock,
@@ -185,14 +186,13 @@ const registro_compra_manual_cliente = async function(req,res){
                             Promise.resolve(Variedad.findByIdAndUpdate({_id: element.variedad},{
                                 stock: new_stock_variedad,
                             }))
-                        ); });
-                     
+                        ); 
+                    }); 
                 });
                 
             });
-
-        
         }
+
         enviar_email(venta._id, 'confirmar_compra');
     
         res.status(200).send({venta:venta});

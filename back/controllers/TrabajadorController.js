@@ -8,20 +8,24 @@ const listar_trabajadores_filtro_admin= async function (req, res) {
 
     let tipo = req.params['tipo'];
     let filtro = req.params['filtro'];
-    let reg;
+    let buscar_trabajadores;
 
     let search_rol = req.user.role == 'superAdmin' ? {$in: ['vendedor', 'admin']} : 'vendedor'
 
     switch(tipo) {
-        case 'apellidos': reg = await Trabajador.find({apellidos:new RegExp(filtro, 'i'), rol: search_rol});
+        case 'apellidos': 
+            buscar_trabajadores = Promise.resolve(Trabajador.find({apellidos:new RegExp(filtro, 'i'), rol: search_rol}));
+            buscar_trabajadores.then(reg => {res.status(200).send({data:reg});})
             break;
-        case 'correo': reg = await Trabajador.find({email:new RegExp(filtro, 'i'), rol: search_rol});
+        case 'correo':  
+            buscar_trabajadores = Promise.resolve(Trabajador.find({email:new RegExp(filtro, 'i'), rol: search_rol}));
+            buscar_trabajadores.then(reg => {res.status(200).send({data:reg});})
             break;
-        default: reg = await Trabajador.find({rol: search_rol});
+        default: 
+            buscar_trabajadores = Promise.resolve(Trabajador.find({rol: search_rol}));
+            buscar_trabajadores.then(reg => {res.status(200).send({data:reg});})
             break;
     }
-
-    res.status(200).send({data:reg});
 }
 
 const registrar_trabajador_admin = async function(req, res) {
@@ -133,6 +137,7 @@ const validaciones_trabajador = async function(email, dni, id) {
 
     let existe_correo_electronico = await Trabajador.exists({email: email, _id: {$ne: id}});
     if(existe_correo_electronico) {return 'El correo electronico ya se encuentra en la base de datos';}
+
     return null;
 }
 
