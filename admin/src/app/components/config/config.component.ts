@@ -7,12 +7,12 @@ import { ValidationsConfig } from '../../validations/validationsConfig';
 
 declare let $:any;
 
-
 @Component({
   selector: 'app-config',
   templateUrl: './config.component.html',
   styleUrls: ['./config.component.css']
 })
+
 export class ConfigComponent implements OnInit {
 
   public token;
