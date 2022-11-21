@@ -159,7 +159,7 @@ const registro_compra_manual_cliente = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
     let compra = req.body;
-    let detalles = data.detalles;
+    let detalles = compra.detalles;
 
     compra.estado = 'Finalizado';
     
@@ -245,10 +245,11 @@ const registro_cliente_vendedor = async function(req,res){
         if(!hash){res.status(200).send({message:'Hubo un error en el servidor',data:undefined});}
         
         data.password = hash;
-
+        
         let existeNdoc = Promise.resolve(Cliente.findOne({numeroDocumento: data.numeroDocumento}));
 
         existeNdoc.then(nDoc => {
+            console.log(nDoc);
             if(nDoc){return res.status(200).send({data: undefined});}
         
             let crear_cliente = Promise.resolve(Cliente.create(data));

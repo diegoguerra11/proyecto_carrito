@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { VendedorService } from 'src/app/services/vendedor.service';
+import { ValidatonsCliente } from 'src/app/validations/validationsCliente';
 import { MessageBox} from "../../../utils/MessageBox";
 declare let $:any;
 @Component({
@@ -41,12 +42,16 @@ export class CreateVentasComponent implements OnInit {
   public venta :any = {
     metodo_pago: ''
   };
+  public cliente: any = {
+    genero: ''
+  };
   public dventa:Array<any> = [];
   public total_pagar = 0;
   public envio_input = 0;
   public neto_pagar = 0;
   public filtro_producto = '';
   public descuento = 0;
+  public clienteTemporal = false;
   public direccionTienda = {
 
     cliente: "ClienteTienda",
@@ -102,12 +107,56 @@ export class CreateVentasComponent implements OnInit {
       this.variedades = this.variedades_const;
     }
   }
-
+  
+  select_cliente_temporal(registroForm:any){
+    if(!ValidatonsCliente.verificarClienteTemporal(registroForm.form.value)){return;}
+    
+    this._vendedorService.registro_cliente_admin(this.cliente,this.token).subscribe(
+      response =>{
+        if(!response.data){
+          this.cliente ={
+            genero: '',
+            nombres: '',
+            apellidos:  '',
+            f_nacimiento: '',
+            telefono: '',
+            tipoDocumento: '',
+            dni:  '',
+            email: ''
+          }
+          return MessageBox.messageError("El numero documento ya existe");
+        }
+        console.log(response.data._id);
+        this.venta.cliente = response.data._id;
+        MessageBox.messageSuccess("Cliente registrado satisfactoriamente");
+        this.cliente ={
+          genero: '',
+          nombres: '',
+          apellidos: '',
+          f_nacimiento: '',
+          telefono: '',
+          dni: '',
+          email: ''
+        }
+        $('#modalClienteTemporal').modal('hide');
+        $('#input-cliente').val(registroForm.form.value.nombres + " " + registroForm.form.value.apellidos);
+      },
+      error=>{
+        console.log(error);
+      }
+    );
+   
+  }
   select_cliente(item:any){
+    if(item != "temporal"){
     this.venta.cliente = item._id;
     $('#modalCliente').modal('hide');
     $('#input-cliente').val(item.nombres+' '+item.apellidos);
     this.init_direcciones(item._id);
+    this.clienteTemporal = false;}
+
+    this.clienteTemporal = true;
+    $('#modalCliente').modal('hide');
   }
 
   init_direcciones(id:any){
