@@ -70,8 +70,8 @@
                                       <table class="table">
                                         <caption></caption>
                                             <thead>
-                                                <th>Cliente</th>
-                                                <th>Acción</th>
+                                                <th id="c">Cliente</th>
+                                                <th id="a">Acción</th>
                                             </thead>
                                             <tbody *ngIf="!load_clientes">
                                                 <tr *ngFor="let item of clientes| slice: (pageCliente-1)*pageSizeCliente : (pageCliente-1) * pageSizeCliente + pageSizeCliente; let indice = index">
@@ -124,8 +124,8 @@
                                       <table class="table">
                                         <caption> </caption>
                                             <thead>
-                                                <th>Direccion</th>
-                                                <th>Acción</th>
+                                                <th id="d">Direccion</th>
+                                                <th id="a">Acción</th>
                                             </thead>
                                             <tbody *ngIf="!load_direcciones">
                                                 <tr>
@@ -195,10 +195,10 @@
                                       <table class="table">
                                         <caption></caption>
                                             <thead>
-                                                <th>Producto</th>
-                                                <th>Talla</th>
-                                                <th>Stock</th>
-                                                <th>Acción</th>
+                                                <th id="p" >Producto</th>
+                                                <th id="t" >Talla</th>
+                                                <th id="s" >Stock</th>
+                                                <th id="a" >Acción</th>
                                             </thead>
                                             <tbody *ngIf="!load_variedades">
                                                 <tr *ngFor="let item of variedades| slice: (pageVariedad-1)*pageSizeVariedad : (pageVariedad-1) * pageSizeVariedad + pageSizeVariedad; let indice = index">
@@ -252,17 +252,17 @@
                                   <caption></caption>
                                   <thead>
                                     <tr>
-                                      <th scope = "row">Producto</th>
-                                      <th scope = "row">Talla</th>
-                                      <th scope = "row">Precio</th>
-                                      <th scope = "row">Cantidad</th>
-                                      <th scope = "row">Subtotal</th>
-                                      <th scope = "row">Eliminar</th>
+                                      <th id="p" scope = "row">Producto</th>
+                                      <th id="t" scope = "row">Talla</th>
+                                      <th id="p" scope = "row">Precio</th>
+                                      <th id="c" scope = "row">Cantidad</th>
+                                      <th id="s" scope = "row">Subtotal</th>
+                                      <th id="e" scope = "row">Eliminar</th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                     <tr *ngFor="let item of dventa; let idx = index">
-                                      <th scope="row">{{item.titulo_producto}}</th>
+                                      <th id="itp" scope="row">{{item.titulo_producto}}</th>
                                       <td>{{item.titulo_variedad}}</td>
                                       <td>{{item.precio_und|currency:'PEN'}}</td>
                                       <td>{{item.cantidad}}</td>

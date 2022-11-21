@@ -1,6 +1,6 @@
-projectKey=proyecto_carrito_admin
+projectKey=proyecto_carrito_vendedor
 serverUrl=http://localhost:9000
 serverVersion=8.9.10.61524
-dashboardUrl=http://localhost:9000/dashboard?id=proyecto_carrito_admin
-ceTaskId=AYSWzd3Oqfa7ulm1YU42
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AYSWzd3Oqfa7ulm1YU42
+dashboardUrl=http://localhost:9000/dashboard?id=proyecto_carrito_vendedor
+ceTaskId=AYSYJcMmU82RArG5c2kQ
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AYSYJcMmU82RArG5c2kQ
