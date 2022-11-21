@@ -33,7 +33,10 @@ export class ConfigComponent implements OnInit {
     this._adminService.obtener_config_admin(this.token).subscribe(
       response=>{
         this.config = response.data;
+        console.log(this.config);
         this.imgSelect = this.url + 'obtener_logo/'+this.config.logo;
+        console.log(this.imgSelect);
+        console.log(this.url + 'obtener_logo/'+this.config.logo);
       },
       error=>{
         console.log(error);
