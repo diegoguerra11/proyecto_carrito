@@ -15,6 +15,7 @@ declare let $:any;
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.css']
 })
+
 export class NavComponent implements OnInit {
   public currency = 'PEN';
   public token;
@@ -35,22 +36,22 @@ export class NavComponent implements OnInit {
     private _clienteService: ClienteService,
     private _guestService: GuestService,
     private _router: Router,
-  ) { 
+  ) {
     this.token = localStorage.getItem('token');
     this.id = localStorage.getItem('_id');
     this.url = GLOBAL.url;
 
     this._clienteService.obtener_config_publico().subscribe(
-      response=>{
+      (response:any)=>{
         this.config_global = response.data;
       }
     )
     if(this.user_lc == undefined){
       let ls_cart = localStorage.getItem('cart');
-      
+
       if(ls_cart != null){
         this.carrito_logout = JSON.parse(ls_cart);
-        
+
         this.calcular_carrito();
       }else{
         this.carrito_logout = [];
@@ -59,30 +60,28 @@ export class NavComponent implements OnInit {
     
    if (this.token) {
     this._clienteService.obtener_cliente_guest(this.id,this.token).subscribe(
-      response=>{
+      (response:any)=>{
         this.user = response.data;
         localStorage.setItem('user_data',JSON.stringify(this.user));
         if(localStorage.getItem('user_data')){
           this.user_lc = JSON.parse(localStorage.getItem('user_data')!);
 
-          this.obtener_carrito();         
+          this.obtener_carrito();
         }else{
           this.user_lc = undefined;
         }
       },
-      error=>{
+      (error:any)=>{
         console.log(error);
         this.user = undefined;
       }
     );
-   } 
+   }
   }
   
-
-  // obtiene el carrito del cliente y calcula el precio
   obtener_carrito(){
     this._clienteService.obtener_carrito_cliente(this.user_lc._id,this.token).subscribe(
-      response=>{
+      (response:any)=>{
         this.carrito_arr = response.data;
         this.calcular_carrito();
       }
@@ -92,7 +91,7 @@ export class NavComponent implements OnInit {
   // si el token esta vacio calcula el carrito o lo obtiene, caso contrario manda this a la funcion obtener_carrito
   ngOnInit(): void {
     if(this.token == null){
-      this.socket.on('new-carrito-add',(data)=>{
+      this.socket.on('new-carrito-add',(data:any)=>{
         if(this.user_lc == undefined){
           let ls_cart = localStorage.getItem('cart');
           if(ls_cart != null){
@@ -101,18 +100,18 @@ export class NavComponent implements OnInit {
           }else{
             this.carrito_logout = [];
           }
-          
+
         }else{
           this.obtener_carrito();
         }
-        
+
       });
     }
     else{this.socket.on('new-carrito', this.obtener_carrito.bind(this));
 
     this.socket.on('new-carrito-add', this.obtener_carrito.bind(this));}
 
-   
+
   }
 
   // abre el menu
@@ -186,11 +185,11 @@ export class NavComponent implements OnInit {
   // elimina un producto del carrito y actualiza el total del carrito
   eliminar_item(id:any){
     this._clienteService.eliminar_carrito_cliente(id,this.token).subscribe(
-      response=>{
+    (response: any)=>{
         MessageBox.messageError('Se eliminó el producto correctamente.');
         this.socket.emit('delete-carrito',{data:response.data});
         console.log(response);
-        
+
       }
     );
   }
@@ -200,7 +199,7 @@ export class NavComponent implements OnInit {
     this.carrito_logout.splice(item._id,1);
     localStorage.removeItem('cart');
     if(this.carrito_logout.length >= 1){
-      
+
       localStorage.setItem('cart',JSON.stringify(this.carrito_logout));
     } 
     if(this.currency == 'PEN'){
@@ -235,6 +234,7 @@ export class NavComponent implements OnInit {
       localStorage.setItem('cart', JSON.stringify(this.carrito_logout)); 
     }
     this.calcular_carrito();
+    MessageBox.messageSuccess('Se actualizó correctamente la cantidad');
   }
 
   buscarProductos(){

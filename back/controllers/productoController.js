@@ -1,5 +1,6 @@
 'use strict'
 
+//Declaración de variables.
 let Producto = require('../models/producto');
 let Inventario = require('../models/inventario');
 let Trabajador = require('../models/trabajador');
@@ -7,9 +8,9 @@ let Variedad = require('../models/Variedad');
 let fs = require('fs');
 let path = require('path');
 
-
+//Función para registrar un producto en admin. El administrador podrá registrar un producto en el inventario de la tienda, incluyendo una imagen referencial.
 const registro_producto_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});} 
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});} 
     let data = req.body;
             
     let img_path = req.files.portada.path;
@@ -33,8 +34,9 @@ const registro_producto_admin = async function (req,res){
     });
 }
 
+//Función para listar productos en Admin. El administrador podrá listar los productos registrados en el sistema.
 const listar_productos_admin = async function(req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     let filtro = req.params['filtro'];
 
     let reg = Promise.resolve(
@@ -46,6 +48,7 @@ const listar_productos_admin = async function(req,res){
     );
 }
 
+//Función para obtener la portada de la imagen. Si el producto contiene una imagen, el sistema muestra dicha imagen. Por el contrario, muestra una imagen por defecto.
 const obtener_portada = async function(req,res){
     let img = req.params['img'];
 
@@ -60,8 +63,9 @@ const obtener_portada = async function(req,res){
     });
 }
 
+//Función para obtener un producto en Admin. El administrador puede obtener los detalles de un producto al buscarlo por su id.
 const obtener_producto_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
       
     let id = req.params['id'];
 
@@ -76,8 +80,10 @@ const obtener_producto_admin = async function (req,res){
     }
 }
 
+//Función para modificar un producto en Admin. El administrador podrá modificar los datos de un producto. Si tiene una imagen, actualiza los datos incluyendo la imagen. De lo contrario,
+//actualiza solo los datos.
 const actualizar_producto_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     let id = req.params['id'];
     let data = req.body;
     let reg;
@@ -126,8 +132,9 @@ const actualizar_producto_admin = async function (req,res){
    
 }
 
+//Función para eliminar un producto en admin. El administrador podrá eliminar un producto de la lista de productos.
 const eliminar_producto_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
      
     let id = req.params['id'];
 
@@ -138,8 +145,9 @@ const eliminar_producto_admin = async function (req,res){
     });
 }
 
+//Función para listar el inventario de productos en Admin. El administrador podrá listar el inventario con los productos registrados en el sistema.
 const listar_inventario_producto_admin = async function(req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
       
     let id = req.params['id'];
 
@@ -150,8 +158,9 @@ const listar_inventario_producto_admin = async function(req,res){
     })
 }
 
+//Función para eliminar inventario en Admin. El administrador podrá eliminar el inventario registrado, modificando y recalculando el nuevo stock en el sistema.
 const eliminar_inventario_producto_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     //OBTENER ID DEL INVENTARIO
     let id = req.params['id'];
 
@@ -178,43 +187,21 @@ const eliminar_inventario_producto_admin = async function (req,res){
     });
 }
 
+//Función para registrar un inventario en Admin. El administrador podrá registrar un nuevo intentario en el sistema.
 const registro_inventario_producto_admin = async function(req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
     let data = req.body;
 
-    let buscar_trabajador = Promise.resolve(Trabajador.findById({_id: data.trabajador}));
+    let crear_inventario = Promise.resolve(Inventario.create(data));
 
-    buscar_trabajador.then(
-        admin => {
-            data.trabajador = admin.nombres+' '+admin.apellidos;
-            let actualizar_variedad = Promise.resolve(actualizar_variedad_admin(data.producto, data.variedad, data.cantidad))
-            actualizar_variedad.then(
-                () => {
-                    let crear_inventario = Promise.resolve(Inventario.create(data));
-            
-                    crear_inventario.then(reg => {
-                        res.status(200).send({data:reg});
-                    });
-                }
-            );
-            
-        }
-    )  
-}
-
-const actualizar_variedad_admin = async function(producto, valor, cantidad) {
-    let buscar_variedad = Promise.resolve(Variedad.findOne({producto: producto, valor: valor}));
-
-    buscar_variedad.then(
-        variedad => {
-            let actualizar_variedad = Promise.resolve(Variedad.findByIdAndUpdate({_id: variedad._id}, {stock: cantidad + variedad.stock}));
-        }
-    )
+    crear_inventario.then(reg => {
+        res.status(200).send({data:reg});
+    });
 }
 
 const actualizar_producto_variedades_admin = async function (req,res){
-    if(!req.user || req.user.rol != 'admin'){return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
     let id = req.params['id'];
     let data = req.body;
@@ -229,8 +216,9 @@ const actualizar_producto_variedades_admin = async function (req,res){
     });
 }
 
+//Función para agregar una imagen a la galería en Admin. El administrador podrá agregar una imagen a la galería de imágenes registradas.
 const agregar_imagen_galeria_admin = async function(req,res){
-    if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
     let id = req.params['id'];
     let data = req.body;
@@ -250,8 +238,9 @@ const agregar_imagen_galeria_admin = async function(req,res){
 
 }
 
+//Función para eliminar una imagen de la galería en Admin. El administrador podrá eliminar una imagen registrada en la galería.
 const eliminar_imagen_galeria_admin = async function(req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     let id = req.params['id'];
     let data = req.body;
 
@@ -265,6 +254,8 @@ const eliminar_imagen_galeria_admin = async function(req,res){
 
 
 //---METODOS PUBLICOS---------------------------
+
+//Función para listar los productos en un ámbito público. Se mostrarán los productos en estado 'Publicado'.
 const listar_productos_publico = async function(req,res){
     let filtro = req.params['filtro'];
 
@@ -276,6 +267,7 @@ const listar_productos_publico = async function(req,res){
     });
 }
 
+//Función para obtener el slug público de los productos. Los productos se mostrarán en un slug público en una url agradable al públic en general.
 const obtener_productos_slug_publico = async function(req,res){
     let slug = req.params['slug'];
 
@@ -286,6 +278,7 @@ const obtener_productos_slug_publico = async function(req,res){
 
 }
 
+//Función para listar los productos recomendados. Se listarán los productos que la tienda considere como recomendados. 
 const listar_productos_recomendados_publico = async function(req,res){
     let categoria = req.params['categoria'];
 
@@ -294,6 +287,7 @@ const listar_productos_recomendados_publico = async function(req,res){
         res.status(200).send({data: reg});
     });
 }
+
 
 module.exports = {
     registro_producto_admin,

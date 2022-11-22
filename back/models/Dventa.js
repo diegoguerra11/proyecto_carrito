@@ -1,5 +1,6 @@
 'use strict'
 
+//Modelo de detalle de venta.
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 

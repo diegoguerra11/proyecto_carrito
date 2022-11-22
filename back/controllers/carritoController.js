@@ -1,6 +1,9 @@
+
+//Declaración de variebles
 let Carrito = require('../models/carrito');
 let Variedad = require('../models/Variedad');
 
+//Función para que el cliente pueda agregar un producto al carrito y restringir su registro si el producto ya se encuentra agregado.
 const agregar_carrito_cliente = async function(req,res){
     if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
@@ -22,6 +25,8 @@ const agregar_carrito_cliente = async function(req,res){
     });
 }
 
+//Función para comprobar los productos en el carrito. En caso un producto no cuente con stock suficiente de acuerdo a la cantidad que el cliente desee comprar, el sistema
+//no procesará la venta.
 const comprobar_carrito_cliente = async function(req,res){
     if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
@@ -48,6 +53,7 @@ const comprobar_carrito_cliente = async function(req,res){
     }
 }
 
+//Función para obtener el carrito con los productos agregados. Los productos se mostrarán con las cantidades y detalles como la variedad.
 const obtener_carrito_cliente = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -60,6 +66,7 @@ const obtener_carrito_cliente = async function(req,res){
     });
 }
 
+//Función para modificar la cantidad de unidades de un producto en el carrito. El cliente podrá modificar las cantidades de acuerdo al stock actual.
 const actualizar_cantidad_carrito_cliente = async function(req, res) {
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
@@ -71,25 +78,21 @@ const actualizar_cantidad_carrito_cliente = async function(req, res) {
 
     let buscar_carrito = Promise.resolve(Carrito.findById(filter));
 
-    try {
-        buscar_carrito.then(item => {
-            let buscar_variedad = Promise.resolve(Variedad.findById({_id: item.variedad}));
-    
-            buscar_variedad.then(variedad => {
-                if(variedad.stock < cantidad) {return res.status(200).send({message: 'La cantidad colocada es mayor al stock del producto'});}
-                let actualizar_carrito_cliente = Promise.resolve(Carrito.findByIdAndUpdate(filter, newvalues));
-    
-                actualizar_carrito_cliente.then(carrito_cliente => {
-                    res.status(200).send({data: carrito_cliente});
-                }).catch(error => {throw error;})
-            }).catch(error => {throw error;})
-        }).catch(error => {throw error;});
+    buscar_carrito.then(item => {
+        let buscar_variedad = Promise.resolve(Variedad.findById({_id: item.variedad}));
 
-    } catch(error) {
-        return res.status(500).send({message: 'Error en el servidor'});
-    }
+        buscar_variedad.then(variedad => {
+            if(variedad.stock < cantidad) {return res.status(200).send({message: 'La cantidad colocada es mayor al stock del producto'});}
+            let actualizar_carrito_cliente = Promise.resolve(Carrito.findByIdAndUpdate(filter, newvalues));
+
+            actualizar_carrito_cliente.then(carrito_cliente => {
+                res.status(200).send({data: carrito_cliente});
+            })
+        })
+    }).catch(res.status(500).send({message: 'Error en el servidor'}));
 }
 
+//Función para eliminar un producto del carrito. El cliente podrá eliminar los productos que desse del carrito.
 const eliminar_carrito_cliente = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -103,6 +106,7 @@ const eliminar_carrito_cliente = async function(req,res){
 
 }
 
+//Exportación de las funciones.
 module.exports = {
     agregar_carrito_cliente,
     comprobar_carrito_cliente,

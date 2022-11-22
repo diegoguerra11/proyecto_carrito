@@ -1,0 +1,152 @@
+<app-nav></app-nav>
+
+<main class="cs-page-wrapper">
+  <!-- Breadcrumb -->
+  <nav class="bg-secondary mb-3" aria-label="breadcrumb">
+    <div class="container">
+      <ol class="breadcrumb breadcrumb-alt mb-0">
+        <li class="breadcrumb-item">
+          <a [routerLink]="['/']"><i class="cxi-home" aria-hidden="true"></i></a>
+        </li>
+
+        <li class="breadcrumb-item active" aria-current="page">Mis Ordenes</li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Page container -->
+  <section class="container pt-3 pt-lg-4 pb-5 pb-lg-6">
+    <div class="row pb-2 pb-lg-0">
+      <!-- Account menu (sticky sidebar) -->
+      <aside class="col-xl-3 col-lg-4 pb-3 mb-4 mb-lg-0">
+        <app-siderbar></app-siderbar>
+      </aside>
+
+      <div class="col align-item-center mb-4 pb-1 pb-sm-3">
+        <div class="row justify-content-center">
+        </div>
+        <div class="row">
+          <div class="col-12 mb-4">
+            <div class="card card-body py-3 box-shadow ">
+              <div class="row">
+                <div class="col-lg-6">
+                  <table class="table mb-0">
+                    <caption></caption>
+                    <tbody>
+                      <tr>
+                        <th id="r" class="border-0 py-2 pl-0">RUC:</th>
+                        <td class="border-0 py-2 px-0 text-muted">10447050213</td>
+                      </tr>
+                       <tr>
+                        <th id="p" class="border-0 py-2 pl-0"> Pedido:</th>
+                        <td class="border-0 py-2 px-0 text-muted">{{ id.toUpperCase() }}</td>
+                      </tr>
+                      <tr>
+                        <th id="c" class="border-0 py-2 pl-0">Cliente:</th>
+                        <td class="border-0 py-2 px-0 text-muted">{{ cliente.nombres+' '+cliente.apellidos}}</td>
+                      </tr>
+                      <tr>
+                        <th id="t" class="border-0 py-2 pl-0">Telefono:</th>
+                        <td class="border-0 py-2 px-0 text-muted">{{ cliente.telefono }}</td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+                <div class="col-lg-6">
+                  <table class="table mb-0">
+                    <caption></caption>
+                    <tbody>
+                      <tr>
+                        <th  id="d" class="border-0 py-2 pl-0">Dirección:</th>
+                        <td class="border-0 py-2 px-0 text-muted">{{direccion.direccion}}</td>
+                      </tr>
+                      <tr>
+                        <th id="tipo"  class="border-0 py-2 pl-0">Tipo:</th>
+                        <td class="border-0 py-2 px-0 text-muted">Boleta Electronica</td>
+                      </tr>
+                      <tr>
+                        <th id="mp"  class="border-0 py-2 pl-0">Método de pago:</th>
+                        <td class="border-0 py-2 px-0 text-muted">{{ orden.metodo_pago }}</td>
+                      </tr>
+                      <tr>
+                        <th  id="f" class="border-0 py-2 pl-0"> Fecha de compra:</th>
+                        <td class="border-0 py-2 px-0 text-muted">{{ orden.createdAt | date }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+        <div class="table-responsive">
+          <table class="table table-sm table-nowrap card-table">
+            <caption></caption>
+            <thead>
+              <tr>
+                <th id=""></th>
+                <th id="p">Producto</th>
+                <th id="c">Cantidad</th>
+                <th id="e">Envio</th>
+                <th id="pr">Precio</th>
+                <th id="st">Sub total</th>
+
+              </tr>
+            </thead>
+            <tbody class="font-size-base">
+              <tr *ngFor="let item of detalles">
+                <td>
+                </td>
+                  <td> <span class="text-dark pl-1">{{item.producto.titulo }}</span></td>
+                  <td> <span class="text-dark pl-1">{{item.cantidad }}</span></td>
+                  <td> <span class="text-dark pl-1">{{orden.currency == 'PEN' ? 'S/.' : '$.' }}{{ orden.envio_precio }}</span></td>
+                  <td> <span class="text-dark pl-1">{{orden.currency == 'PEN' ? 'S/.' : '$.' }}{{ orden.subtotal }}</span></td>
+                  <td> <span class="text-dark pl-1">{{orden.currency == 'PEN' ? 'S/.' : '$.' }}{{ orden.total_pagar}}</span></td>
+                 </tr>
+                 <tr>
+                  <div>
+                    <td> <span class="text-dark pl-1"> Descuento:</span></td>
+                  </div>
+                  <td>
+                  </td>
+                  <td>
+                  </td>
+                  <td>
+                  </td>
+                  <td>
+                  </td>
+                  <td>
+                    <span class="text-dark pl-1">{{ orden.currency == 'PEN' ? 'S/.' : '$.' }}{{valorCupon }}</span>
+                  </td>
+                 </tr>
+                 <tr>
+                  <td>
+                    <div >
+                      <span class="text-dark pl-1">Total: </span>
+                    </div>
+                  </td>
+                  <td>
+                  </td>
+                  <td>
+                  </td>
+                  <td>
+                  </td>
+                  <td></td>
+                  <td><span class="text-dark pl-1">{{ orden.currency == 'PEN' ? 'S/.' : '$.' }}{{ orden.total_pagar}}</span></td>
+                </tr>
+            </tbody>
+          </table>
+
+        </div>
+
+
+
+      </div>
+    </div>
+  </section>
+</main>
+

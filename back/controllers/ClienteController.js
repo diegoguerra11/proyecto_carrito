@@ -1,5 +1,6 @@
 'use strict'
 
+//Declaración de variables para Cliente.
 let Cliente = require('../models/cliente');
 let Carrito = require('../models/carrito');
 let Venta = require('../models/Venta');
@@ -13,6 +14,7 @@ let mail = require('../helpers/mail');
 let Review = require('../models/review');
 const { promiseImpl } = require('ejs');
 
+//Función para registro de cliente. El programa solicitará un usuario y contraseña, los cuales serán necesarios para el inicio de sesión.
 const registro_cliente = async function(req,res){
     try {
         let data = req.body;
@@ -32,7 +34,8 @@ const registro_cliente = async function(req,res){
         res.status(500).send({message: 'Error inesperado en el servidor'});
     }
 }
- 
+
+//Inicio de sesión de un cliente. El cliente debe estar registrado en el sistema para poder ingresar como usuario.
 const login_cliente = async function(req,res){
     try {
         let data = req.body;
@@ -55,32 +58,13 @@ const login_cliente = async function(req,res){
     }
 }
 
-const listar_clientes_filtro_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccsess'});}
-    
-    let tipo= req.params['tipo'];
-    let filtro= req.params['filtro'];
-    let reg;
-
-    switch(tipo) {
-        case 'apellidos': reg = await Cliente.find({apellidos:new RegExp(filtro, 'i')});
-            break;
-        case 'correo': reg = await Cliente.find({email:new RegExp(filtro, 'i')});
-            break;
-        default: reg = await Cliente.find();
-            break;
-    }
-
-    res.status(200).send({data:reg});
-}
-
-
+//Función para registrar clientes desde el panel de Admin. El administrador del sistema podrá registrar clientes desde su panel.
 const registro_cliente_admin = async function(req,res){
     if(!req.user || req.user.role !='admin'){return res.status(500).send({message: 'NoAccess'}); }
     
     let data = req.body;
     
-    bcrypt.hash('123456789',null,null, async function(err,hash){
+    bcrypt.hash('Password123$',null,null, async function(err,hash){
         if(!hash){res.status(200).send({message:'Hubo un error en el servidor',data:undefined});}
         
         data.password = hash;
@@ -99,6 +83,7 @@ const registro_cliente_admin = async function(req,res){
     });
 }
 
+//Función para obtener la lista de clientes registrados en el panel de Admin. El administrador podrá solicitar la lista de clientes registrados en el sistema ordenados por su id.
 const obtener_cliente_admin = async function (req,res){
     if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
      
@@ -116,6 +101,7 @@ const obtener_cliente_admin = async function (req,res){
     }
 }
 
+//Función para modificar clientes en el panel de Admin. El administrador podrá modificar datos de un cliente seleccionándolo en la lista de clientes.
 const actualizar_cliente_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
     
@@ -129,6 +115,7 @@ const actualizar_cliente_admin = async function(req,res){
     });
 }
 
+//Función para eliminar clientes en el panel de Admin. El administrador podrá eliminar a un cliente mediante su id y borrando sus datos de la base de datos.
 const eliminar_cliente_admin = async function (req,res){
     if(!req.user || req.user.role != 'admin'){return  res.status(500).send({message: 'NoAccess'});}
      
@@ -142,6 +129,7 @@ const eliminar_cliente_admin = async function (req,res){
 
 }
 
+//Función para ver los datos del usuario. El cliente podrá ver los datos de su cuenta en una vista propia del usuario.
 const obtener_cliente_guest = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -159,6 +147,7 @@ const obtener_cliente_guest = async function(req,res){
     }
 }
 
+//Función para modificar los datos del cliente. El cliente podrá modificar los datos de su cuenta como su nombre de usuario o contraseña.
 const actualizar_perfil_cliente_guest = async function(req,res){
     if(!req.user){return  res.status(500).send({message: 'NoAccess'});}
     let id = req.params['id'];
@@ -180,6 +169,8 @@ const actualizar_perfil_cliente_guest = async function(req,res){
 
 /*********************************************************ORDENES********************************************/
 
+//Función para que el cliente pueda registrar un pedido. En el pedido se registrarán los productos con sus detalles como la variedad y el precio, a la vez que se irán actualizando estos
+//detalles en la tienda.
 const registro_pedido_compra_cliente = async function(req, res) {
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -188,37 +179,40 @@ const registro_pedido_compra_cliente = async function(req, res) {
     
     data.estado = 'Procesando';
 
-    let venta = await Venta.create(data);
+    let realizar_venta = Promise.resolve(Venta.create(data));
 
-    for(let element of detalles){
-        element.venta = venta._id;
-        await Dventa.create(element);
-
-        let element_producto = await Producto.findById({_id:element.producto});
-        let new_stock = element_producto.stock - element.cantidad;
-        let new_ventas = element_producto.nventas + 1;
-
-        let element_variedad = await Variedad.findById({_id:element.variedad});
-        let new_stock_variedad = element_variedad.stock - element.cantidad;
-
-        await Producto.findByIdAndUpdate({_id: element.producto},{
-            stock: new_stock,
-            nventas: new_ventas
-        });
-
-        await Variedad.findByIdAndUpdate({_id: element.variedad},{
-            stock: new_stock_variedad,
-        });
-
-        //limpiar carrito
-        await Carrito.deleteMany({cliente:data.cliente});
-    }
-
-    enviar_email(venta._id, 'enviar_pedido');
-
-    res.status(200).send({data:venta});
+    realizar_venta.then(venta => {
+        for(let element of detalles){
+            element.venta = venta._id;
+            Dventa.create(element);
+    
+            let element_producto = Producto.findById({_id:element.producto});
+            let new_stock = element_producto.stock - element.cantidad;
+            let new_ventas = element_producto.nventas + 1;
+    
+            let element_variedad = Variedad.findById({_id:element.variedad});
+            let new_stock_variedad = element_variedad.stock - element.cantidad;
+    
+            Producto.findByIdAndUpdate({_id: element.producto},{
+                stock: new_stock,
+                nventas: new_ventas
+            });
+    
+            Variedad.findByIdAndUpdate({_id: element.variedad},{
+                stock: new_stock_variedad,
+            });
+    
+            //limpiar carrito
+            Carrito.deleteMany({cliente:data.cliente});
+        }
+    
+        enviar_email(venta._id, 'enviar_pedido');
+    
+        res.status(200).send({data:venta});
+    })
 }
 
+//Función para listar las órdenes de compra realizadas por el cliente. Se modtrarán las órdenes de compra ordenadas por la fecha de haber sido realizada.
 const obtener_ordenes_cliente  = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
@@ -231,26 +225,27 @@ const obtener_ordenes_cliente  = async function(req,res){
     })
 }
 
+
+//Función para mostrar los detalles de una orden de compra. El cliente puede ver los detalles de cada orden de compra que haya realizado.
 const obtener_detalles_ordenes_cliente = async function(req,res){
-    if(!req.user){return res.status(500).send({message: 'NoAccess', data: undefined});}
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
     let id = req.params['id'];
 
-    try {
-        let buscar_venta = Promise.resolve(Venta.findById({_id: id}).populate('direccion').populate('cliente'));
-        buscar_venta.then(venta => {
-            let buscar_detalles = Promise.resolve (Dventa.find({venta: id}).populate('producto').populate('variedad'));
-            buscar_detalles.then(detalles => {
-                res.status(200).send({data:venta, detalles: detalles});
-            });
-        }).catch(() => {throw error});
-    } catch(error) {
-        res.status(200).send({data: undefined});
-    }
+    let buscar_venta = Promise.resolve(Venta.findById({_id: id}).populate('direccion').populate('cliente'));
+    buscar_venta.then(venta => {
+        let buscar_detalles = Promise.resolve (Dventa.find({venta: id}).populate('producto').populate('variedad'));
+        buscar_detalles.then(detalles => {
+            res.status(200).send({data:venta, detalles: detalles});
+        });
+    }).catch(() => res.status(200).send({message: 'Error server'}));
 }
+
+
 
 /*****************************************DIRECCIONES*************************************************/
 
+//Función para registrar la dirección del cliente. El cliente podrá registrar su dirección que será utilizada para realizar sus compras.
 const registro_direccion_cliente  = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -263,6 +258,7 @@ const registro_direccion_cliente  = async function(req,res){
     });
 }
 
+//Función para eliminar la dirección del cliente. El cliente podrá eliminar la dirección que se encuentre registrada.
 const eliminar_direccion_cliente = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
@@ -275,6 +271,7 @@ const eliminar_direccion_cliente = async function(req,res){
 
 }
 
+//Función para listar las direcciones del cliente. El cleinte podrá ver el listado de las direcciones que haya registrado.
 const obtener_direccion_todos_cliente  = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
@@ -287,6 +284,7 @@ const obtener_direccion_todos_cliente  = async function(req,res){
     });
 }
 
+//Función para cambiar la dirección principal del cliente. El cliente puede elegir la dirección principal de todas las direcciones que haya registrado.
 const cambiar_direccion_principal_cliente  = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -306,6 +304,8 @@ const cambiar_direccion_principal_cliente  = async function(req,res){
     });
 }
 
+//Función para mostrar la dirección principal del cliente. El cliente podrá verificar que, al momento de realizar la especificación de su pedido, 
+//el sistema pueda obtener la dirección principal de envío.
 const obtener_direccion_principal_cliente  = async function(req,res){
     if(!req.user){return  res.status(500).send({message: 'NoAccess'});}
     
@@ -319,6 +319,7 @@ const obtener_direccion_principal_cliente  = async function(req,res){
     
 }
 
+//Función para listar los clientes de la tienda con sus respectivos datos.
 const listar_clientes_tienda = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
@@ -329,6 +330,7 @@ const listar_clientes_tienda = async function(req,res){
     })
 }
 
+//Función para obtener las variedades de los productos del carrito del cliente.
 const obtener_variedades_productos_cliente = async function(req,res){
     let id = req.params['id'];
 
@@ -341,6 +343,7 @@ const obtener_variedades_productos_cliente = async function(req,res){
     });
 }
 
+//Función para obtener el slug público del producto, el cual se modtrará en la url de manera más agradable al usuario.
 const obtener_productos_slug_publico = async function(req,res){
     let slug = req.params['slug'];
     
@@ -360,6 +363,7 @@ const obtener_productos_slug_publico = async function(req,res){
     }
 }
 
+//Función para listar los productos recomendados al público en general. Se mostrará en una lista los productos que la tienda ha establecido como 'recomendados'.
 const listar_productos_recomendados_publico = async function(req,res){
     let categoria = req.params['categoria'];
     let buscar_categorias = Promise.resolve(Producto.find({categoria: categoria,estado:'Publicado'}).sort({createdAt:-1}).limit(8));
@@ -370,6 +374,8 @@ const listar_productos_recomendados_publico = async function(req,res){
 
 }
 
+//Función para registrar la compra del cliente. Si el cliente realiza la compra via internet, el sistema procesará la compra y la registrará con los detalles de los productos del carrito
+//del cliente.
 const registro_compra_cliente = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -378,37 +384,40 @@ const registro_compra_cliente = async function(req,res){
 
     data.estado = 'Procesando';
 
-    let venta = await Venta.create(data);
+    let registar_venta = Promise.resolve(Venta.create(data));
 
-    for(let element of detalles){
-        element.venta = venta._id;
-        await Dventa.create(element);
+    registar_venta.then(venta => {
+        for(let element of detalles){
+            element.venta = venta._id;
+            Dventa.create(element);
 
-        let element_producto = await Producto.findById({_id:element.producto});
-        let new_stock = element_producto.stock - element.cantidad;
-        let new_ventas = element_producto.nventas + 1;
+            let element_producto = Producto.findById({_id:element.producto});
+            let new_stock = element_producto.stock - element.cantidad;
+            let new_ventas = element_producto.nventas + 1;
 
-        let element_variedad = await Variedad.findById({_id:element.variedad});
-        let new_stock_variedad = element_variedad.stock - element.cantidad;
+            let element_variedad = Variedad.findById({_id:element.variedad});
+            let new_stock_variedad = element_variedad.stock - element.cantidad;
 
-        await Producto.findByIdAndUpdate({_id: element.producto},{
-            stock: new_stock,
-            nventas: new_ventas
-        });
+            Producto.findByIdAndUpdate({_id: element.producto},{
+                stock: new_stock,
+                nventas: new_ventas
+            });
 
-        await Variedad.findByIdAndUpdate({_id: element.variedad},{
-            stock: new_stock_variedad,
-        });
+            Variedad.findByIdAndUpdate({_id: element.variedad},{
+                stock: new_stock_variedad,
+            });
 
-        //limpiar carrito
-        await Carrito.remove({cliente:data.cliente});
-    }
+            //limpiar carrito
+            Carrito.remove({cliente:data.cliente});
+        }
 
-    enviar_email(venta._id, 'enviar_compra');
+        enviar_email(venta._id, 'enviar_compra');
 
-    res.status(200).send({data:venta});
+        res.status(200).send({data:venta});
+    });
 }
 
+//Función para consultar el id del pago que fue utilizado durante la transacción de compra por parte del cliente.
 const consultarIDPago = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
     
@@ -419,6 +428,7 @@ const consultarIDPago = async function(req,res){
     });
 }
 
+//Función para ingresar un email de comunicación al finalizar una compra. El cliente ingresará un email donde recibirá el comprobante de pago con los detalles de la compra.
 const enviar_email = async function(venta, motivo) {
     let buscar_orden = Promise.resolve(Venta.findById({_id:venta}).populate('cliente').populate('direccion'));
     buscar_orden.then(orden => {
@@ -449,6 +459,7 @@ const enviar_email = async function(venta, motivo) {
     });
 }
 
+//Función para actualizar datos de un cliente. Esta función actualiza los datos del cliente y los guarda en la base de datos.
 const actualizar_cliente = async function (id, data) { 
     return Promise.resolve (Cliente.findByIdAndUpdate({_id:id},{
         nombres: data.nombres,
@@ -493,9 +504,9 @@ const recibir_direccion_cliente = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
     let id = req.params['id'];
-    let direccion = Promise.resolve(Direccion.find({_id:String(id)}));
+    let recibir_direccion = Promise.resolve(Direccion.find({_id:String(id)}));
 
-    direccion.then(direccion => {res.status(200).send({data:direccion});});
+    recibir_direccion.then(direccion => {res.status(200).send({data:direccion});});
 }
 
 const actualizar_direccion_cliente = async function(req,res){
@@ -513,32 +524,32 @@ const actualizar_direccion_cliente = async function(req,res){
 /*****************************************RESEÑAS*************************************************/
 
 const emitir_review_producto_cliente  = async function(req,res){
-    if(req.user){
-        let data = req.body; // almacena el cuerpo del formulario
-        let reg = await Review.create(data); // manda la data
+    if(!req.user){return res.status(500).send({message: 'No Access'});}
+
+    let data = req.body; // almacena el cuerpo del formulario
+    let registrar_review = Promise.resolve(Review.create(data)); // manda la data
+    registrar_review.then(reg => {
         res.status(200.).send({data:reg}); // manda la data al frontend
-    } else {
-        res.status(500).send({message: 'No Access'});
-    }
+    })
 }
 
 const obtener_review_producto_cliente  = async function(req,res){
     let id = req.params['id'];
-    let reg = await Review.find({producto:id}).sort({createdAt: 1});
-    res.status(200).send({data:reg});
+    let obtener_review = Promise.resolve(Review.find({producto:id}).sort({createdAt: 1}));
+    obtener_review.then(reg => {
+        res.status(200).send({data:reg});
+    });
 }
 
 const obtener_reviews_cliente  = async function(req,res){
-    if(req.user){
-        let id = req.params['id'];
-        let reg = await Review.find({cliente:id}).populate('cliente'); // manda la data
+    if(!req.user){return res.status(500).send({message: 'No Access'});}
+    let id = req.params['id'];
+    let obtener_reviews = Promise.resolve(Review.find({cliente:id}).populate('cliente')); // manda la data
+    obtener_reviews.then(reg => {
         res.status(200.).send({data:reg}); // manda la data al frontend
-    } else {
-        res.status(500).send({message: 'No Access'});
-    }
+    });
 }
 
-// Exportaciones de métodos
 const confirmar_correo = async function(req, res) {
     let correo = req.body.email;
     let buscar_correo = Promise.resolve(Cliente.exists({email: correo}));
@@ -572,12 +583,12 @@ const cambiar_contrasenia = async function(req, res) {
     )
 }
 
+//Exportación de las funciones.
 module.exports = {
     actualizar_direccion_cliente,
     confirmar_correo,
     registro_cliente,
     login_cliente,
-    listar_clientes_filtro_admin,
     registro_cliente_admin,
     obtener_cliente_admin,
     actualizar_cliente_admin,

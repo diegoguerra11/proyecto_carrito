@@ -50,12 +50,55 @@
                                 <input class="form-control" type="text" id="input-cliente" placeholder="Seleccionar cliente">
                                 <button class="btn btn-primary" type="button" data-toggle="modal" [attr.data-target]="'#modalCliente'">Buscar</button>
                             </div>
-    
+                            <div class="modal fade" id="modalClienteTemporal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Registre al cliente</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <form #clienteTemporal='ngForm' (ngSubmit)="select_cliente_temporal(clienteTemporal)">
+                                    <div class="card-body">
+                                      <div class="row">
+                                          <div class="col-md-4 form-group">
+                                              <label for="validationCustom01" class="form-label">Nombres</label>
+                                              <input class="form-control" type="text" placeholder="Nombres Completos" required name="nombres" [(ngModel)]="cliente.nombres">
+                                          </div>
+                                          <div class="col-md-4 form-group">
+                                              <label for="validationCustom01" class="form-label">Apellidos</label>
+                                              <input class="form-control" type="text" placeholder="Apellidos Completos" required name="apellidos" [(ngModel)]="cliente.apellidos">
+                                          </div>
+                                          <div class="col-md-4 form-group">
+                                              <label for="validationCustom01" class="form-label">Correo electrónico</label>
+                                              <input class="form-control" type="text" placeholder="Correo electrónico" required name="email" [(ngModel)]="cliente.email">
+                                          </div>
+                                          <div class="col-md-4">
+                                              <label for="validationCustom01" class="form-label">Tipo de Documento</label>
+                                              <select name="tipoDocumento" required [(ngModel)]="cliente.tipoDocumento" class="form-control custom-select" >
+                                                  <option value="" selected disabled>Seleccionar</option>
+                                                  <option value="dni">DNI</option>
+                                                  <option value="carnetExtranjeria">Carnet de Extranjería</option>
+                                                  <option value="pasaporte">Pasaporte</option>
+                                              </select>
+                                          </div>
+                                          <div class="col-md-4">
+                                              <label for="validationCustom01" class="form-label">Número de Documento</label>
+                                              <input type="text" required class="form-control form-control-lg" name="numeroDocumento" [(ngModel)]="cliente.numeroDocumento" placeholder="Número de Documento"/>
+                                          </div>
+                                      </div>            
+                                  </div>
+                                  <button  class="btn btn-primary mr-3" type="submit">Aceptar</button>
+                                  </form>
+                                </div>
+                              </div>
+                          </div>
                             <div class="modal fade" id="modalCliente" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                   <div class="modal-content">
                                     <div class="modal-header">
-                                      <h5 class="modal-title" id="exampleModalLongTitle">Seleccion el cliente</h5>
+                                      <h5 class="modal-title" id="exampleModalLongTitle">Seleccione el cliente</h5>
                                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                       </button>
@@ -70,13 +113,17 @@
                                       <table class="table">
                                         <caption></caption>
                                             <thead>
-                                                <th>Cliente</th>
-                                                <th>Acción</th>
+                                                <th id="c">Cliente</th>
+                                                <th id="a">Acción</th>
                                             </thead>
                                             <tbody *ngIf="!load_clientes">
+                                              <tr>
+                                                <td>Cliente Temporal</td>
+                                                <td><a style="cursor: pointer;" class="text-success"  data-toggle="modal" [attr.data-target]="'#modalClienteTemporal'" (click)="select_cliente('temporal')">[Seleccionar]</a></td>
+                                              </tr>
                                                 <tr *ngFor="let item of clientes| slice: (pageCliente-1)*pageSizeCliente : (pageCliente-1) * pageSizeCliente + pageSizeCliente; let indice = index">
                                                     <td>{{item.nombres}} {{item.apellidos}}</td>
-                                                    <td><a style="cursor: pointer;" class="text-success" (click)="select_cliente(item)">[Seleccionar]</a></td>
+                                                    <td><a style="cursor: pointer;" class="text-success"  (click)="select_cliente(item)">[Seleccionar]</a></td>
                                                 </tr>
                                             </tbody>
                                             <tbody *ngIf="load_clientes">
@@ -124,8 +171,8 @@
                                       <table class="table">
                                         <caption> </caption>
                                             <thead>
-                                                <th>Direccion</th>
-                                                <th>Acción</th>
+                                                <th id="d">Direccion</th>
+                                                <th id="a">Acción</th>
                                             </thead>
                                             <tbody *ngIf="!load_direcciones">
                                                 <tr>
@@ -195,10 +242,10 @@
                                       <table class="table">
                                         <caption></caption>
                                             <thead>
-                                                <th>Producto</th>
-                                                <th>Talla</th>
-                                                <th>Stock</th>
-                                                <th>Acción</th>
+                                                <th id="p" >Producto</th>
+                                                <th id="t" >Talla</th>
+                                                <th id="s" >Stock</th>
+                                                <th id="a" >Acción</th>
                                             </thead>
                                             <tbody *ngIf="!load_variedades">
                                                 <tr *ngFor="let item of variedades| slice: (pageVariedad-1)*pageSizeVariedad : (pageVariedad-1) * pageSizeVariedad + pageSizeVariedad; let indice = index">
@@ -252,17 +299,17 @@
                                   <caption></caption>
                                   <thead>
                                     <tr>
-                                      <th scope = "row">Producto</th>
-                                      <th scope = "row">Talla</th>
-                                      <th scope = "row">Precio</th>
-                                      <th scope = "row">Cantidad</th>
-                                      <th scope = "row">Subtotal</th>
-                                      <th scope = "row">Eliminar</th>
+                                      <th id="p" scope = "row">Producto</th>
+                                      <th id="t" scope = "row">Talla</th>
+                                      <th id="p" scope = "row">Precio</th>
+                                      <th id="c" scope = "row">Cantidad</th>
+                                      <th id="s" scope = "row">Subtotal</th>
+                                      <th id="e" scope = "row">Eliminar</th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                     <tr *ngFor="let item of dventa; let idx = index">
-                                      <th scope="row">{{item.titulo_producto}}</th>
+                                      <th id="itp" scope="row">{{item.titulo_producto}}</th>
                                       <td>{{item.titulo_variedad}}</td>
                                       <td>{{item.precio_und|currency:'PEN'}}</td>
                                       <td>{{item.cantidad}}</td>

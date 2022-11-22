@@ -1,5 +1,6 @@
 'use strict'
 
+//Creación de variables.
 let nodemailer = require("nodemailer");
 let fs = require('fs');
 let ejs = require('ejs');
