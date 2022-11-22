@@ -4,7 +4,7 @@ let Cupon = require('../models/cupon');
 
 //Función para registrar cupones en Admin. El administrador podrá registrar cupones de descuentos y verificar si ya existen.
 const registro_cupon_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAcceess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAcceess'});}
 
     let data = req.body;
 
@@ -22,7 +22,7 @@ const registro_cupon_admin = async function (req,res){
 
  //Función para listar los cupones en Admin. El administrador podrá solicitar la lista de cupones registrados.
  const listar_cupones_admin = async function(req,res){
-    if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
     let filtro = req.params['filtro'];
 
@@ -34,7 +34,7 @@ const registro_cupon_admin = async function (req,res){
 
 //Función para obtener un cupón en Admin. El administrador podrá buscar los cupones registrados en la tienda.
 const obtener_cupon_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
     let id = req.params['id'];
 
@@ -72,7 +72,7 @@ const obtener_cupon_cliente = async function (req,res){
 
 //Función para actualizar cupones en Admin. El administrador podrá actualizar los cupones registrados en el sistema.
 const actualizar_cupon_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
     let data = req.body;
     
@@ -93,7 +93,7 @@ const actualizar_cupon_admin = async function (req,res){
 
 //Función para eliminar cupones en Admin. El administrador podrá eliminar cupones del sistema.
 const eliminar_cupon_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
     let id = req.params['id'];
 

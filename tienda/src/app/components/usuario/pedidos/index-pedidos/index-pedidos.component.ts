@@ -19,7 +19,7 @@ export class IndexPedidosComponent implements OnInit {
 
   constructor(
     private _clienteService: ClienteService
-  ) { 
+  ) {
     this.token = localStorage.getItem('token');
   }
 
@@ -31,7 +31,7 @@ export class IndexPedidosComponent implements OnInit {
     this._clienteService.obtener_ordenes_cliente(localStorage.getItem('_id'), this.token).subscribe(
       response=>{
         this.ordenes = response.data;
-        this.load_data = false; 
+        this.load_data = false;
       }
     )
   }

@@ -12,13 +12,13 @@ export class AdminGuard implements CanActivate {
     private _adminService: AdminService,
     private _router:Router
   ){
-
+    
   }
 
   canActivate():any{
-    if(!this._adminService.isAuthenticated(['admin'])){
-        this._router.navigate(['/login']);
-        return false;
+    if(!this._adminService.isAuthenticated(['admin','superAdmin'])){
+      this._router.navigate(['/login']);
+      return false;
     }
     return true;
   }

@@ -46,6 +46,10 @@ export class ValidationsProducto {
             return false;
         }
 
+        if(parseInt(stock) < 1 || parseInt(stock) > 99) {
+            MessageBox.messageError('Ingrese una cantidad mayor 0 y menor 100');
+            return false;
+        }
         return true;
     }
 }

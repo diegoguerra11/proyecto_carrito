@@ -44,10 +44,16 @@
                     <input type="text" required class="form-control" name="numeroDocumento" [(ngModel)]="trabajador.dni" placeholder="Número de Documento"/>
                 </div>
                 <div class="col-md-4 form-group">
+                    <label for="validationCustom01" class="form-label">Nueva contraseña</label>
+                    <input type="password" required class="form-control" name="password" [(ngModel)]="newPassword" placeholder="Constraseña"/>
+                </div>
+                <div class="col-md-4 form-group">
                     <label for="validationCustom01" class="form-label">Roles</label>
                     <select  name="rol" [(ngModel)]="trabajador.rol" class="form-control custom-select" >
                         <option value="" selected disabled>seleccionar</option>
-                        <option value="{{rol.nombre}}" *ngFor="let rol of roles">{{ rol.nombre }}</option>
+                        <ng-container *ngFor="let rol of roles">
+                            <option value="{{rol.nombre}}" *ngIf="rol.nombre != userRol">{{ rol.nombre }}</option>
+                        </ng-container>
                     </select>
                 </div>
                 <div class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">

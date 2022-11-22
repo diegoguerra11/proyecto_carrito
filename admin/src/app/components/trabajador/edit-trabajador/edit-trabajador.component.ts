@@ -15,6 +15,8 @@ export class EditTrabajadorComponent implements OnInit {
   public trabajador: any = {};
   public id;
   public roles:any = [];
+  public userRol: any;
+  public newPassword;
   public token;
   public load_btn = false;
   public load_data = true;
@@ -26,6 +28,7 @@ export class EditTrabajadorComponent implements OnInit {
     private _router: Router
   ) { 
     this.token = this._adminService.getToken();
+    this.userRol = localStorage.getItem('rol');
   }
 
   ngOnInit(): void {
@@ -50,7 +53,8 @@ export class EditTrabajadorComponent implements OnInit {
   }
 
   actualizar(updateForm) {
-    if(!ValidatonsTrabajador.verificarTrabajador(updateForm.form.value)){return;}
+    if(!ValidatonsTrabajador.verificarTrabajador(updateForm.form.value, this.userRol)){return;}
+    this.trabajador.password = this.newPassword;
     this.load_btn = true;
 
     this._trabajadorService.actualizar_trabajador_admin(this.id, this.trabajador, this.token).subscribe(

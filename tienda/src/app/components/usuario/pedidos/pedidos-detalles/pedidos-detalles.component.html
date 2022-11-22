@@ -42,15 +42,15 @@
                         <caption></caption>
                         <tbody>
                           <tr>
-                            <th class="border-0 py-2 pl-0">Orden No:</th>
+                            <th id="o" class="border-0 py-2 pl-0">Orden No:</th>
                             <td class="border-0 py-2 px-0 text-muted">{{ id.toUpperCase() }}</td>
                           </tr>
                           <tr>
-                            <th class="border-0 py-2 pl-0">Método de pago:</th>
+                            <th id="mp" class="border-0 py-2 pl-0">Método de pago:</th>
                             <td class="border-0 py-2 px-0 text-muted">{{ orden.metodo_pago }}</td>
                           </tr>
                           <tr>
-                            <th class="border-0 py-2 pl-0">Fecha de compra</th>
+                            <th id="fc" class="border-0 py-2 pl-0">Fecha de compra</th>
                             <td class="border-0 py-2 px-0 text-muted">{{ orden.createdAt | date }}</td>
                           </tr>
 
@@ -61,17 +61,16 @@
                       <table class="table mb-0">
                         <caption></caption>
                         <tbody>
-
                           <tr>
-                            <th class="border-0 py-2 pl-0">Transaccion:</th>
+                            <th id="t" class="border-0 py-2 pl-0">Transaccion:</th>
                             <td class="border-0 py-2 px-0 text-muted">{{ orden.transaccion }}</td>
                           </tr>
                           <tr>
-                            <th class="border-0 py-2 pl-0">Estado:</th>
+                            <th id="e" class="border-0 py-2 pl-0">Estado:</th>
                             <td class="border-0 py-2 px-0 text-muted">{{ orden.estado }}</td>
                           </tr>
                           <tr>
-                            <th class="border-0 py-2 pl-0">Tracking:</th>
+                            <th id="tr" class="border-0 py-2 pl-0">Tracking:</th>
                             <td class="border-0 py-2 px-0 text-muted">{{ orden.tracking ? orden.tracking : 'Sin tracking' }}</td>
                           </tr>
                         </tbody>
@@ -119,11 +118,10 @@
               <div id="order-1" class="collapse show" data-parent="#orders">
                 <div class="bg-secondary rounded mb-4">
                   <div class="table-responsive">
-                    
                     <table class="table mb-0"> <!-- a-->
                       <caption></caption>
                       <thead>
-                        <th>
+                        <th id="pd">
                           <tr>Pedidos Detalles</tr>
                         </th>
                       </thead>
@@ -141,33 +139,35 @@
                                 <ul class="list-unstyled font-size-xs mt-n2 mb-2">
                                   <li class="mb-0"><span class="text-muted">{{ item.producto.titulo_variedad }}:</span>{{ item.variedad.valor }}</li>
                                 </ul>
-                                <a *ngIf="!item.estado" (click)="openModal(item)" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#review-'+item._id" class="text-primary">
+                                <ng-container *ngIf="orden.estado == 'Finalizado'">
+                                  <a *ngIf="!item.estado" (click)="openModal(item)" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#review-'+item._id" class="text-primary">
                                   [Emitir reseña]</a>
-                                <span *ngIf="item.estado" class="badge badge-warning">Comentario emitido</span>
-                                <div class="modal fade" id="review-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
-                                  <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                      <div class="modal-header">
-                                        <h4 class="modal-title">Emitir reseña</h4>
-                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
-                                      </div>
-                                      <div class="modal-body">
-                                        <div class="row">
-                                          <div class="col-sm-12 form-group">
-                                            <label for="ac-fn">Reseña</label>
-                                            <textarea required class="form-control" placeholder="¿Qué te pareció el producto?" name="review" [(ngModel)]="review.review" rows="3"></textarea>
-                                          </div>
+                                  <span *ngIf="item.estado" class="badge badge-warning">Comentario emitido</span>
+                                  <div class="modal fade" id="review-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h4 class="modal-title">Emitir reseña</h4>
+                                          <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
                                         </div>
-                                        <star-rating [value]=totalstar size="45px" checkedcolor="gold" uncheckedcolor="gray" [totalstars]=totalstar
-                                        (rate)="onRate($event)"></star-rating>
-                                      </div>
-                                      <div class="modal-footer">
-                                        <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cerrar</button>
-                                        <button class="btn btn-primary btn-shadow btn-sm" type="button" (click)="emitir(item._id)">Enviar</button>
+                                       <div class="modal-body">
+                                         <div class="row">
+                                           <div class="col-sm-12 form-group">
+                                              <label for="ac-fn">Reseña</label>
+                                              <textarea required class="form-control" placeholder="¿Qué te pareció el producto?" name="review" [(ngModel)]="review.review" rows="3"></textarea>
+                                            </div>
+                                          </div>
+                                          <star-rating [value]=totalstar size="45px" checkedcolor="gold" uncheckedcolor="gray" [totalstars]=totalstars
+                                          (rate)="onRate($event)"></star-rating>
+                                        </div>
+                                       <div class="modal-footer">
+                                          <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cerrar</button>
+                                          <button class="btn btn-primary btn-shadow btn-sm" type="button" (click)="emitir(item._id)">Enviar</button>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                </div>
+                                </ng-container>
                               </div>
                             </div>
                           </td>
