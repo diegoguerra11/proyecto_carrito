@@ -25,32 +25,32 @@ export class InicioComponent implements OnInit {
           if(element.titulo=='Smartphones'){
             this.categorias.push({
               titulo:element.titulo,
-              portada:'assets/img/ecommerce/home/categories/04.jpg'
+              portada:'https://img.freepik.com/premium-psd/chat-mockup-with-devices-arrangement_23-2149112957.jpg?w=1060'
             });
           }else if(element.titulo=='Headphones'){
             this.categorias.push({
               titulo:element.titulo,
-              portada:'assets/img/ecommerce/home/categories/05.jpg'
+              portada:'https://img.freepik.com/free-photo/carefree-happy-relieved-african-american-handsome-hipster-guy-listening-music-headphones-dancing-shaking-hands-into-rhythm-close-eyes-singing-along-earphones-orange-background_1258-73013.jpg?w=1380&t=st=1669077358~exp=1669077958~hmac=6f3af8a0c376900340988a511a4212cf620347e166e3a3037a119a2d020c1377'
             });
           }else if(element.titulo=='Oficina'){
             this.categorias.push({
               titulo:element.titulo,
-              portada:'assets/img/ecommerce/home/categories/07.jpg'
+              portada:'https://img.freepik.com/free-photo/young-business-people-office-working-with-tablet_23-2149206515.jpg?w=1380&t=st=1669077409~exp=1669078009~hmac=9569ab6c007439f325651fa85f0d58e98019f5c9113b59938a14efb28efee11c'
             });
           }else if(element.titulo=='Moda'){
             this.categorias.push({
               titulo:element.titulo,
-              portada:'assets/img/ecommerce/home/categories/09.jpg'
+              portada:'https://img.freepik.com/free-photo/close-up-bright-positve-portrait-trendy-blogger-influencer-blonde-woman-wearing-bright-outfit-sunglasses-posing-near-blue-wall_291049-2873.jpg?w=1380&t=st=1669077236~exp=1669077836~hmac=b94cad6e7114d4afa337f0eac2c5bd6f248907a5e1b2eb25d109f4167dc085f3'
             });
           }else if(element.titulo=='Alimentos'){
             this.categorias.push({
               titulo:element.titulo,
-              portada:'assets/img/ecommerce/home/categories/08.jpg'
+              portada:'https://img.freepik.com/free-photo/fast-food-dish-blue_155003-27518.jpg?w=1380&t=st=1669077448~exp=1669078048~hmac=f2a34f8ff036abf110381a11cd622e1cdfec6d47e5ec705465eb3c56bcf96e17'
             });
           }else if(element.titulo=='Hogar'){
             this.categorias.push({
               titulo:element.titulo,
-              portada:'assets/img/ecommerce/home/categories/03.jpg'
+              portada:'https://img.freepik.com/free-photo/crop-hand-holding-house-near-coins_23-2147797665.jpg?w=1380&t=st=1669077482~exp=1669078082~hmac=ad9de727bc9d4a90755008b074186cc31b03aebde019822c033a2aa70a8b6262'
             });
           }
         });
