@@ -58,33 +58,13 @@ const login_cliente = async function(req,res){
     }
 }
 
-//Función para listar los clientes mediante filtros en el panel de Admin. El administrador del sistema podrá filtrar los clientes registrados por su apellido o correo.
-const listar_clientes_filtro_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccsess'});}
-    
-    let tipo= req.params['tipo'];
-    let filtro= req.params['filtro'];
-    let reg;
-
-    switch(tipo) {
-        case 'apellidos': reg = await Cliente.find({apellidos:new RegExp(filtro, 'i')});
-            break;
-        case 'correo': reg = await Cliente.find({email:new RegExp(filtro, 'i')});
-            break;
-        default: reg = await Cliente.find();
-            break;
-    }
-
-    res.status(200).send({data:reg});
-}
-
 //Función para registrar clientes desde el panel de Admin. El administrador del sistema podrá registrar clientes desde su panel.
 const registro_cliente_admin = async function(req,res){
     if(!req.user || req.user.role !='admin'){return res.status(500).send({message: 'NoAccess'}); }
     
     let data = req.body;
     
-    bcrypt.hash('123456789',null,null, async function(err,hash){
+    bcrypt.hash('Password123$',null,null, async function(err,hash){
         if(!hash){res.status(200).send({message:'Hubo un error en el servidor',data:undefined});}
         
         data.password = hash;
@@ -120,6 +100,8 @@ const obtener_cliente_admin = async function (req,res){
         res.status(200).send({data:undefined});
     }
 }
+
+
 
 //Función para modificar clientes en el panel de Admin. El administrador podrá modificar datos de un cliente seleccionándolo en la lista de clientes.
 const actualizar_cliente_admin = async function(req,res){
@@ -199,35 +181,37 @@ const registro_pedido_compra_cliente = async function(req, res) {
     
     data.estado = 'Procesando';
 
-    let venta = await Venta.create(data);
+    let realizar_venta = Promise.resolve(Venta.create(data));
 
-    for(let element of detalles){
-        element.venta = venta._id;
-        await Dventa.create(element);
-
-        let element_producto = await Producto.findById({_id:element.producto});
-        let new_stock = element_producto.stock - element.cantidad;
-        let new_ventas = element_producto.nventas + 1;
-
-        let element_variedad = await Variedad.findById({_id:element.variedad});
-        let new_stock_variedad = element_variedad.stock - element.cantidad;
-
-        await Producto.findByIdAndUpdate({_id: element.producto},{
-            stock: new_stock,
-            nventas: new_ventas
-        });
-
-        await Variedad.findByIdAndUpdate({_id: element.variedad},{
-            stock: new_stock_variedad,
-        });
-
-        //limpiar carrito
-        await Carrito.deleteMany({cliente:data.cliente});
-    }
-
-    enviar_email(venta._id, 'enviar_pedido');
-
-    res.status(200).send({data:venta});
+    realizar_venta.then(venta => {
+        for(let element of detalles){
+            element.venta = venta._id;
+            Dventa.create(element);
+    
+            let element_producto = Producto.findById({_id:element.producto});
+            let new_stock = element_producto.stock - element.cantidad;
+            let new_ventas = element_producto.nventas + 1;
+    
+            let element_variedad = Variedad.findById({_id:element.variedad});
+            let new_stock_variedad = element_variedad.stock - element.cantidad;
+    
+            Producto.findByIdAndUpdate({_id: element.producto},{
+                stock: new_stock,
+                nventas: new_ventas
+            });
+    
+            Variedad.findByIdAndUpdate({_id: element.variedad},{
+                stock: new_stock_variedad,
+            });
+    
+            //limpiar carrito
+            Carrito.deleteMany({cliente:data.cliente});
+        }
+    
+        enviar_email(venta._id, 'enviar_pedido');
+    
+        res.status(200).send({data:venta});
+    })
 }
 
 //Función para listar las órdenes de compra realizadas por el cliente. Se modtrarán las órdenes de compra ordenadas por la fecha de haber sido realizada.
@@ -246,37 +230,20 @@ const obtener_ordenes_cliente  = async function(req,res){
 
 //Función para mostrar los detalles de una orden de compra. El cliente puede ver los detalles de cada orden de compra que haya realizado.
 const obtener_detalles_ordenes_cliente = async function(req,res){
-    if(!req.user){return res.status(500).send({message: 'NoAccess', data: undefined});}
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
     let id = req.params['id'];
 
-    try {
-        let buscar_venta = Promise.resolve(Venta.findById({_id: id}).populate('direccion').populate('cliente'));
-        buscar_venta.then(venta => {
-            let buscar_detalles = Promise.resolve (Dventa.find({venta: id}).populate('producto').populate('variedad'));
-            buscar_detalles.then(detalles => {
-                res.status(200).send({data:venta, detalles: detalles});
-            });
-        }).catch(() => {throw error});
-    } catch(error) {
-        res.status(200).send({data: undefined});
-    }
+    let buscar_venta = Promise.resolve(Venta.findById({_id: id}).populate('direccion').populate('cliente'));
+    buscar_venta.then(venta => {
+        let buscar_detalles = Promise.resolve (Dventa.find({venta: id}).populate('producto').populate('variedad'));
+        buscar_detalles.then(detalles => {
+            res.status(200).send({data:venta, detalles: detalles});
+        });
+    }).catch(() => res.status(200).send({message: 'Error server'}));
 }
 
-const verBoleta = async function(req,res){
-    if(!req.user){return res.status(500).send({message: 'NoAccess', data: undefined});}
 
-    let id = req.params['id'];
-        
-        let buscar_venta = Promise.resolve(Venta.findById({_id: id}).populate('direccion').populate('cliente'));
-        buscar_venta.then(venta => {
-            let buscar_detalles = Promise.resolve (Dventa.find({venta: id}).populate('producto').populate('variedad'));
-            buscar_detalles.then(detalles => {
-                res.status(200).send({data:venta, detalles: detalles});
-            });
-        }).catch(() => {throw error});
-    
-}
 
 /*****************************************DIRECCIONES*************************************************/
 
@@ -419,35 +386,37 @@ const registro_compra_cliente = async function(req,res){
 
     data.estado = 'Procesando';
 
-    let venta = await Venta.create(data);
+    let registar_venta = Promise.resolve(Venta.create(data));
 
-    for(let element of detalles){
-        element.venta = venta._id;
-        await Dventa.create(element);
+    registar_venta.then(venta => {
+        for(let element of detalles){
+            element.venta = venta._id;
+            Dventa.create(element);
 
-        let element_producto = await Producto.findById({_id:element.producto});
-        let new_stock = element_producto.stock - element.cantidad;
-        let new_ventas = element_producto.nventas + 1;
+            let element_producto = Producto.findById({_id:element.producto});
+            let new_stock = element_producto.stock - element.cantidad;
+            let new_ventas = element_producto.nventas + 1;
 
-        let element_variedad = await Variedad.findById({_id:element.variedad});
-        let new_stock_variedad = element_variedad.stock - element.cantidad;
+            let element_variedad = Variedad.findById({_id:element.variedad});
+            let new_stock_variedad = element_variedad.stock - element.cantidad;
 
-        await Producto.findByIdAndUpdate({_id: element.producto},{
-            stock: new_stock,
-            nventas: new_ventas
-        });
+            Producto.findByIdAndUpdate({_id: element.producto},{
+                stock: new_stock,
+                nventas: new_ventas
+            });
 
-        await Variedad.findByIdAndUpdate({_id: element.variedad},{
-            stock: new_stock_variedad,
-        });
+            Variedad.findByIdAndUpdate({_id: element.variedad},{
+                stock: new_stock_variedad,
+            });
 
-        //limpiar carrito
-        await Carrito.remove({cliente:data.cliente});
-    }
+            //limpiar carrito
+            Carrito.remove({cliente:data.cliente});
+        }
 
-    enviar_email(venta._id, 'enviar_compra');
+        enviar_email(venta._id, 'enviar_compra');
 
-    res.status(200).send({data:venta});
+        res.status(200).send({data:venta});
+    });
 }
 
 //Función para consultar el id del pago que fue utilizado durante la transacción de compra por parte del cliente.
@@ -537,9 +506,9 @@ const recibir_direccion_cliente = async function(req,res){
     if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
     let id = req.params['id'];
-    let direccion = Promise.resolve(Direccion.find({_id:String(id)}));
+    let recibir_direccion = Promise.resolve(Direccion.find({_id:String(id)}));
 
-    direccion.then(direccion => {res.status(200).send({data:direccion});});
+    recibir_direccion.then(direccion => {res.status(200).send({data:direccion});});
 }
 
 const actualizar_direccion_cliente = async function(req,res){
@@ -557,32 +526,32 @@ const actualizar_direccion_cliente = async function(req,res){
 /*****************************************RESEÑAS*************************************************/
 
 const emitir_review_producto_cliente  = async function(req,res){
-    if(req.user){
-        let data = req.body; // almacena el cuerpo del formulario
-        let reg = await Review.create(data); // manda la data
+    if(!req.user){return res.status(500).send({message: 'No Access'});}
+
+    let data = req.body; // almacena el cuerpo del formulario
+    let registrar_review = Promise.resolve(Review.create(data)); // manda la data
+    registrar_review.then(reg => {
         res.status(200.).send({data:reg}); // manda la data al frontend
-    } else {
-        res.status(500).send({message: 'No Access'});
-    }
+    })
 }
 
 const obtener_review_producto_cliente  = async function(req,res){
     let id = req.params['id'];
-    let reg = await Review.find({producto:id}).sort({createdAt: 1});
-    res.status(200).send({data:reg});
+    let obtener_review = Promise.resolve(Review.find({producto:id}).sort({createdAt: 1}));
+    obtener_review.then(reg => {
+        res.status(200).send({data:reg});
+    });
 }
 
 const obtener_reviews_cliente  = async function(req,res){
-    if(req.user){
-        let id = req.params['id'];
-        let reg = await Review.find({cliente:id}).populate('cliente'); // manda la data
+    if(!req.user){return res.status(500).send({message: 'No Access'});}
+    let id = req.params['id'];
+    let obtener_reviews = Promise.resolve(Review.find({cliente:id}).populate('cliente')); // manda la data
+    obtener_reviews.then(reg => {
         res.status(200.).send({data:reg}); // manda la data al frontend
-    } else {
-        res.status(500).send({message: 'No Access'});
-    }
+    });
 }
 
-// Exportaciones de métodos
 const confirmar_correo = async function(req, res) {
     let correo = req.body.email;
     let buscar_correo = Promise.resolve(Cliente.exists({email: correo}));
@@ -622,7 +591,6 @@ module.exports = {
     confirmar_correo,
     registro_cliente,
     login_cliente,
-    listar_clientes_filtro_admin,
     registro_cliente_admin,
     obtener_cliente_admin,
     actualizar_cliente_admin,
@@ -644,7 +612,6 @@ module.exports = {
     registro_compra_cliente,
     consultarIDPago,
     recibir_direccion_cliente,
-    verBoleta,
     emitir_review_producto_cliente,
     obtener_review_producto_cliente,
     obtener_reviews_cliente,

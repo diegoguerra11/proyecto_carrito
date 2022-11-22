@@ -7,7 +7,7 @@ let config = require('../global');
 
 //Función para obtener la configuración actual de la tienda en Admin. El administrador podrá establecer la configuración que desee.
 const obtener_config_admin = async function(req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
 
     let buscar_config = Promise.resolve(Config.findById({_id: config.config_id}));
     
@@ -19,7 +19,7 @@ const obtener_config_admin = async function(req,res){
 
 //Función para modificar la configuración de la tienda en Admin. El administrador podrá agregar diversas configuraciones como nuevas columnas, cambio del logo de la tienda, entre otras.
 const actualizar_config_admin = async function(req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
     let data = req.body;
     let reg;

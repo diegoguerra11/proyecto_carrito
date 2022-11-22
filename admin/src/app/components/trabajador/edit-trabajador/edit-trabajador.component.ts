@@ -53,7 +53,7 @@ export class EditTrabajadorComponent implements OnInit {
   }
 
   actualizar(updateForm) {
-    if(!ValidatonsTrabajador.verificarTrabajador(updateForm.form.value)){return;}
+    if(!ValidatonsTrabajador.verificarTrabajador(updateForm.form.value, this.userRol)){return;}
     this.trabajador.password = this.newPassword;
     this.load_btn = true;
 
@@ -69,6 +69,23 @@ export class EditTrabajadorComponent implements OnInit {
       }
     )
   
+  }
+
+  actualizar_password(updateForm){
+    if(!ValidatonsTrabajador.verificarTrabajador(updateForm.form.value)){return;}
+    this.load_btn = true;
+
+    this._trabajadorService.actualizar_contraseña_admin(this.id, this.trabajador, this.token).subscribe(
+      response => {
+        this.load_btn = false;
+        if(!response.data){return MessageBox.messageError(response.message);}
+        MessageBox.messageSuccess('Contrasela modificada correctamente');
+        this._router.navigate(['/panel/trabajadores']);
+      },
+      error => {
+        console.log(error);
+      }
+    )
   }
 
   obtener_roles() {

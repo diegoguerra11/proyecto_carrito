@@ -68,7 +68,13 @@ export class IndexProductoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    
+    if (localStorage.getItem('productoABuscar')!=null){
+      this.filter_producto=""+localStorage.getItem('productoABuscar');
+      this.buscar_producto();
+      localStorage.removeItem('productoABuscar');
+    }
+    
     let slider : any = document.getElementById('slider');
     noUiSlider.create(slider, {
         start: [0, 1000],
@@ -90,7 +96,7 @@ export class IndexProductoComponent implements OnInit {
     });
     $('.noUi-tooltip').css('font-size','11px');
   }
-
+  
   
   buscar_categorias(){
     if(this.filter_categoria){

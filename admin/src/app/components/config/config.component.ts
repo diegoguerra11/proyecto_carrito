@@ -7,12 +7,12 @@ import { ValidationsConfig } from '../../validations/validationsConfig';
 
 declare let $:any;
 
-
 @Component({
   selector: 'app-config',
   templateUrl: './config.component.html',
   styleUrls: ['./config.component.css']
 })
+
 export class ConfigComponent implements OnInit {
 
   public token;
@@ -24,7 +24,6 @@ export class ConfigComponent implements OnInit {
   public file: File =undefined!;
   public imgSelect! : string|ArrayBuffer;
 
-
   constructor(
     private _adminService: AdminService
   ) { 
@@ -33,7 +32,10 @@ export class ConfigComponent implements OnInit {
     this._adminService.obtener_config_admin(this.token).subscribe(
       response=>{
         this.config = response.data;
+        console.log(this.config);
         this.imgSelect = this.url + 'obtener_logo/'+this.config.logo;
+        console.log(this.imgSelect);
+        console.log(this.url + 'obtener_logo/'+this.config.logo);
       },
       error=>{
         console.log(error);

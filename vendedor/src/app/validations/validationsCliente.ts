@@ -67,4 +67,50 @@ export class ValidatonsCliente {
 
         return true;
     }
+    static verificarClienteTemporal(form: any) {
+      let numerico = /^\d+$/;
+      
+      if(!form.nombres) {
+          MessageBox.messageError('El campo nombres es obligatorio');
+          return false;
+      }
+      else if(form.nombres.match(numerico)) {
+          MessageBox.messageError('El campo nombres debe ser alfabetico');
+          return false;
+      }
+      else if(!form.apellidos) {
+        MessageBox.messageError('El campo apellidos es obligatorio');
+        return false;
+      }
+      else if(!form.email) {
+        MessageBox.messageError('El campo correo electronico es obligatorio');
+        return false;
+      }
+      else if(!form.tipoDocumento) {
+        MessageBox.messageError('El campo tipo de documento es obligatorio');
+        return false;
+      }
+      else if(!form.numeroDocumento) {
+        MessageBox.messageError('El campo numero de documento es obligatorio');
+        return false;
+      }
+      else if(!form.numeroDocumento.match(numerico)) {
+          MessageBox.messageError('El campo Número de Documento debe ser numérico');
+          return false;
+      }
+      else if(form.tipoDocumento == "dni" && form.numeroDocumento.length != 8){
+          MessageBox.messageError('Número de DNI Inválido');
+          return false;
+      }
+      else if(form.tipoDocumento == "carnetExtranjeria" && form.numeroDocumento.length != 12){
+          MessageBox.messageError('Número de carnet de Extranjería Inválido');
+          return false;
+      }
+      else if(form.tipoDocumento == "pasaporte" && form.numeroDocumento.length != 12){
+          MessageBox.messageError('Número de pasaporte Inválido');
+          return false;
+      }
+    
+      return true;
+  }
 }

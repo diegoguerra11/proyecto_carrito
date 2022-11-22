@@ -8,20 +8,24 @@ const listar_trabajadores_filtro_admin= async function (req, res) {
 
     let tipo = req.params['tipo'];
     let filtro = req.params['filtro'];
-    let reg;
+    let buscar_trabajadores;
 
     let search_rol = req.user.role == 'superAdmin' ? {$in: ['vendedor', 'admin']} : 'vendedor'
 
     switch(tipo) {
-        case 'apellidos': reg = await Trabajador.find({apellidos:new RegExp(filtro, 'i'), rol: search_rol});
+        case 'apellidos': 
+            buscar_trabajadores = Promise.resolve(Trabajador.find({apellidos:new RegExp(filtro, 'i'), rol: search_rol}));
+            buscar_trabajadores.then(reg => {res.status(200).send({data:reg});})
             break;
-        case 'correo': reg = await Trabajador.find({email:new RegExp(filtro, 'i'), rol: search_rol});
+        case 'correo':  
+            buscar_trabajadores = Promise.resolve(Trabajador.find({email:new RegExp(filtro, 'i'), rol: search_rol}));
+            buscar_trabajadores.then(reg => {res.status(200).send({data:reg});})
             break;
-        default: reg = await Trabajador.find({rol: search_rol});
+        default: 
+            buscar_trabajadores = Promise.resolve(Trabajador.find({rol: search_rol}));
+            buscar_trabajadores.then(reg => {res.status(200).send({data:reg});})
             break;
     }
-
-    res.status(200).send({data:reg});
 }
 
 const registrar_trabajador_admin = async function(req, res) {
@@ -69,14 +73,14 @@ const actualizar_trabajador_admin = async function(req, res) {
 
     let id = req.params['id'];
     let data = req.body;
-    console.log(data);
+
     try {
         let validacion = await validaciones_trabajador(data.email, data.dni, id);
         if(validacion) {return res.status(200).send({message: validacion});}
 
         bcrypt.hash(data.password,null,null, async function(err,hash){
             if(!hash){return res.status(500).send({message:'ErrorServer', data:undefined});}
-            data.password = hash;
+            if(data.password){data.password = hash;}
             let actualizar_trabajador = Promise.resolve(Trabajador.findByIdAndUpdate({_id: id}, data));
             actualizar_trabajador.then(
                 trabajador => {
@@ -85,6 +89,28 @@ const actualizar_trabajador_admin = async function(req, res) {
             )
             .catch((ex) => {throw ex});
         });
+    }catch(error){
+        res.status(200).send({data:undefined, message:'Error en el servidor'});
+    }
+}
+
+const actualizar_contraseña_admin = async function (req,res){
+    if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
+     
+    let id = req.params['id'];
+    let data = req.body;
+    
+    try {
+        let validacion = await validaciones_trabajador(data.password, id);
+        if(validacion) {return res.status(200).send({message: validacion});}
+
+        let actualizar_trabajador = Promise.resolve(Trabajador.findByIdAndUpdate({_id: id}, data));
+        
+        actualizar_trabajador.then(
+            trabajador => {
+                res.status(200).send({data:trabajador});
+            } 
+        )
     }catch(error){
         res.status(200).send({data:undefined, message:'Error en el servidor'});
     }
@@ -133,6 +159,7 @@ const validaciones_trabajador = async function(email, dni, id) {
 
     let existe_correo_electronico = await Trabajador.exists({email: email, _id: {$ne: id}});
     if(existe_correo_electronico) {return 'El correo electronico ya se encuentra en la base de datos';}
+
     return null;
 }
 
@@ -141,6 +168,7 @@ module.exports = {
     registrar_trabajador_admin,
     obtener_trabajador_admin,
     actualizar_trabajador_admin,
+    actualizar_contraseña_admin,
     desactivar_trabajador_admin,
     activar_trabajador_admin
 }

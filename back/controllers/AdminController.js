@@ -349,7 +349,7 @@ const enviar_email = async function(venta, motivo) {
     }); 
 }
 //KPIS 
-const kpi_ganancias_mensuales_admin  = async function(req,res){
+const kpi_ganancias_mensuales_admin  = async function (req,res){
 
     //Restricción realizada a los usuarios: si no son usuarios con el rol de administrador, no podrán acceder a esta función.
     if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
@@ -371,74 +371,68 @@ const kpi_ganancias_mensuales_admin  = async function(req,res){
    let total_mes = 0;
    let cont_ventas = 0;
    let total_mes_anterior = 0;
-   
-    let buscar_ventas = Promise.resolve(Venta.find());
+
+    let buscar_ventas = Promise.resolve(Venta.find({createdAt:{$gte: new Date(new Date().getFullYear()+'-01-01')}}));
     let current_date = new Date();
-    let current_year = current_date.getFullYear();
     let current_month = current_date.getMonth()+1;
 
     buscar_ventas.then(ventas => {
-
         for(let venta of ventas){
             cont_ventas++;
             let createdAt_date = new Date(venta.createdAt);
             let mes = createdAt_date.getMonth()+1;
-            if(createdAt_date.getFullYear() == current_year){
-                total_ganancia =total_ganancia+ venta.subtotal;
-                if(mes == current_month){
-                    total_mes = total_mes + venta.subtotal;
-                }
-                if(mes == current_month-1){
-                    total_mes_anterior = total_mes_anterior + venta.subtotal;
-                }
-                switch (mes) {
-                    case 1:
-                        enero = enero + venta.subtotal;
-                        break;
-                    case 2:
-                        febrero = febrero + venta.subtotal;
-                        break;
-                    case 3:
-                        marzo = marzo + venta.subtotal;
-                        break;  
-                    case 4:
-                        abril = abril + venta.subtotal;
-                        break;
-                    case 5:
-                        mayo = mayo + venta.subtotal;
-                        break;
-                    case 6:
-                        junio =  junio + venta.subtotal;
-                        break;   
-                    case 7:
-                        julio = julio + venta.subtotal;
-                        break;
-                    case 8:
-                        agosto = agosto + venta.subtotal;
-                        break;
-                    case 9:
-                        septiembre = septiembre + venta.subtotal;
-                        break;  
-                    case 10:
-                        octubre = octubre + venta.subtotal;
-                        break;
-                    case 11:
-                        noviembre = noviembre + venta.subtotal;
-                        break;
-                    case 12:
-                        diciembre = diciembre + venta.subtotal;
-                        break; 
-                    
-                }
+            total_ganancia += venta.subtotal;
+            if(mes == current_month){
+                total_mes += venta.subtotal;
             }
-            
+            if(mes == current_month-1){
+                total_mes_anterior += venta.subtotal;
+            }
+            switch (mes) {
+                case 1:
+                    enero = enero + venta.subtotal;
+                    break;
+                case 2:
+                    febrero = febrero + venta.subtotal;
+                    break;
+                case 3:
+                    marzo = marzo + venta.subtotal;
+                    break;  
+                case 4:
+                    abril = abril + venta.subtotal;
+                    break;
+                case 5:
+                    mayo = mayo + venta.subtotal;
+                    break;
+                case 6:
+                    junio =  junio + venta.subtotal;
+                    break;   
+                case 7:
+                    julio = julio + venta.subtotal;
+                    break;
+                case 8:
+                    agosto = agosto + venta.subtotal;
+                    break;
+                case 9:
+                    septiembre = septiembre + venta.subtotal;
+                    break;  
+                case 10:
+                    octubre = octubre + venta.subtotal;
+                    break;
+                case 11:
+                    noviembre = noviembre + venta.subtotal;
+                    break;
+                case 12:
+                    diciembre = diciembre + venta.subtotal;
+                    break; 
+                
+            }
         }
-
         
         res.status(200).send({
             enero:enero, 
             febrero: febrero,
-             marzo:marzo,
+            marzo:marzo,
             abril:abril,
             mayo:mayo,
             junio:junio,

@@ -8,7 +8,7 @@ let port = process.env.port || 4201;
 
 let server = require('http').createServer(app);
 let io = require('socket.io')(server,{
-    cors: {"Access-Control-Allow-Origin":'*'}
+    cors: {"Access-Control-Allow-Origin":'http://localhost:4200'}
 });
 
 io.on('connection', function(socket){
@@ -43,14 +43,22 @@ mongoose.connect('mongodb://127.0.0.1:27017/tienda',{useUnifiedTopology: true, u
         });
     }
 });
-app.use(cors({"Access-Control-Allow-Origin": '*'}));
+
+let corsOptions = {
+    origin : ['http://localhost:4200', 'http://localhost:4300', 'http://localhost:4400'],
+}
+app.use(cors({"Access-Control-Allow-Origin": corsOptions}));
 
 
 app.use(bodyparser.urlencoded({limit: '50mb', extended: true}));
 app.use(bodyparser.json({limit: '50mb',extended: true}));
 
 app.use((req,res,next)=>{
-    res.header('Access-Control-Allow-Origin','*'); 
+    const allowedOrigins = ['http://localhost:4200', 'http://localhost:4300', 'http://localhost:4400'];
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
     res.header('Access-Control-Allow-Headers','Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Access-Control-Allow-Request-Method');
     res.header('Access-Control-Allow-Methods','GET, PUT, POST, DELETE, OPTIONS');
     res.header('Allow','GET, PUT, POST, DELETE, OPTIONS');
@@ -66,6 +74,5 @@ app.use('/api',config_route);
 app.use('/api',carrito_route);
 app.use('/api',descuento_route);
 app.use("/api", vendedor_route);
-
 
 module.exports = app;
