@@ -32,7 +32,7 @@ export class CreateTrabajadorComponent implements OnInit {
   }
 
   registro(registroForm) {
-    if(!ValidatonsTrabajador.verificarTrabajador(registroForm.form.value)){return;}
+    if(!ValidatonsTrabajador.verificarTrabajador(registroForm.form.value, null)){return;}
 
     this._trabajadorService.registrar_trabajador_admin(this.trabajador, this.token).subscribe(
       response => {

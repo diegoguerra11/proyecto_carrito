@@ -24,7 +24,6 @@ export class ConfigComponent implements OnInit {
   public file: File =undefined!;
   public imgSelect! : string|ArrayBuffer;
 
-
   constructor(
     private _adminService: AdminService
   ) { 

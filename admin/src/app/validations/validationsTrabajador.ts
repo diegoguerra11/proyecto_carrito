@@ -1,11 +1,11 @@
 import { MessageBox } from '../utils/MessageBox';
 
 export class ValidatonsTrabajador {
-    static verificarTrabajador(form: any) {
+    static verificarTrabajador(form: any, userRol: any) {
         let numerico = /^\d+$/;
         let escontraseña=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%?&])[A-Za-z\d$@$!%?&]{8,15}/;
         
-        if(!this.validarObligatorios(form)){return false;}
+        if(!this.validarObligatorios(form, userRol)){return false;}
       
         if(form.nombres.match(numerico)) {
             MessageBox.messageError('El campo nombres debe ser alfabetico');
@@ -31,15 +31,21 @@ export class ValidatonsTrabajador {
             MessageBox.messageError('Número de pasaporte Inválido');
             return false;
         }
-        if(!form.password.match(escontraseña)) {
-            MessageBox.messageError('El campo contraseña debe tener como minimo una mayúscula, un numero y un caracter especial');
+
+        if(form.password && form.password.length < 8) {
+            MessageBox.messageError('La contraseña debe ser minimo 8 caracteres');
+            return false;
+        }
+
+        if(form.password && !form.password.match(escontraseña)) {
+            MessageBox.messageError('El campo contraseña debe tener como una minimo una mayúscula, un numero y un caracter especial');
             return false;
         }
 
         return true;
     }
 
-    private static validarObligatorios(form: any) {
+    private static validarObligatorios(form: any, userRol: any) {
         if(!form.nombres) {
             MessageBox.messageError('El campo nombres es obligatorio');
             return false;
@@ -68,7 +74,7 @@ export class ValidatonsTrabajador {
             MessageBox.messageError('El campo rol es obligatorio');
             return false;
         }
-        if(!form.password) {
+        if(userRol !='superAdmin' && !form.password) {
             MessageBox.messageError('El campo contraseña es obligatorio');
             return false;
         }

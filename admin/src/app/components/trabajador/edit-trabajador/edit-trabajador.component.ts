@@ -53,7 +53,7 @@ export class EditTrabajadorComponent implements OnInit {
   }
 
   actualizar(updateForm) {
-    if(!ValidatonsTrabajador.verificarTrabajador(updateForm.form.value)){return;}
+    if(!ValidatonsTrabajador.verificarTrabajador(updateForm.form.value, this.userRol)){return;}
     this.trabajador.password = this.newPassword;
     this.load_btn = true;
 

@@ -73,14 +73,14 @@ const actualizar_trabajador_admin = async function(req, res) {
 
     let id = req.params['id'];
     let data = req.body;
-    console.log(data);
+
     try {
         let validacion = await validaciones_trabajador(data.email, data.dni, id);
         if(validacion) {return res.status(200).send({message: validacion});}
 
         bcrypt.hash(data.password,null,null, async function(err,hash){
             if(!hash){return res.status(500).send({message:'ErrorServer', data:undefined});}
-            data.password = hash;
+            if(data.password){data.password = hash;}
             let actualizar_trabajador = Promise.resolve(Trabajador.findByIdAndUpdate({_id: id}, data));
             actualizar_trabajador.then(
                 trabajador => {
