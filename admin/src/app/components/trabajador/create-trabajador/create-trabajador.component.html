@@ -3,7 +3,7 @@
 
 <!-- Page title-->
 <div class="border-bottom pt-5 mt-2 mb-5">
-    <h1 class="mt-2 mt-md-4 mb-3 pt-5">trabajadores</h1>
+    <h1 class="mt-2 mt-md-4 mb-3 pt-5">Trabajadores</h1>
     <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
       <p class="text-muted">Este módulo lista todos los trabajadores de la tienda.</p>
     </div>
@@ -44,6 +44,10 @@
                 <div class="col-md-4 form-group">
                     <label for="validationCustom01" class="form-label">Número de Documento</label>
                     <input type="text" required class="form-control" name="numeroDocumento" [(ngModel)]="trabajador.dni" placeholder="Número de Documento"/>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label for="validationCustom01" class="form-label">Contraseña:</label>
+                    <input class="form-control" type="text" placeholder="Contraseña asignada" required name="password" [(ngModel)]="trabajador.password">
                 </div>
                 <div class="col-md-4 form-group">
                     <label for="validationCustom01" class="form-label">Roles</label>

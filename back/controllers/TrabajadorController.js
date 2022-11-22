@@ -85,6 +85,28 @@ const actualizar_trabajador_admin = async function(req, res) {
     }
 }
 
+const actualizar_contraseña_admin = async function (req,res){
+    if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
+     
+    let id = req.params['id'];
+    let data = req.body;
+    
+    try {
+        let validacion = await validaciones_trabajador(data.password, id);
+        if(validacion) {return res.status(200).send({message: validacion});}
+
+        let actualizar_trabajador = Promise.resolve(Trabajador.findByIdAndUpdate({_id: id}, data));
+        
+        actualizar_trabajador.then(
+            trabajador => {
+                res.status(200).send({data:trabajador});
+            } 
+        )
+    }catch(error){
+        res.status(200).send({data:undefined, message:'Error en el servidor'});
+    }
+}
+
 const desactivar_trabajador_admin = async function(req, res) {
     if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
 
@@ -136,6 +158,7 @@ module.exports = {
     registrar_trabajador_admin,
     obtener_trabajador_admin,
     actualizar_trabajador_admin,
+    actualizar_contraseña_admin,
     desactivar_trabajador_admin,
     activar_trabajador_admin
 }

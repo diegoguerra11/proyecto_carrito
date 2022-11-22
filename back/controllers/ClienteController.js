@@ -121,6 +121,8 @@ const obtener_cliente_admin = async function (req,res){
     }
 }
 
+
+
 //Función para modificar clientes en el panel de Admin. El administrador podrá modificar datos de un cliente seleccionándolo en la lista de clientes.
 const actualizar_cliente_admin = async function(req,res){
     if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}

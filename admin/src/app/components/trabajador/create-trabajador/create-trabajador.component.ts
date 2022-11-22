@@ -46,7 +46,8 @@ export class CreateTrabajadorComponent implements OnInit {
           telefono: '',
           numeroDocumento: '',
           dni: '',
-          email: ''
+          email: '',
+          password: ''
         }
 
         this.load_btn = false;

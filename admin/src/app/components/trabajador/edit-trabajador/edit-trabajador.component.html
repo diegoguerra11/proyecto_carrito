@@ -1,7 +1,7 @@
 <app-sidebar></app-sidebar>
 
 <div class="border-bottom pt-5 mt-2 mb-5">
-    <h1 class="mt-2 mt-md-4 mb-3 pt-5">trabajadores</h1>
+    <h1 class="mt-2 mt-md-4 mb-3 pt-5">Trabajadores</h1>
     <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
       <p class="text-muted">Este módulo lista todos los trabajadores de la tienda.</p>
     </div>
@@ -10,7 +10,7 @@
 <form #updateForm='ngForm' (ngSubmit)="actualizar(updateForm)">
     <div class="card box-shadow-sm">
         <div class="card-header">
-            <h5 style="margin-bottom: 0px;">Registro de trabajador</h5>
+            <h5 style="margin-bottom: 0px;">Modificar trabajador</h5>
         </div>
         <div class="card-body">
             <div class="row">
@@ -50,14 +50,36 @@
                         <option value="{{rol.nombre}}" *ngFor="let rol of roles">{{ rol.nombre }}</option>
                     </select>
                 </div>
+                <div class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Cambio de contraseña</h4>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Cambiar contraseña</p>
+                            </div>
+                            <div>
+                                <label for="validationCustom01" class="form-label">Nueva contaseña</label>
+                                <input class="form-control" type="text" placeholder="Ingresar contraseña" required name="email" [(ngModel)]="trabajador.password">
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                                <button class="btn btn-primary btn-shadow btn-sm" (click)="actualizar_password(trabajador._id)" type="button">Guardar cambios</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>            
         </div>
         <div class="card-footer">
             <button *ngIf="!load_btn" class="btn btn-primary mr-3" type="submit">Actualizar trabajador</button>
             <button *ngIf="load_btn" type="button" class="btn btn-secondary" disabled>
                 <span class="spinner-grow spinner-grow-sm mr-2" role="status" aria-hidden="true"></span>
-                Creando...
+                Modificando...
             </button>
+            <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#delete='+trabajador._id">Cambiar contraseña</a>
             <a [routerLink]="['/panel/trabajadores']" class="btn btn-warning">Regresar</a>
         </div>
     </div>  

@@ -25,6 +25,7 @@
     "ng-starrating": "^1.0.20",
     "rxjs": "~7.5.0",
     "socket.io-client": "^4.5.2",
+    "tienda": "^0.0.2",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },

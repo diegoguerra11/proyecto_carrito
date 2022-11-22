@@ -62,6 +62,10 @@ export class ValidatonsTrabajador {
             MessageBox.messageError('El campo rol es obligatorio');
             return false;
         }
+        if(!form.password) {
+            MessageBox.messageError('El campo contraseña es obligatorio');
+            return false;
+        }
         return true;
     }
 }
