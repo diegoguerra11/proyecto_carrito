@@ -2,34 +2,11 @@ import { MessageBox } from '../Utils/MessageBox';
 
 export class ValidatonsCliente {
     static actualizarCliente(form: any) {
-        let escontraseña=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%?&])[A-Za-z\d$@$!%?&]{8,15}/;
-        let numerico = /^[0-9]+$/;
-
-
         if(!this.obligatoriosActualizar(form)) {return false};
+        if(!this.matches(form)){return false;}
 
         if(form.newPassword && form.newPassword.length < 8) {
             MessageBox.messageError('La contraseña debe ser minimo de 8 caracteres');
-            return false;
-        }
-
-        if(form.newPassword && !form.newPassword.match(escontraseña)) {
-            MessageBox.messageError('El campo contraseña debe tener como minimo una mayúscula, un numero y un caracter especial');
-            return false;
-        }
-
-        if(form.nombres.match(numerico)) {
-            MessageBox.messageError('El campo nombres debe ser alfabetico');
-            return false;
-        }
-
-        if(form.telefono && !form.telefono.match(numerico)) {
-            MessageBox.messageError('El campo telefono debe ser numerico');
-            return false;
-        }
-
-        if(!form.numeroDocumento.match(numerico)) {
-            MessageBox.messageError('El campo Número de Documento debe ser numérico');
             return false;
         }
 
@@ -48,7 +25,6 @@ export class ValidatonsCliente {
             return false;
         }
 
-
         return true;
     }
 
@@ -64,11 +40,39 @@ export class ValidatonsCliente {
             MessageBox.messageError('Debe seleccionar un tipo de documento');
             return false;
         }
-        
+       
         if(Math.floor((timeDiff / (1000 * 3600 * 24))/365) < 18) {
             MessageBox.messageError('Debe tener más de 18 años para poder ser cliente');
             return false;
         }
+        return true;
+    }
+
+    static matches(form:any) {
+        let escontraseña=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%?&])[A-Za-z\d$@$!%?&]{8,15}/;
+        let numerico = /^[0-9]+$/;
+
+         
+        if(form.newPassword && !form.newPassword.match(escontraseña)) {
+            MessageBox.messageError('El campo contraseña debe tener como minimo una mayúscula, un numero y un caracter especial');
+            return false;
+        }
+
+        if(form.nombres.match(numerico)) {
+            MessageBox.messageError('El campo nombres debe ser alfabetico');
+            return false;
+        }
+
+        if(form.telefono && !form.telefono.match(numerico)) {
+            MessageBox.messageError('El campo telefono debe ser numerico');
+            return false;
+        }
+
+        if(form.numeroDocumento && !form.numeroDocumento.match(numerico)) { 
+            MessageBox.messageError('El campo Número de Documento debe ser numérico');
+            return false;
+        }
+
         return true;
     }
 
