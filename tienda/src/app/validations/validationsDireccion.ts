@@ -2,8 +2,7 @@ import { from } from 'rxjs';
 import { MessageBox } from '../Utils/MessageBox';
 
 export class ValidationsDireccion {
-  // Validar direccion obligatorio
-
+  
   static registrarDireccion(form: any) {
     let numerico = /^[0-9]+$/;
 
