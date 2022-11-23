@@ -35,6 +35,7 @@
                       <th id="t">Tipo</th>
                       <th id="v">Valor</th>
                       <th id="l">Limite</th>
+                      <th id="e">Estado</th>
                       <th id="o">Opciones</th>
                     </tr>
                   </thead>
@@ -54,36 +55,54 @@
                         <td>{{item.tipo}}</td>
                         <td>{{item.valor}}</td>
                         <td>{{item.limite}} restantes</td>
+                        <td class="text-{{item.estado ? 'success' : 'danger' }}" >{{item.estado ? 'ACTIVO': 'INACTIVO'}}</td>
                         <td>
                           <div class="btn-group dropdown">
                             <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               OPCIONES
                             </button>
                             <div class="dropdown-menu">
-                              <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#delete-'+item._id">Eliminar</a>
-                              <a [routerLink]="['/panel/cupones',item._id]" class="dropdown-item">Editar</a>
-  
+                              <a *ngIf="item.estado" class="dropdown-item" [routerLink]="['/panel/cupones',item._id]" >Editar cupon</a>                          
+                              <a *ngIf="item.estado" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#disable-'+item._id">Deshabilitar cupon</a>
+                              <a *ngIf="!item.estado" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#enable-'+item._id">Habilitar cupon</a>
                             </div>
                           </div>
 
                            
-                          <div class="modal fade" id="delete-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+                          <div class="modal fade" id="disable-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered" role="document">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h4 class="modal-title">Eliminar el cupón {{item.codigo}}</h4>
-                                  <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Deshabilitar, {{item.codigo}}</h4>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Desea deshabilitar este cupon?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                                        <button class="btn btn-primary btn-shadow btn-sm" (click)="desactivar(item._id)" type="button">Si, deshabilitar</button>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                  <p>Desea eliminar este cupon?</p>
-                                </div>
-                                <div class="modal-footer">
-                                  <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
-                                  <button class="btn btn-primary btn-shadow btn-sm" (click)="eliminar(item._id)" type="button">Si, eliminar</button>
-                                </div>
-                              </div>
                             </div>
-                          </div>
+                        </div>
+                        <div class="modal fade" id="enable-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Habilitar, {{item.codigo}</h4>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Desea hablitar este cupon?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                                        <button class="btn btn-primary btn-shadow btn-sm" (click)="activar(item._id)" type="button">Si, habilitar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         </td>
                       </tr>
                     </tbody>

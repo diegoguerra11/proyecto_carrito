@@ -16,6 +16,7 @@ let ClienteSchema = Schema({
     f_nacimiento: {type: String, required: false},
     numeroDocumento: {type: String, required: false},
     tipoDocumento: {type: String, required: false},
+    estado: {type: Boolean, default:true, required:true},
     createdAt: {type:Date, default: Date.now, require:true}
 
 });

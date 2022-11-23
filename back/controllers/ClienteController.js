@@ -44,6 +44,7 @@ const login_cliente = async function(req,res){
 
         buscar_user.then(user => {
             if(!user){return res.status(200).send({message: 'El correo no existe en la base de datos', data: undefined});}
+            if(!user.estado){return res.status(200).send({message: 'Cuenta inactiva'});}
             bcrypt.compare(data.password, user.password, async function(err, check) {
                 if(!check){return res.status(200).send({message: 'La contraseña no coincide', data: undefined});}
                 res.status(200).send({
@@ -585,6 +586,42 @@ const cambiar_contrasenia = async function(req, res) {
     )
 }
 
+const desactivar_cliente_vendedor = async function(req, res) {
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
+
+    let id = req.params['id'];
+
+    try {
+        let actualizar_cliente = Promise.resolve(Cliente.findByIdAndUpdate({_id: id}, {estado: false}));
+
+        actualizar_cliente.then(
+            cliente => {
+                res.status(200).send({data:cliente});
+            } 
+        )
+    }catch(error){
+        res.status(200).send({data:undefined, message:'Error en el servidor'});
+    }
+}
+
+const activar_cliente_vendedor = async function(req,res) {
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
+
+    let id = req.params['id'];
+
+    try {
+        let actualizar_cliente = Promise.resolve(Cliente.findByIdAndUpdate({_id: id}, {estado: true}));
+
+        actualizar_cliente.then(
+            cliente => {
+                res.status(200).send({data:cliente});
+            } 
+        )
+    }catch(error){
+        res.status(200).send({data:undefined, message:'Error en el servidor'});
+    }
+}
+
 //Exportación de las funciones.
 module.exports = {
     actualizar_direccion_cliente,
@@ -615,5 +652,7 @@ module.exports = {
     emitir_review_producto_cliente,
     obtener_review_producto_cliente,
     obtener_reviews_cliente,
-    cambiar_contrasenia
+    cambiar_contrasenia,
+    activar_cliente_vendedor,
+    desactivar_cliente_vendedor
 }

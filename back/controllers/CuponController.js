@@ -58,7 +58,7 @@ const obtener_cupon_cliente = async function (req,res){
     if(cupon == undefined){return;}
 
     try {
-        let buscar_cupon = Promise.resolve(Cupon.findOne({codigo:cupon}));
+        let buscar_cupon = Promise.resolve(Cupon.findOne({codigo:cupon, estado: true}));
 
         buscar_cupon.then(reg => {
             res.status(200).send({data:reg});
@@ -92,12 +92,29 @@ const actualizar_cupon_admin = async function (req,res){
 }
 
 //Función para eliminar cupones en Admin. El administrador podrá eliminar cupones del sistema.
-const eliminar_cupon_admin = async function (req,res){
+const desactivar_cupon_admin = async function (req,res){
     if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
     let id = req.params['id'];
 
-    let buscar_cupon = Promise.resolve(Cupon.findByIdAndRemove({_id:id}));
+    let estado = req.body.estado;
+
+    let buscar_cupon = Promise.resolve(Cupon.findByIdAndUpdate({_id:id}, {estado: false}));
+
+    buscar_cupon.then(reg => {
+        res.status(200).send({data:reg});
+    });
+}
+
+const activar_cupon_admin = async function (req,res){
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
+    
+    let id = req.params['id'];
+
+    let estado = req.body.estado;
+
+    let buscar_cupon = Promise.resolve(Cupon.findByIdAndUpdate({_id:id}, {estado: true}));
+
     buscar_cupon.then(reg => {
         res.status(200).send({data:reg});
     });
@@ -154,8 +171,9 @@ module.exports = {
     listar_cupones_admin,
     obtener_cupon_admin,
     actualizar_cupon_admin,
-    eliminar_cupon_admin,
     validar_cupon_admin,
+    activar_cupon_admin,
+    desactivar_cupon_admin,
     disminuir_cupon,
     obtener_cupon_cliente
 }

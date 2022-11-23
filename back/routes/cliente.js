@@ -11,6 +11,8 @@ api.post('/registro_cliente_admin',auth.auth, clienteController.registro_cliente
 api.get('/obtener_cliente_admin/:id',auth.auth,clienteController.obtener_cliente_admin);
 api.put('/actualizar_cliente_admin/:id',auth.auth, clienteController.actualizar_cliente_admin);
 api.delete('/eliminar_cliente_admin/:id',auth.auth, clienteController.eliminar_cliente_admin);
+api.put('/desactivar_cliente_vendedor/:id', auth.auth, clienteController.desactivar_cliente_vendedor);
+api.put('/activar_cliente_vendedor/:id', auth.auth, clienteController.activar_cliente_vendedor);
 
 //Cliente
 api.post('/registro_cliente',clienteController.registro_cliente);
@@ -23,7 +25,9 @@ api.put('/actualizar_perfil_cliente_guest/:id',auth.auth,clienteController.actua
 api.get('/obtener_variedades_productos_cliente/:id',clienteController.obtener_variedades_productos_cliente);
 
 api.put('/actualizar_direccion_cliente/:id',auth.auth, clienteController.actualizar_direccion_cliente);
-api.get("/recibir_direccion_cliente/:id",auth.auth,clienteController.recibir_direccion_cliente)
+api.get("/recibir_direccion_cliente/:id",auth.auth,clienteController.recibir_direccion_cliente);
+
+
 
 //Productos
 api.get('/obtener_productos_slug_publico/:slug',clienteController.obtener_productos_slug_publico);
