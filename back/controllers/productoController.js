@@ -22,15 +22,7 @@ const registro_producto_admin = async function (req,res){
     let crear_producto = Promise.resolve(Producto.create(data));
 
     crear_producto.then(reg => {
-        let crear_inventario = Promise.resolve(Inventario.create({
-            admin: req.user.sub,
-            cantidad: data.stock,
-            proveedor: 'Primer registro',
-            producto: reg._id
-        }));
-        crear_inventario.then(inventario => {
-            res.status(200).send({data:reg, inventario: inventario});
-        })
+        res.status(200).send({data:reg});
     });
 }
 
@@ -96,7 +88,6 @@ const actualizar_producto_admin = async function (req,res){
         
         reg = Promise.resolve(Producto.findByIdAndUpdate({_id:id},{
             titulo: data.titulo,
-            stock: data.stock,
             precio: data.precio,
             categoria: data.categoria,
             descripcion: data.descripcion,
@@ -104,8 +95,7 @@ const actualizar_producto_admin = async function (req,res){
             portada: portada_name
         }));
 
-        reg.then(prod =>{
-            
+        reg.then(prod =>{          
             fs.stat('./uploads/productos/'+prod.portada, function(err){
                 if (!err) {
                     fs.unlink('./uploads/productos/'+prod.portada, (error) => {
