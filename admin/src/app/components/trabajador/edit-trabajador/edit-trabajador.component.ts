@@ -61,7 +61,7 @@ export class EditTrabajadorComponent implements OnInit {
       response => {
         this.load_btn = false;
         if(!response.data){return MessageBox.messageError(response.message);}
-        MessageBox.messageSuccess('Trabajdor actualizado correctamente');
+        MessageBox.messageSuccess('Trabajador actualizado correctamente');
         this._router.navigate(['/panel/trabajadores']);
       },
       error => {

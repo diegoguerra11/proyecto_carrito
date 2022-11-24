@@ -200,31 +200,6 @@
       </div>
   </section>
 
-  <!-- Popular categories -->
-  <section class="container mt-1 mb-3 my-sm-4 py-5 py-lg-6">
-      <h2 class="h1 mb-5 pb-3 text-center">Categorias</h2>
-      <div class="cs-carousel cs-nav-outside">
-        <div class="cs-carousel-inner cs-carousel-inner-five" data-carousel-options='{
-
-        }'>
-
-          <!-- Category -->
-          <div class="pb-2" *ngFor="let item of categorias">
-            <a [routerLink]="['/productos/categoria/',item.titulo.toLowerCase()]" class="d-block cs-image-scale cs-heading-highlight text-center">
-              <div class="cs-image-inner rounded-circle mx-auto mb-4" style="max-width: 180px;">
-                <img [src]="item.portada" alt="Category image">
-              </div>
-              <h3 class="h5 mb-3">{{item.titulo}}</h3>
-            </a>
-          </div>
-
-
-        </div>
-      </div>
-  </section>
-
-
-
   <!-- Services -->
   <section class="container pt-5 pb-2 pb-sm-5 py-md-5 py-lg-6">
       <div class="row py-3">
