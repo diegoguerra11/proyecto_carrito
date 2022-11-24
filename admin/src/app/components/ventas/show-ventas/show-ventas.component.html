@@ -326,8 +326,8 @@
                             <div class="py-2">
                               <div class="font-size-xs text-muted mb-1">Precio:</div>
                               <div class="font-size-sm text-dark">
-                                <span *ngIf="venta.currency == 'PEN'">S/{{item.subtotal}}</span>
-                                <span  *ngIf="venta.currency == 'USD'">${{item.subtotal}}</span>
+                                <span *ngIf="venta.currency == 'PEN'">S/{{item.producto.precio}}</span>
+                                <span  *ngIf="venta.currency == 'USD'">${{item.producto.precio}}</span>
                                 
                               </div>
                             </div>
@@ -342,8 +342,8 @@
                             <div class="py-2 pr-3 text-right">
                               <div class="font-size-xs text-muted mb-1">Subtotal:</div>
                               <div class="font-size-sm font-weight-bold text-dark">
-                                <span *ngIf="venta.currency == 'PEN'">S/{{item.subtotal*item.cantidad}}</span>
-                                <span  *ngIf="venta.currency == 'USD'">${{item.subtotal*item.cantidad}}</span>
+                                <span *ngIf="venta.currency == 'PEN'">S/{{item.producto.precio*item.cantidad}}</span>
+                                <span  *ngIf="venta.currency == 'USD'">${{item.producto.precio*item.cantidad}}</span>
                                 </div>
                             </div>
                           </td>
