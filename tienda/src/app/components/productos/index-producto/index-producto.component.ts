@@ -22,6 +22,8 @@ export class IndexProductoComponent implements OnInit {
   public filter_producto = '';
   public filter_cat_productos = 'todos';
   public url;
+  public total:any;
+  public totalParcial:any;
   public load_data = true;
   public route_categoria:any;
   public page=1;
@@ -51,6 +53,7 @@ export class IndexProductoComponent implements OnInit {
           this._clienteService.listar_productos_publico('').subscribe(
             response=>{
               this.productos = response.data;
+              this.total = this.productos.length;
               this.productos = this.productos.filter(item=> item.categoria.toLowerCase()== this.route_categoria);
               this.load_data = false;
             }
@@ -59,12 +62,17 @@ export class IndexProductoComponent implements OnInit {
           this._clienteService.listar_productos_publico('').subscribe(
             response=>{
               this.productos = response.data;
+              this.total = this.productos.length;
               this.load_data = false;
             }
           );
         }
       }
     );
+  }
+
+  contar(categoria:any) {
+    return this.productos.filter(item => item.categoria.toLowerCase() == categoria.toLowerCase()).length;
   }
 
   ngOnInit(): void {

@@ -123,7 +123,7 @@
                             <input type="radio" name="group1" (change)="buscar_por_categoria()" class="custom-control-input" id="blazers-todos" value="todos" [(ngModel)]="filter_cat_productos">
                             <label for="blazers-todos" class="custom-control-label">
                               <span class="cs-filter-item-text">Todos</span>
-                              <span class="pl-1 text-muted">(235)</span>
+                              <span class="pl-1 text-muted">({{ total }})</span>
                             </label>
                           </div>
                         </li>
@@ -132,7 +132,7 @@
                             <input type="radio" name="group1" (change)="buscar_por_categoria()" class="custom-control-input" id="blazers-{{indice}}" value="{{item.titulo}}" [(ngModel)]="filter_cat_productos">
                             <label for="blazers-{{indice}}" class="custom-control-label">
                               <span class="cs-filter-item-text">{{item.titulo}}</span>
-                              <span class="pl-1 text-muted">(235)</span>
+                              <span class="pl-1 text-muted">({{ contar(item.titulo) }})</span>
                             </label>
                           </div>
                         </li>
@@ -194,7 +194,7 @@
               </div>
             </div>
 
-            <div  *ngIf="!load_data"class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3" data-filters-columns>
+            <div  *ngIf="!load_data" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3" data-filters-columns>
 
               <!-- Item -->
               <ng-container *ngIf="productos.length == 0">

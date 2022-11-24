@@ -95,15 +95,16 @@
                   </button>
                 </ng-container>
               </div>
-              
-              
-              <div class="col-lg-4 col-8 order-lg-2 order-2">
-                <button class="btn btn-block btn-outline-primary px-lg-4">
-                  <i class="cxi-heart mr-2" aria-hidden="true"></i>
-                  A deseos
-                </button>
+
+              <div class="col-lg-4 order-lg-2 order-2 text-sm-right">
+                <a href="#modal-sizing" data-toggle="modal" class="d-inline-block mt-sm-4 mb-sm-0 mb-4 pt-sm-3 font-weight-bold text-decoration-0 text-dark">
+                  <i class="cxi-hanger mr-2"></i>
+                  Size chart
+                </a>
               </div>
+
             </form>
+
 
             <!-- Terms -->
             <!-- Accordion made of cards -->
@@ -112,27 +113,44 @@
               <div class="card border-bottom">
                 <div class="card-header" id="delivery-card">
                   <h6 class="accordion-heading">
-                    <a href="#delivery" class="collapsed" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="delivery">Delivery
+                    <a href="#delivery" class="" role="button" data-toggle="collapse" aria-expanded="true" aria-controls="delivery">Delivery
                       <span class="accordion-indicator"></span>
                     </a>
                   </h6>
                 </div>
+                <div class="collapse show" id="delivery" aria-labelledby="delivery-card" data-parent="#productTerms" style="">
+                  <div class="card-body">
+                    <p class="font-size-sm">
+                      Free standard shipping on orders <strong>over $35</strong> before tax, plus free returns.
+                    </p>
+
+                    <!-- Delivery table -->
+                    <div class="table-responsive px-md-3">
+                      <table class="table mb-0" style="min-width: 450px;">
+                        <thead class="font-size-xs text-uppercase text-muted">
+                          <tr>
+                            <th class="border-0 font-weight-normal">Type</th>
+                            <th class="border-0 font-weight-normal">How long</th>
+                          </tr>
+                        </thead>
+                        <tbody class="font-size-sm">
+                          <tr>
+                            <th class="font-weight-normal">Standard delivery</th>
+                            <td>1-4 business days</td>
+                            <td>$4.50</td>
+                          </tr>
+                          <tr>
+                            <th class="font-weight-normal">Express delivery</th>
+                            <td>1 business day</td>
+                            <td>$10.00</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
               </div>
               <!-- Card -->
-            </div>
-
-            <!-- Share -->
-            <div class="mb-5 text-nowrap">
-              <h6 class="d-inline-block align-middle mr-2 mb-0">Compartir:</h6>
-              <a  class="social-btn sb-solid align-middle mr-2" data-toggle="tooltip" title="Facebook">
-                <i class="cxi-facebook" aria-hidden="true"></i>
-              </a>
-              <a  class="social-btn sb-solid align-middle mr-2" data-toggle="tooltip" title="Twitter">
-                <i class="cxi-twitter" aria-hidden="true"></i>
-              </a>
-              <a  class="social-btn sb-solid align-middle" data-toggle="tooltip" title="Pinterest">
-                <i class="cxi-pinterest" aria-hidden="true"></i>
-              </a>
             </div>
 
             <!-- Payment -->
@@ -215,17 +233,6 @@
               </button>
             </div>
             <div class="modal-body px-md-5 px-4">
-              <ul class="nav nav-tabs justify-content-center">
-                <li class="nav-item">
-                  <a href="#" class="nav-link active">Women</a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">Men</a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="nav-link">Kids</a>
-                </li>
-              </ul>
               <div class="table-responsive border rounded">
                 <h4 class="mb-0 py-3 font-size-lg text-center">Footwear</h4>
                 <table class="table table-striped mb-0">
@@ -311,18 +318,6 @@
                   </tbody>
                 </table>
               </div>
-              <hr class="my-4 mx-md-n5 mx-n4">
-              <div class="d-flex flex-lg-row flex-column align-items-center justify-content-center mb-4">
-                <h6 class="mb-lg-0">I want to see size equivalence in: </h6>
-                <ul class="nav nav-tabs mb-0 ml-lg-4">
-                  <li class="nav-item">
-                    <a href="#" class="nav-link active">cm</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">Inches</a>
-                  </li>
-                </ul>
-              </div>
               <div class="table-responsive border rounded mb-4">
                 <h4 class="mb-0 py-3 font-size-lg text-center">Equivalence in centimeters</h4>
                 <table class="table table-striped mb-0">
@@ -346,4 +341,5 @@
           </div>
         </div>
       </div>
+
 </main>
