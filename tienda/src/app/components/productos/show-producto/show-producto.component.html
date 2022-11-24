@@ -52,6 +52,8 @@
               <div class="d-flex align-items-center mb-sm-0 mb-4">
                 <span class="h3 d-inline-block mb-0 text-danger">S/.{{producto.precio}}</span>
               </div>
+              
+
             </div>
 
             <!-- Ordering form -->
@@ -217,10 +219,74 @@
                 </div>
               </div>
             </div>
+
           </div>
         </section>
       </div>
-      
+      <div class="ps-product__content ps-tab-root">
+            <div class="container">
+              <div class="ps-tabs">
+                <div class="ps-tab" [ngClass]="{'active': option_nav == 3}">
+                  <div class="ps-product__review">
+                    <h4>{{reviews.length}} reseñas para {{producto.titulo}}</h4>
+                    <ng-container *ngIf="reviews.length >= 1">
+                      <div class="ps-block--comment ps-block--comment-review" *ngFor="let item of reviews | slice: (page-1)*pageSize : (page-1) * pageSize + pageSize">
+                        <div class="ps-block__content">
+                          <div *ngIf="item.estrellas ==1">
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" style="color:#f1ee51!important"></i></span>
+                            <span><i class="sr-star cxi-star"  aria-hidden="true" style="color:#ccc!important"></i></span>
+                            <span><i class="sr-star cxi-star"  aria-hidden="true" style="color:#ccc!important"></i></span>
+                            <span><i class="sr-star cxi-star"  aria-hidden="true" style="color:#ccc!important"></i></span>
+                            <span><i class="sr-star cxi-star"  aria-hidden="true" style="color:#ccc!important"></i></span>
+                          </div>
+                          <div *ngIf="item.estrellas == 2">
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" style="color:#f1ee51!important"></i></span>
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" style="color:#f1ee51!important"></i></span>
+                            <span><i class="sr-star cxi-star"  aria-hidden="true" style="color:#ccc!important"></i></span>
+                            <span><i class="sr-star cxi-star"  aria-hidden="true" style="color:#ccc!important"></i></span>
+                            <span><i class="sr-star cxi-star"  aria-hidden="true" style="color:#ccc!important"></i></span>
+                          </div>
+                          <div *ngIf="item.estrellas == 3">
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" style="color:#f1ee51!important"></i></span>
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" style="color:#f1ee51!important"></i></span>
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" style="color:#f1ee51!important"></i></span>
+                            <span><i class="sr-star cxi-star"  aria-hidden="true" style="color:#ccc!important"></i></span>
+                            <span><i class="sr-star cxi-star"  aria-hidden="true" style="color:#ccc!important"></i></span>
+                          </div>
+                          <div *ngIf="item.estrellas == 4">
+                           
+             
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" active style="color:#f1ee51!important"></i></span>
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" style="color:#f1ee51!important"></i></span>
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" style="color:#f1ee51!important"></i></span>
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" style="color:#f1ee51!important"></i></span>
+                            <span><i class="sr-star cxi-star"  aria-hidden="true" style="color:#ccc!important"></i></span>
+                          </div>
+                          <div *ngIf="item.estrellas == 5">
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" style="color:#f1ee51!important"></i></span>
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" style="color:#f1ee51!important"></i></span>
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" style="color:#f1ee51!important"></i></span>
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" style="color:#f1ee51!important"></i></span>
+                            <span><i class="sr-star cxi-star-filled"  aria-hidden="true" style="color:#f1ee51!important"></i></span>
+                          </div>
+                          <h5>{{item.cliente.nombres}} {{item.cliente.apellidos}} <span> {{item.createdAt|date}}</span></h5>
+                          <p>{{item.review}}</p>
+                        </div>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="reviews.length == 0">
+                      <div class="row">
+                        <div class="col-sm-8 col-md-5 text-center mb-md-0 mb-4 pb-md-0 pb-3 mx-auto">
+                          <h3 class=" mb-2 text-muted">Producto aún sin reseñas</h3>
+                        </div>
+                      </div>
+                    </ng-container>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+      </div>
 
      
       <div class="modal fade" id="modal-sizing" tabindex="-1" style="display: none;" aria-hidden="true">

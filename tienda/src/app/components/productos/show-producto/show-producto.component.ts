@@ -18,6 +18,11 @@ declare let lightGallery:any;
 export class ShowProductoComponent implements OnInit {
 
   public token:any;
+  public reviews :Array<any> = [];
+  public page = 1;
+  public pageSize = 15;
+  public option_nav = 3;
+
   public slug:any;
   public producto:any = {};
   public url:string;
@@ -62,6 +67,13 @@ export class ShowProductoComponent implements OnInit {
                 this.productos_rec = response.data;
               }
             );
+            this._guestService.obtener_reviews_producto_publico(this.producto._id).subscribe(
+              response=>{
+                
+                this.reviews = response.data;
+                console.log(this.reviews);
+              }
+            );
 
           }
         );
@@ -103,6 +115,10 @@ export class ShowProductoComponent implements OnInit {
         }
       }
     },500);
+  }
+
+change_option(op:any){
+    this.option_nav = op;
   }
 
   init_variedades(){

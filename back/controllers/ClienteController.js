@@ -550,6 +550,13 @@ const obtener_reviews_cliente  = async function(req,res){
         res.status(200.).send({data:reg}); // manda la data al frontend
     });
 }
+const obtener_reviews_producto_publico = async function(req,res){
+    let id = req.params['id'];
+
+    let reviews = await Review.find({producto:id}).populate('cliente').sort({createdAt:-1});
+    res.status(200).send({data: reviews});
+}
+
 
 const confirmar_correo = async function(req, res) {
     let correo = req.body.email;
@@ -652,5 +659,6 @@ module.exports = {
     obtener_reviews_cliente,
     cambiar_contrasenia,
     activar_cliente_vendedor,
+    obtener_reviews_producto_publico,
     desactivar_cliente_vendedor
 }
