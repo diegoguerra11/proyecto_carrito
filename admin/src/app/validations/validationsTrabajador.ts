@@ -5,7 +5,7 @@ export class ValidatonsTrabajador {
         let numerico = /^\d+$/;
         let escontraseña=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%?&])[A-Za-z\d$@$!%?&]{8,15}/;
         
-        if(!this.validarObligatorios(form, userRol)){return false;}
+        if(!this.validarObligatorios(form)){return false;}
       
         if(form.nombres.match(numerico)) {
             MessageBox.messageError('El campo nombres debe ser alfabetico');
@@ -45,7 +45,7 @@ export class ValidatonsTrabajador {
         return true;
     }
 
-    private static validarObligatorios(form: any, userRol: any) {
+    private static validarObligatorios(form: any) {
         if(!form.nombres) {
             MessageBox.messageError('El campo nombres es obligatorio');
             return false;
@@ -74,10 +74,7 @@ export class ValidatonsTrabajador {
             MessageBox.messageError('El campo rol es obligatorio');
             return false;
         }
-        if(userRol !='superAdmin' && !form.password) {
-            MessageBox.messageError('El campo contraseña es obligatorio');
-            return false;
-        }
+       
         return true;
     }
 }

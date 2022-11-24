@@ -110,7 +110,7 @@ export class InventarioProductoComponent implements OnInit {
     let worksheet = workbook.addWorksheet("Reporte de productos");
 
     worksheet.addRow(undefined);
-    for (let x1  of this.arr_inventario){
+    for (let x1  of this.inventarios){
       let x2=Object.keys(x1);
 
       let temp=[]
@@ -123,10 +123,18 @@ export class InventarioProductoComponent implements OnInit {
     let fname='REP01- ';
 
     worksheet.columns = [
-      { header: 'Trabajador', key: 'col1', width: 30},
+      { header: '_id', key: 'col1', width: 30},
+      { header: 'Producto', key: 'col1', width: 30},
+      { header: 'Variedad', key: 'col4', width: 25},
       { header: 'Cantidad', key: 'col2', width: 15},
-      { header: 'Proveedor', key: 'col3', width: 25}
+      { header: 'Trabajador', key: 'col1', width: 30},
+      { header: 'Proveedor', key: 'col3', width: 25},
+      { header: 'timestamp', key: 'col3', width: 25},
+      { header: '__v', key: 'col3', width: 25},
     ]as any;
+
+    worksheet.spliceColumns(1,2);
+    worksheet.spliceColumns(5,2);
 
     workbook.xlsx.writeBuffer().then((data) => {
       let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
