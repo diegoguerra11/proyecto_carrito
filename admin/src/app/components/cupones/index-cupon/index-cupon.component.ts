@@ -37,13 +37,14 @@ export class IndexCuponComponent implements OnInit {
       }
     )
   }
-//se elimina un cupon
-  eliminar(id){
-    this._cuponService.eliminar_cupon_admin(id,this.token).subscribe(
+ 
+  //se desactivo un cupon
+  desactivar(id){
+    this._cuponService.desactivar_cupon_admin(id, this.token).subscribe(
       response=>{
-        MessageBox.messageSuccess('Se eliminó correctamente el cliente.');
+        MessageBox.messageSuccess('Se desactivo correctamente el cupon.');
 
-        $('#delete-'+id).modal('hide');
+        $('#disable-'+id).modal('hide');
         $('.modal-backdrop').removeClass('show');
 
         this._cuponService.listar_cupones_admin(this.filtro,this.token).subscribe(
@@ -54,6 +55,28 @@ export class IndexCuponComponent implements OnInit {
         )
 
 
+      },
+      error=>{
+        console.log(error);
+      }
+    )
+  }
+
+  //se activo un cupon
+  activar(id){
+    this._cuponService.activar_cupon_admin(id, this.token).subscribe(
+      response=>{
+        MessageBox.messageSuccess('Se activo correctamente el cupon.');
+
+        $('#enable-'+id).modal('hide');
+        $('.modal-backdrop').removeClass('show');
+
+        this._cuponService.listar_cupones_admin(this.filtro,this.token).subscribe(
+          response=>{
+            this.cupones = response.data;
+            this.load_data = false;
+          }
+        )
       },
       error=>{
         console.log(error);

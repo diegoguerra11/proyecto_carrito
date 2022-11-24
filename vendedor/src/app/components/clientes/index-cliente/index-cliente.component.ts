@@ -83,13 +83,13 @@ export class IndexClienteComponent implements OnInit {
   }
 
 
-  eliminar(id:any){
-    this._vendedorService.eliminar_cliente_admin(id,this.token).subscribe(
+  desactivar(id:any){
+    this._vendedorService.desactivar_cliente_vendedor(id,this.token).subscribe(
       response=>{
-        MessageBox.messageSuccess('Se eliminó correctamente el cliente.')
+        MessageBox.messageSuccess('Se desactivo correctamente el cliente.')
         
 
-        $('#delete-'+id).modal('hide');
+        $('#disable-'+id).modal('hide');
         $('.modal-backdrop').removeClass('show');
 
         this.init_Data();
@@ -102,4 +102,23 @@ export class IndexClienteComponent implements OnInit {
     )
   }
 
+
+  activar(id:any){
+    this._vendedorService.activar_cliente_vendedor(id,this.token).subscribe(
+      response=>{
+        MessageBox.messageSuccess('Se activo correctamente el cliente.')
+        
+
+        $('#enable-'+id).modal('hide');
+        $('.modal-backdrop').removeClass('show');
+
+        this.init_Data();
+
+        
+      },
+      error=>{
+        console.log(error);
+      }
+    )
+  }
 }

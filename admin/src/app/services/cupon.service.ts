@@ -41,9 +41,15 @@ export class CuponService {
 
   }
 
-  eliminar_cupon_admin(id,token):Observable<any>{
+  activar_cupon_admin(id, token):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json', 'Authorization':token});
-    return this._http.delete(this.url+'eliminar_cupon_admin/'+id,{headers:headers});
+    return this._http.put(this.url+'activar_cupon_admin/'+id,null,{headers:headers});
+
+  }
+
+  desactivar_cupon_admin(id, token):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json', 'Authorization':token});
+    return this._http.put(this.url+'desactivar_cupon_admin/'+id,null,{headers:headers});
 
   }
 

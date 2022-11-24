@@ -52,9 +52,9 @@ export class CreateProductoComponent implements OnInit {
       this.file = undefined;
       return MessageBox.messageError('Los datos del formulario no son validos');
     }
-// verifica si subio una portada
+    // verifica si subio una portada
     if (this.file == undefined) {return MessageBox.messageError('Debe subir una portada para registrar');}
-//si todo el formulario esta correcto manda un mensaje y los manda al panel
+    //si todo el formulario esta correcto manda un mensaje y los manda al panel
     this.load_btn = true;
     this._productoService.registro_producto_admin(this.producto,this.file,this.token).subscribe(
       response => {
@@ -87,7 +87,6 @@ export class CreateProductoComponent implements OnInit {
 
       const reader = new FileReader();
       reader.onload = e => this.imgSelect = reader.result;
-
 
       reader.readAsDataURL(file);
 

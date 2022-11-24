@@ -4,7 +4,7 @@ let Cupon = require('../models/cupon');
 
 //Función para registrar cupones en Admin. El administrador podrá registrar cupones de descuentos y verificar si ya existen.
 const registro_cupon_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAcceess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAcceess'});}
 
     let data = req.body;
 
@@ -22,7 +22,7 @@ const registro_cupon_admin = async function (req,res){
 
  //Función para listar los cupones en Admin. El administrador podrá solicitar la lista de cupones registrados.
  const listar_cupones_admin = async function(req,res){
-    if(!req.user || req.user.role != 'admin'){return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user){return res.status(500).send({message: 'NoAccess'});}
 
     let filtro = req.params['filtro'];
 
@@ -34,7 +34,7 @@ const registro_cupon_admin = async function (req,res){
 
 //Función para obtener un cupón en Admin. El administrador podrá buscar los cupones registrados en la tienda.
 const obtener_cupon_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
     let id = req.params['id'];
 
@@ -58,7 +58,7 @@ const obtener_cupon_cliente = async function (req,res){
     if(cupon == undefined){return;}
 
     try {
-        let buscar_cupon = Promise.resolve(Cupon.findOne({codigo:cupon}));
+        let buscar_cupon = Promise.resolve(Cupon.findOne({codigo:cupon, estado: true}));
 
         buscar_cupon.then(reg => {
             res.status(200).send({data:reg});
@@ -72,7 +72,7 @@ const obtener_cupon_cliente = async function (req,res){
 
 //Función para actualizar cupones en Admin. El administrador podrá actualizar los cupones registrados en el sistema.
 const actualizar_cupon_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
     let data = req.body;
     
@@ -92,12 +92,29 @@ const actualizar_cupon_admin = async function (req,res){
 }
 
 //Función para eliminar cupones en Admin. El administrador podrá eliminar cupones del sistema.
-const eliminar_cupon_admin = async function (req,res){
-    if(!req.user || req.user.role != 'admin') {return res.status(500).send({message: 'NoAccess'});}
+const desactivar_cupon_admin = async function (req,res){
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
     
     let id = req.params['id'];
 
-    let buscar_cupon = Promise.resolve(Cupon.findByIdAndRemove({_id:id}));
+    let estado = req.body.estado;
+
+    let buscar_cupon = Promise.resolve(Cupon.findByIdAndUpdate({_id:id}, {estado: false}));
+
+    buscar_cupon.then(reg => {
+        res.status(200).send({data:reg});
+    });
+}
+
+const activar_cupon_admin = async function (req,res){
+    if(!req.user) {return res.status(500).send({message: 'NoAccess'});}
+    
+    let id = req.params['id'];
+
+    let estado = req.body.estado;
+
+    let buscar_cupon = Promise.resolve(Cupon.findByIdAndUpdate({_id:id}, {estado: true}));
+
     buscar_cupon.then(reg => {
         res.status(200).send({data:reg});
     });
@@ -154,8 +171,9 @@ module.exports = {
     listar_cupones_admin,
     obtener_cupon_admin,
     actualizar_cupon_admin,
-    eliminar_cupon_admin,
     validar_cupon_admin,
+    activar_cupon_admin,
+    desactivar_cupon_admin,
     disminuir_cupon,
     obtener_cupon_cliente
 }

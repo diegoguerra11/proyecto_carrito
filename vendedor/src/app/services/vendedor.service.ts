@@ -135,9 +135,15 @@ export class VendedorService {
 
   }
 
-  eliminar_cliente_admin(id:any,token:any):Observable<any>{
+  desactivar_cliente_vendedor(id:any,token:any):Observable<any>{
     let headers = new HttpHeaders({'Content-Type':'application/json', 'Authorization':token});
-    return this._http.delete(this.url+'eliminar_cliente_vendedor/'+id,{headers:headers});
+    return this._http.put(this.url+'desactivar_cliente_vendedor/'+id,null,{headers:headers});
+
+  }
+
+  activar_cliente_vendedor(id:any, token:any):Observable<any>{
+    let headers = new HttpHeaders({'Content-Type':'application/json', 'Authorization':token});
+    return this._http.put(this.url+'activar_cliente_vendedor/'+id,null,{headers:headers});
 
   }
 

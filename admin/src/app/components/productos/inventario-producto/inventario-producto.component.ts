@@ -17,7 +17,7 @@ export class InventarioProductoComponent implements OnInit {
 
     public id;
     public token;
-    public _iduser;
+    public user;
     public producto:any = {};
     public inventarios: Array<any>=[];
     public arr_inventario : Array<any>=[];
@@ -34,7 +34,7 @@ export class InventarioProductoComponent implements OnInit {
     private _adminService: AdminService
   ) { //se obtiene el token y el id
     this.token = localStorage.getItem('token');
-    this._iduser = localStorage.getItem('_id');
+    this.user = localStorage.getItem('usuario');
   }
 
   ngOnInit(): void {
@@ -89,7 +89,7 @@ export class InventarioProductoComponent implements OnInit {
     let data = {
       producto: this.producto._id,
       cantidad: inventarioForm.value.cantidad,
-      trabajador: this._iduser,
+      trabajador: this.user,
       variedad: inventarioForm.value.variedad,
       proveedor: inventarioForm.value.proveedor
     }
@@ -105,7 +105,7 @@ export class InventarioProductoComponent implements OnInit {
   }
 
   //descarga el inventario en un excel
-   download_excel(){
+  download_excel(){
     let workbook = new Workbook();
     let worksheet = workbook.addWorksheet("Reporte de productos");
 

@@ -21,6 +21,7 @@ export class PedidosDetallesComponent implements OnInit {
   public load_data = true;
   public id: any;
 
+  public totalstars=5;
   public totalstar=5;
   public review : any={};
   

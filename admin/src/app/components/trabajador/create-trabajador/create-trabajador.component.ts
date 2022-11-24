@@ -15,6 +15,7 @@ export class CreateTrabajadorComponent implements OnInit {
   public trabajador: any = {};
   public token;
   public roles: any = [];
+  public userRol:any;
   public load_btn = false;
 
   constructor(
@@ -23,6 +24,7 @@ export class CreateTrabajadorComponent implements OnInit {
     private _trabajadorService: TrabajadorService
   ) {  
     this.token = this._adminService.getToken();
+    this.userRol = localStorage.getItem('rol');
   }
 
   ngOnInit(): void {
@@ -30,26 +32,26 @@ export class CreateTrabajadorComponent implements OnInit {
   }
 
   registro(registroForm) {
-    if(!ValidatonsTrabajador.verificarTrabajador(registroForm.form.value)){return;}
+    if(!ValidatonsTrabajador.verificarTrabajador(registroForm.form.value, null)){return;}
 
     this._trabajadorService.registrar_trabajador_admin(this.trabajador, this.token).subscribe(
       response => {
+        this.load_btn = false;
         if(!response.data){
-          this.load_btn = false;
           return MessageBox.messageError(response.message);
         }
-        MessageBox.messageSuccess('Se registró correctamente al trabajador');
-      
         this.trabajador = {
           nombres: '',
           apellidos: '',
           telefono: '',
           numeroDocumento: '',
           dni: '',
+          password: '',
           email: ''
         }
 
-        this.load_btn = false;
+        MessageBox.messageSuccess('Se registró correctamente al trabajador');
+      
         this._router.navigate(['panel/trabajadores']);
       },
       error => {

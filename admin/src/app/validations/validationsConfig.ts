@@ -2,8 +2,8 @@ import { MessageBox } from '../utils/MessageBox';
 
 export class ValidationsConfig {
     static verificarImagen(file: File) {
-        if(file.size <= 4000000){
-            MessageBox.messageError('La imagen no puede superar los 4MB');
+        if(file.size >= 4000000){
+            MessageBox.messageError('La imagen no puede superar los 4MB ');
             return false;
         }
 

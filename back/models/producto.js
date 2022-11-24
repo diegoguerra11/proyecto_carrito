@@ -13,7 +13,6 @@ let ProductoSchema = Schema({
     precio: {type: Number, required: true},
     descripcion: {type: String, required: true},
     contenido: {type: String, required: true},
-    stock: {type: Number, required: true},
     nventas: {type: Number,default: 0, required: true},
     npuntos: {type: Number, default: 0,required: true},
     variedades: [{type: Object, required:false}],    

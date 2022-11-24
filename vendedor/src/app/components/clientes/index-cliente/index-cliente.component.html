@@ -34,11 +34,12 @@
                   <caption></caption>
                   <thead class="thead-dark">
                     <tr>
-                      <th>#</th>
-                      <th>Nombres</th>
-                      <th>Apellidos</th>
-                      <th>Correo</th>
-                      <th>Opciones</th>
+                      <th id="#">#</th>
+                      <th id="n">Nombres</th>
+                      <th id="a">Apellidos</th>
+                      <th id="c">Correo</th>
+                      <th id="e">Estado</th>
+                      <th id="o">Opciones</th>
                     </tr>
                   </thead>
                   <tbody *ngIf="load_data">
@@ -57,32 +58,51 @@
                       <td>{{item.nombres}}</td>
                       <td>{{item.apellidos}}</td>
                       <td>{{item.email}}</td>
+                      <td class="text-{{item.estado ? 'success' : 'danger' }}" >{{item.estado ? 'ACTIVO': 'INACTIVO'}}</td>
                       <td>
                         <div class="btn-group dropdown d-inline-block mb-3 mr-2">
                           <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" 
                             aria-expanded="false">OPCIONES</button>
                             <div class="dropdown-menu">
-                              <a class="dropdown-item" [routerLink]="['/panel/clientes',item._id]" >Editar cliente</a>                          
-                              <a class="dropdown-item" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#delete-'+item._id">Eliminar Cliente</a>
+                              <a  *ngIf="item.estado" class="dropdown-item" [routerLink]="['/panel/clientes',item._id]" >Editar cliente</a>                          
+                              <a *ngIf="item.estado" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#disable-'+item._id">Deshabilitar cliente</a>
+                              <a *ngIf="!item.estado" class="dropdown-item" style="cursor: pointer;" data-toggle="modal" [attr.data-target]="'#enable-'+item._id">Habilitar cliente</a>
                           </div>
                         </div>
-                        <div class="modal fade" id="delete-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+                        <div class="modal fade" id="disable-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
                           <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h4 class="modal-title">Eliminar, {{item.nombres}} {{item.apellidos}}</h4>
-                                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h4 class="modal-title">Deshabilitar, {{item.nombres}} {{item.apellidos}}</h4>
+                                      <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <p>Desea deshabilitar este trabajador?</p>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                                      <button class="btn btn-primary btn-shadow btn-sm" (click)="desactivar(item._id)" type="button">Si, deshabilitar</button>
+                                  </div>
                               </div>
-                              <div class="modal-body">
-                                <p>Desea eliminar este cliente?</p>
-                              </div>
-                              <div class="modal-footer">
-                                <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
-                                <button class="btn btn-primary btn-shadow btn-sm" (click)="eliminar(item._id)" type="button">Si, eliminar</button>
-                              </div>
-                            </div>
                           </div>
-                        </div>
+                      </div>
+                      <div class="modal fade" id="enable-{{item._id}}" tabindex="-1" style="display: none;" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h4 class="modal-title">Habilitar, {{item.nombres}} {{item.apellidos}}</h4>
+                                      <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <p>Desea hablitar este trabajador?</p>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Cancelar</button>
+                                      <button class="btn btn-primary btn-shadow btn-sm" (click)="activar(item._id)" type="button">Si, habilitar</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
                       </td>
                      </tr>
                     </tbody>

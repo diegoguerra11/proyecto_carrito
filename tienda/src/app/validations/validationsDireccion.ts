@@ -1,6 +1,8 @@
+import { from } from 'rxjs';
 import { MessageBox } from '../Utils/MessageBox';
 
 export class ValidationsDireccion {
+  
   static registrarDireccion(form: any) {
     let numerico = /^[0-9]+$/;
 
@@ -65,6 +67,11 @@ export class ValidationsDireccion {
     
     if(!form.telefono) {
       MessageBox.messageError('El campo telefono es obligatorio');
+      return false;
+    }
+
+    if(!form.direccion) {
+      MessageBox.messageError('El campo dirección es obligatorio');
       return false;
     }
 

@@ -9,6 +9,7 @@ let CuponSchema = Schema({
     tipo: {type: String, required: true}, //Porcentaje | Precio fijo
     valor: {type: Number, required: true},
     limite: {type: Number, required: true},
+    estado: {type: Boolean, default:true, required:true},
     createdAt: {type:Date, default: Date.now, require: true}
 });
 

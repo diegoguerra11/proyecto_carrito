@@ -30,4 +30,6 @@ api.put('/actualizar_producto_variedades_admin/:id',auth.auth,adminController.ac
 api.delete('/eliminar_variedad_admin/:id',auth.auth,adminController.eliminar_variedad_admin);
 api.post('/agregar_nueva_variedad_admin',auth.auth,adminController.agregar_nueva_variedad_admin);
 
+//kpis
+api.get('/kpi_ganancias_mensuales_admin', auth.auth, adminController.kpi_ganancias_mensuales_admin);
 module.exports = api;
