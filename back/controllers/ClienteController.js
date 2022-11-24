@@ -182,37 +182,35 @@ const registro_pedido_compra_cliente = async function(req, res) {
     
     data.estado = 'Procesando';
 
-    let realizar_venta = Promise.resolve(Venta.create(data));
+    let venta = await Venta.create(data);
 
-    realizar_venta.then(venta => {
-        for(let element of detalles){
-            element.venta = venta._id;
-            Dventa.create(element);
-    
-            let element_producto = Producto.findById({_id:element.producto});
-            let new_stock = element_producto.stock - element.cantidad;
-            let new_ventas = element_producto.nventas + 1;
-    
-            let element_variedad = Variedad.findById({_id:element.variedad});
-            let new_stock_variedad = element_variedad.stock - element.cantidad;
-    
-            Producto.findByIdAndUpdate({_id: element.producto},{
-                stock: new_stock,
-                nventas: new_ventas
-            });
-    
-            Variedad.findByIdAndUpdate({_id: element.variedad},{
-                stock: new_stock_variedad,
-            });
-    
-            //limpiar carrito
-            Carrito.deleteMany({cliente:data.cliente});
-        }
-    
-        enviar_email(venta._id, 'enviar_pedido');
-    
-        res.status(200).send({data:venta});
-    })
+    for(let element of detalles){
+        element.venta = venta._id;
+        await Dventa.create(element);
+
+        let element_producto = await Producto.findById({_id:element.producto});
+        let new_stock = element_producto.stock - element.cantidad;
+        let new_ventas = element_producto.nventas + 1;
+
+        let element_variedad = await Variedad.findById({_id:element.variedad});
+        let new_stock_variedad = element_variedad.stock - element.cantidad;
+
+        await Producto.findByIdAndUpdate({_id: element.producto},{
+            stock: new_stock,
+            nventas: new_ventas
+        });
+
+        await Variedad.findByIdAndUpdate({_id: element.variedad},{
+            stock: new_stock_variedad,
+        });
+
+        //limpiar carrito
+        await Carrito.deleteMany({cliente:data.cliente});
+    }
+
+    await enviar_email(venta._id, 'enviar_pedido');
+
+    res.status(200).send({data:venta});
 }
 
 //Función para listar las órdenes de compra realizadas por el cliente. Se modtrarán las órdenes de compra ordenadas por la fecha de haber sido realizada.
