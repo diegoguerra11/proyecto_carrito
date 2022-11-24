@@ -186,7 +186,20 @@ const registro_inventario_producto_admin = async function(req,res){
     let crear_inventario = Promise.resolve(Inventario.create(data));
 
     crear_inventario.then(reg => {
-        res.status(200).send({data:reg});
+        let buscar_variedad = Promise.resolve(Variedad.findOne({
+            producto: data.producto,
+            valor: data.variedad
+        }));
+
+        buscar_variedad.then((variedad) => {
+            let actualizar_variedad = Promise.resolve(Variedad.findByIdAndUpdate({_id: variedad._id}, {
+                stock: variedad.stock + data.cantidad
+            }));
+            
+            actualizar_variedad.then(() => {
+                res.status(200).send({data:reg});
+            });
+        });
     });
 }
 
